@@ -3,6 +3,12 @@ import { useSignIn, useSignUp, useAuth, useClerk } from '@clerk/react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, ArrowRight, RefreshCw, AlertCircle } from 'lucide-react';
 
+const generateUniqueUsername = (emailStr) => {
+  const prefix = (emailStr || '').split('@')[0].replace(/[^a-zA-Z0-9]/g, '').toLowerCase().slice(0, 15) || 'user';
+  const randomSuffix = Math.random().toString(36).substring(2, 6) + Math.floor(100 + Math.random() * 900);
+  return `${prefix}_${randomSuffix}`;
+};
+
 export function Login() {
   const { isLoaded, isSignedIn } = useAuth();
   const { setActive } = useClerk();
@@ -161,8 +167,24 @@ export function Login() {
         });
         console.log("verifyEmailCode resolved value:", res);
 
-        const activeSignUp = res?.status ? res : (res?.result?.status ? res.result : signUp);
-        console.log("activeSignUp status:", activeSignUp?.status, "session:", activeSignUp?.createdSessionId);
+        let activeSignUp = res?.status ? res : (res?.result?.status ? res.result : signUp);
+        console.log("activeSignUp status:", activeSignUp?.status, "missing:", activeSignUp?.missingFields);
+
+        if (activeSignUp?.status === 'missing_requirements') {
+          const updatePayload = {};
+          const missing = activeSignUp.missingFields || [];
+          
+          if (missing.includes('username')) {
+            updatePayload.username = generateUniqueUsername(email);
+          }
+
+          if (Object.keys(updatePayload).length > 0) {
+            console.log("Fulfilling missing sign-up requirements:", updatePayload);
+            const updated = await signUp.update(updatePayload);
+            activeSignUp = updated?.status ? updated : (updated?.result?.status ? updated.result : signUp);
+            console.log("Post-update status:", activeSignUp?.status);
+          }
+        }
 
         if (activeSignUp?.status === 'complete') {
           await setActive({ session: activeSignUp.createdSessionId });
