@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -9,6 +9,7 @@ if (!apiKey) {
   console.warn('GEMINI_API_KEY is missing. AI features will fail.');
 }
 
-export const genAI = new GoogleGenerativeAI(apiKey || 'placeholder_key');
+export const ai = new GoogleGenAI({ apiKey: apiKey || 'placeholder_key' });
 
-export default genAI;
+export default ai;
+
