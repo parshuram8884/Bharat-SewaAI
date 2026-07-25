@@ -32,6 +32,7 @@ frontend/.env
 .env.production.local
 *.env
 *.env.*
+.env
 
 # Editor directories and files
 .vscode/*
@@ -46,3 +47,5 @@ frontend/.env
 # System files
 .DS_Store
 Thumbs.db
+backend/.env
+frontend/.env

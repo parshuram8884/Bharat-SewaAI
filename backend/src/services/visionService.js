@@ -1,4 +1,4 @@
-import genAI from '../config/gemini.js';
+import ai from '../config/gemini.js';
 
 export const visionService = {
   /**
@@ -9,8 +9,6 @@ export const visionService = {
    */
   extractDocumentData: async (fileBuffer, mimeType) => {
     try {
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-      
       const filePart = {
         inlineData: {
           data: fileBuffer.toString('base64'),
@@ -20,9 +18,12 @@ export const visionService = {
 
       const prompt = `Analyze this document. Extract key values in JSON format. For Aadhaar, retrieve name, date of birth, gender, and Aadhaar number. For Ration cards, extract ration card number, state, and head of family. Respond with ONLY valid JSON code block.`;
       
-      const result = await model.generateContent([prompt, filePart]);
-      const response = await result.response;
-      const text = response.text();
+      const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: [prompt, filePart],
+      });
+
+      const text = response.text;
 
       // Clean up markdown block wraps if present
       const jsonStr = text.replace(/```json/g, '').replace(/```/g, '').trim();
@@ -41,3 +42,4 @@ export const visionService = {
 };
 
 export default visionService;
+
