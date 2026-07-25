@@ -14,11 +14,13 @@ import {
 } from 'lucide-react';
 import axios from 'axios';
 import { useAdminData } from '../../context/AdminDataContext';
+import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useToast } from '../../context/ToastContext';
 
 export function CitizenAssistant() {
   const { showToast } = useToast();
   const { addComplaint } = useAdminData();
+  const { user } = useAdminAuth();
   const navigate = useNavigate();
   
   // Modal state for initial selection
@@ -115,8 +117,12 @@ export function CitizenAssistant() {
 
         setComplaintDetails({ what: whatText, where: whereText });
 
+        const citizenName = user?.name || user?.email?.split('@')[0] || 'Citizen User';
+        const citizenEmail = user?.email || '';
+
         const createdComplaint = addComplaint({
-          citizenName: 'Citizen User',
+          citizenName,
+          citizenEmail,
           whatHappened: whatText,
           whereHappened: whereText,
           howHappened: messageText,
