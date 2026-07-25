@@ -5,9 +5,10 @@ import { AdminDataProvider } from './context/AdminDataContext';
 import { ToastProvider } from './context/ToastContext';
 import { AdminLayout } from './components/layout/AdminLayout';
 
-// Admin Portal Pages
+// Citizen Portal Pages
+import { Dashboard as CitizenDashboard } from './pages/Dashboard';
+
 import { AdminLogin } from './pages/admin/AdminLogin';
-import { Dashboard } from './pages/admin/Dashboard';
 import { CitizensList } from './pages/admin/CitizensList';
 import { CitizenDetail } from './pages/admin/CitizenDetail';
 import { ApplicationsList } from './pages/admin/ApplicationsList';
@@ -22,9 +23,8 @@ import { NotificationsBroadcast } from './pages/admin/NotificationsBroadcast';
 import { Settings } from './pages/admin/Settings';
 import { AuditLogs } from './pages/admin/AuditLogs';
 
-// Existing Citizen Pages (Kept intact and accessible)
+// Existing Citizen Pages
 import { Home as CitizenHome } from './pages/Home';
-import { Dashboard as CitizenDashboard } from './pages/Dashboard';
 import { Login as CitizenLogin } from './pages/Login';
 import { Onboarding } from './pages/Onboarding';
 
@@ -35,13 +35,13 @@ function App() {
         <ToastProvider>
           <BrowserRouter>
             <Routes>
-              {/* Public Admin Route */}
+              {/* Public Citizen Login Route */}
               <Route path="/login" element={<AdminLogin />} />
 
-              {/* Protected Admin Portal Routes wrapped in AdminLayout */}
+              {/* Protected Citizen Portal Routes */}
               <Route element={<AdminLayout />}>
                 <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/dashboard" element={<CitizenDashboard />} />
                 <Route path="/citizens" element={<CitizensList />} />
                 <Route path="/citizens/:id" element={<CitizenDetail />} />
                 <Route path="/applications" element={<ApplicationsList />} />

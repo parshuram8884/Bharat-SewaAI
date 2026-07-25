@@ -62,194 +62,56 @@ export function ComplaintsManagement() {
     () => [
       {
         accessorKey: 'id',
-        header: 'Ticket ID',
+        header: 'Complaint ID',
         cell: ({ row }) => (
           <span
             onClick={() => setActiveTicket(row.original)}
-            className="font-mono font-bold text-primary hover:underline cursor-pointer"
+            className="font-mono font-extrabold text-primary hover:underline cursor-pointer"
           >
-            {row.original.id}
+            CMP-{row.original.id}
           </span>
         )
       },
       {
-        accessorKey: 'citizenName',
-        header: 'Complainant',
+        accessorKey: 'citizen_name',
+        header: 'Who Complained',
         cell: ({ row }) => (
-          <div>
-            <span className="font-bold text-on-surface block">{row.original.citizenName}</span>
-            <span className="text-xs text-on-surface-variant font-mono">{row.original.citizenId}</span>
-          </div>
+          <span className="font-bold text-on-surface">{row.original.citizen_name || 'Citizen User'}</span>
         )
       },
       {
-        accessorKey: 'subject',
-        header: 'Grievance Subject & Category',
+        accessorKey: 'what_happend',
+        header: 'What Happened',
         cell: ({ row }) => (
-          <div>
-            <span className="font-bold text-on-surface block max-w-xs truncate" title={row.original.subject}>
-              {row.original.subject}
-            </span>
-            <span className="text-xs font-semibold text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">
-              {row.original.category}
-            </span>
-          </div>
+          <span className="font-medium text-on-surface max-w-md block" title={row.original.what_happend}>
+            {row.original.what_happend}
+          </span>
         )
-      },
-      {
-        accessorKey: 'date',
-        header: 'Submitted On',
-        cell: ({ row }) => <span className="text-xs font-mono text-on-surface-variant">{row.original.date}</span>
-      },
-      {
-        accessorKey: 'priority',
-        header: 'Priority',
-        cell: ({ row }) => <Badge>{row.original.priority}</Badge>
       },
       {
         accessorKey: 'status',
-        header: 'Ticket Status',
-        cell: ({ row }) => <Badge>{row.original.status}</Badge>
-      },
-      {
-        id: 'actions',
-        header: () => <div className="text-right">Actions</div>,
-        cell: ({ row }) => {
-          const ticket = row.original;
-          const isOpen = ticket.status === 'Open' || ticket.status === 'In Progress';
-          return (
-            <div className="flex items-center justify-end gap-1" onClick={(e) => e.stopPropagation()}>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setActiveTicket(ticket)}
-                className="p-1.5 text-on-surface-variant hover:text-primary"
-                title="View ticket discussion & resolve"
-              >
-                <Eye className="w-4 h-4" />
-              </Button>
-              {isOpen && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleStatusChange(ticket.id, 'Resolved')}
-                  className="p-1.5 text-on-surface-variant hover:text-emerald-600 font-bold text-xs"
-                  title="Mark Resolved"
-                >
-                  <CheckCircle2 className="w-4 h-4 mr-0.5" />
-                  <span>Resolve</span>
-                </Button>
-              )}
-            </div>
-          );
-        }
+        header: 'Status',
+        cell: ({ row }) => <Badge>{row.original.status || 'In Progress'}</Badge>
       }
     ],
     []
   );
 
-  const openCount = complaints.filter((c) => c.status === 'Open' || c.status === 'In Progress').length;
-  const resolvedCount = complaints.filter((c) => c.status === 'Resolved').length;
-  const highCount = complaints.filter((c) => c.priority === 'High' && c.status !== 'Resolved').length;
-
   return (
     <div className="space-y-6 pb-12 animate-in fade-in duration-200">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-outline-variant/30 pb-5">
-        <div>
-          <h2 className="font-heading text-3xl font-extrabold text-primary tracking-tight">Citizen Grievance Management</h2>
-          <p className="text-on-surface-variant font-medium mt-1">
-            Triage public complaints, track SLA response times, and provide official resolutions to citizens.
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <Button
-            variant="outline"
-            size="md"
-            onClick={handleExport}
-            className="flex items-center gap-2 font-bold"
-          >
-            <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
-            <span>Export Grievance CSV</span>
-          </Button>
-        </div>
-      </div>
-
-      {/* Mini Stats Banner */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/60 flex items-center gap-3 shadow-2xs">
-          <div className="p-3 rounded-lg bg-amber-100 text-amber-800">
-            <Clock className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-xs text-on-surface-variant font-semibold uppercase tracking-wider">Open / In Progress</p>
-            <h4 className="text-xl font-heading font-extrabold text-on-surface">{openCount}</h4>
-          </div>
-        </div>
-        <div className="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/60 flex items-center gap-3 shadow-2xs">
-          <div className="p-3 rounded-lg bg-emerald-100 text-emerald-700">
-            <CheckCircle2 className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-xs text-on-surface-variant font-semibold uppercase tracking-wider">Resolved Tickets</p>
-            <h4 className="text-xl font-heading font-extrabold text-on-surface">{resolvedCount}</h4>
-          </div>
-        </div>
-        <div className="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/60 flex items-center gap-3 shadow-2xs">
-          <div className="p-3 rounded-lg bg-error-container text-error">
-            <AlertTriangle className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-xs text-on-surface-variant font-semibold uppercase tracking-wider">High Priority Alerts</p>
-            <h4 className="text-xl font-heading font-extrabold text-on-surface">{highCount}</h4>
-          </div>
-        </div>
-      </div>
-
-      {/* Filter Bar */}
-      <div className="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/60 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-3 flex-wrap">
-          <div className="flex items-center gap-2 text-xs font-bold text-on-surface-variant">
-            <Filter className="w-4 h-4 text-primary" />
-            <span>Status:</span>
-          </div>
-          <div className="flex items-center gap-1 bg-surface-container-low p-1 rounded-lg flex-wrap">
-            {['All', 'Open', 'In Progress', 'Resolved'].map((st) => (
-              <button
-                key={st}
-                onClick={() => setStatusFilter(st)}
-                className={`px-3 py-1 rounded text-xs font-bold transition-all cursor-pointer ${
-                  statusFilter === st ? 'bg-primary text-on-primary shadow-xs' : 'text-on-surface-variant hover:text-on-surface'
-                }`}
-              >
-                {st}
-              </button>
-            ))}
-          </div>
-
-          <div className="h-6 w-[1px] bg-outline-variant/60 hidden sm:block" />
-
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-on-surface-variant">Priority:</span>
-            <select
-              value={priorityFilter}
-              onChange={(e) => setPriorityFilter(e.target.value)}
-              className="bg-surface border border-outline-variant rounded-lg text-xs font-bold text-on-surface px-3 py-1.5 cursor-pointer focus:outline-none focus:ring-1 focus:ring-primary"
-            >
-              <option value="All">All Priorities</option>
-              <option value="High">High Priority</option>
-              <option value="Medium">Medium Priority</option>
-              <option value="Low">Low Priority</option>
-            </select>
-          </div>
-        </div>
+      <div className="border-b border-outline-variant/30 pb-4">
+        <h2 className="font-heading text-3xl font-extrabold text-primary tracking-tight">Citizen Complaints</h2>
+        <p className="text-on-surface-variant text-sm font-medium mt-1">
+          Registered grievance complaints submitted by citizens.
+        </p>
       </div>
 
       {/* Grievances Table */}
       <Table
         data={filteredComplaints}
         columns={columns}
-        searchPlaceholder="Search Ticket ID, citizen name, subject, category..."
+        searchPlaceholder="Search complaint name, citizen, or what happened..."
         pageSize={10}
       />
 

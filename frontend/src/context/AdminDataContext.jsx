@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { supabase } from '../config/supabase';
 import {
   initialStats,
   initialCitizens,
@@ -17,10 +18,29 @@ export function AdminDataProvider({ children }) {
   const [citizens, setCitizens] = useState(initialCitizens);
   const [applications, setApplications] = useState(initialApplications);
   const [schemes, setSchemes] = useState(initialSchemes);
-  const [complaints, setComplaints] = useState(initialComplaints);
+  const [complaints, setComplaints] = useState([]);
   const [notifications, setNotifications] = useState(initialNotifications);
   const [auditLogs, setAuditLogs] = useState(initialAuditLogs);
   const [roles, setRoles] = useState(adminRolesList);
+
+  // Fetch complaints directly from Supabase database table 'complain'
+  useEffect(() => {
+    const fetchSupabaseComplaints = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('complain')
+          .select('*')
+          .order('id', { ascending: false });
+
+        if (!error && data) {
+          setComplaints(data);
+        }
+      } catch (err) {
+        console.warn('Supabase fetch complaints error:', err?.message);
+      }
+    };
+    fetchSupabaseComplaints();
+  }, []);
 
   const addAuditLog = (action, target, details) => {
     const newLog = {
@@ -159,7 +179,45 @@ export function AdminDataProvider({ children }) {
     addAuditLog('DELETED_SCHEME', schemeId, `Removed government scheme from active catalog`);
   };
 
-  // Complaint Actions
+  // Complaint Actions - Insert into Supabase table 'complain'
+  const addComplaint = (newComplaintData) => {
+    const tempItem = {
+      id: Date.now(),
+      citizen_name: newComplaintData.citizenName || 'Citizen User',
+      what_happend: newComplaintData.whatHappened || 'Public Grievance Report',
+      where_happend: newComplaintData.whereHappened || 'Local Ward',
+      status: 'In Progress'
+    };
+
+    setComplaints((prev) => [tempItem, ...prev]);
+
+    // Insert directly into Supabase database table 'complain'
+    supabase
+      .from('complain')
+      .insert([
+        {
+          citizen_name: tempItem.citizen_name,
+          what_happend: tempItem.what_happend,
+          where_happend: tempItem.where_happend,
+          status: tempItem.status
+        }
+      ])
+      .select()
+      .then(({ data, error }) => {
+        if (!error && data && data.length > 0) {
+          console.log('✅ Complaint ticket stored in Supabase database table "complain":', data[0]);
+          setComplaints((prev) =>
+            prev.map((c) => (c.id === tempItem.id ? data[0] : c))
+          );
+        } else if (error) {
+          console.warn('Supabase insert error on table "complain":', error.message);
+        }
+      })
+      .catch((err) => console.warn('Supabase insert exception:', err?.message));
+
+    return tempItem;
+  };
+
   const addComplaintComment = (complaintId, text, author = 'Tejas Mail (Admin)') => {
     setComplaints((prev) =>
       prev.map((c) => {
@@ -215,6 +273,7 @@ export function AdminDataProvider({ children }) {
         deleteCitizen,
         saveScheme,
         deleteScheme,
+        addComplaint,
         addComplaintComment,
         updateComplaintStatus,
         sendNotification

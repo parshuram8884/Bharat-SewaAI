@@ -1,53 +1,61 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Shield, Eye, EyeOff, Lock, Mail, Building2, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Shield, Mail, Building2, CheckCircle2, Send, Check } from 'lucide-react';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useToast } from '../../context/ToastContext';
 
 const loginSchema = z.object({
-  email: z.string().min(1, 'Admin ID or Email is required').email('Please enter a valid government email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters long'),
-  rememberMe: z.boolean().optional(),
+  email: z.string().min(1, 'Email address is required').email('Please enter a valid email address'),
 });
 
 export function AdminLogin() {
-  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAdminAuth();
+  const [linkSent, setLinkSent] = useState(false);
+  const [sentEmail, setSentEmail] = useState('');
+  
+  const { sendMagicLink } = useAdminAuth();
   const { showToast } = useToast();
-  const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
     setValue,
+    getValues,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: 'tejas.admin@bharatsewa.gov.in',
-      password: 'password123',
-      rememberMe: true,
+      email: 'citizen@bharatsewa.gov.in',
     },
   });
 
-  const onSubmit = (data) => {
+  const handleSendVerificationLink = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    const email = getValues('email');
+    if (!email || !email.includes('@')) {
+      showToast('Please enter a valid email address first.', 'error');
+      return;
+    }
+
     setIsLoading(true);
-    setTimeout(() => {
-      login(data.email, data.password);
+    try {
+      await sendMagicLink(email);
+      setSentEmail(email);
+      setLinkSent(true);
+      showToast(`Verification link sent to ${email}! Check your inbox.`, 'success');
+    } catch (err) {
+      console.error("Supabase magic link error:", err);
+      showToast(err.message || 'Failed to send verification link. Check Supabase setup.', 'error');
+    } finally {
       setIsLoading(false);
-      showToast('Welcome back, Tejas Mail! Logged into Super Admin console.', 'success');
-      navigate('/dashboard');
-    }, 800);
+    }
   };
 
   const handleDemoFill = () => {
-    setValue('email', 'tejas.admin@bharatsewa.gov.in');
-    setValue('password', 'password123');
-    showToast('Demo credentials inserted automatically.', 'info');
+    setValue('email', 'citizen@bharatsewa.gov.in');
+    showToast('Demo citizen email inserted automatically.', 'info');
   };
 
   return (
@@ -68,123 +76,95 @@ export function AdminLogin() {
             Bharat Sewa AI
           </h1>
           <p className="text-base text-on-surface-variant font-medium mt-1">
-            Centralized Governance Administration Portal
+            Citizen Services & Governance Portal
           </p>
         </div>
 
         {/* Login Card */}
         <section className="bg-surface-container-lowest border border-outline-variant/60 rounded-2xl p-6 sm:p-10 shadow-xl">
           <header className="mb-6">
-            <h2 className="text-2xl font-heading font-bold text-on-surface mb-1">Admin Access</h2>
+            <h2 className="text-2xl font-heading font-bold text-on-surface mb-1">Citizen Access</h2>
             <p className="text-sm font-medium text-on-surface-variant">
-              Please enter your authorized government credentials.
+              Enter your email address to receive a secure login verification link.
             </p>
           </header>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* Email / Admin ID */}
-            <div className="space-y-1.5">
-              <label htmlFor="email" className="block text-sm font-semibold text-on-surface">
-                Admin ID or Email
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant/70" />
-                <input
-                  id="email"
-                  type="email"
-                  placeholder="e.g. admin.tejas@sewa.gov.in"
-                  className={`w-full pl-11 pr-4 py-3 rounded-xl border bg-surface-container-lowest text-base text-on-surface placeholder:text-on-surface-variant/50 transition-all focus:outline-none focus:ring-2 focus:ring-primary/30 ${
-                    errors.email ? 'border-error focus:border-error' : 'border-outline-variant focus:border-primary'
-                  }`}
-                  {...register('email')}
-                />
+          {linkSent ? (
+            <div className="space-y-6 text-center py-4">
+              <div className="w-16 h-16 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center mx-auto border border-emerald-500/20">
+                <Check className="w-8 h-8" />
               </div>
-              {errors.email && <p className="text-xs font-semibold text-error mt-1">{errors.email.message}</p>}
+              <div>
+                <h3 className="text-lg font-bold text-on-surface">Verification Link Sent!</h3>
+                <p className="text-sm text-on-surface-variant mt-1">
+                  We've sent a magic verification link to <span className="font-semibold text-primary">{sentEmail}</span>.
+                </p>
+                <p className="text-xs text-on-surface-variant/80 mt-2">
+                  Click the link in your email to automatically verify your citizen access and open your dashboard.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setLinkSent(false)}
+                className="text-xs font-semibold text-primary hover:underline cursor-pointer"
+              >
+                Use a different email address
+              </button>
             </div>
-
-            {/* Password */}
-            <div className="space-y-1.5">
-              <div className="flex justify-between items-center">
-                <label htmlFor="password" className="block text-sm font-semibold text-on-surface">
-                  Password
+          ) : (
+            <form onSubmit={handleSubmit(handleSendVerificationLink)} className="space-y-6">
+              {/* Email */}
+              <div className="space-y-1.5">
+                <label htmlFor="email" className="block text-sm font-semibold text-on-surface">
+                  Email Address
                 </label>
-                <button
-                  type="button"
-                  onClick={handleDemoFill}
-                  className="text-xs font-bold text-secondary hover:underline cursor-pointer"
-                >
-                  Use Demo Credentials
-                </button>
+                <div className="relative">
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant/70" />
+                  <input
+                    id="email"
+                    type="email"
+                    placeholder="e.g. citizen@bharatsewa.gov.in"
+                    className={`w-full pl-11 pr-4 py-3 rounded-xl border bg-surface-container-lowest text-base text-on-surface placeholder:text-on-surface-variant/50 transition-all focus:outline-none focus:ring-2 focus:ring-primary/30 ${
+                      errors.email ? 'border-error focus:border-error' : 'border-outline-variant focus:border-primary'
+                    }`}
+                    {...register('email')}
+                  />
+                </div>
+                {errors.email && <p className="text-xs font-semibold text-error mt-1">{errors.email.message}</p>}
               </div>
-              <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant/70" />
-                <input
-                  id="password"
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="••••••••"
-                  className={`w-full pl-11 pr-11 py-3 rounded-xl border bg-surface-container-lowest text-base text-on-surface placeholder:text-on-surface-variant/50 transition-all focus:outline-none focus:ring-2 focus:ring-primary/30 ${
-                    errors.password ? 'border-error focus:border-error' : 'border-outline-variant focus:border-primary'
-                  }`}
-                  {...register('password')}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer"
-                  aria-label="Toggle password visibility"
-                >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
-              </div>
-              {errors.password && <p className="text-xs font-semibold text-error mt-1">{errors.password.message}</p>}
-            </div>
 
-            {/* Remember Me & Help */}
-            <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center gap-2 cursor-pointer select-none">
-                <input
-                  type="checkbox"
-                  className="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary/40 cursor-pointer"
-                  {...register('rememberMe')}
-                />
-                <span className="text-on-surface font-medium">Remember this terminal</span>
-              </label>
-              <a href="#forgot" onClick={(e) => { e.preventDefault(); showToast('Contact NIC IT Helpdesk for password reset.', 'info'); }} className="text-secondary font-semibold hover:underline">
-                Forgot password?
-              </a>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full py-3.5 px-6 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-heading font-bold text-base shadow-lg shadow-primary/25 hover:shadow-xl transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2 cursor-pointer"
-            >
-              {isLoading ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  <span>Verifying Credentials...</span>
-                </>
-              ) : (
-                <>
-                  <span>Sign In to Portal</span>
-                  <ArrowRight className="w-5 h-5" />
-                </>
-              )}
-            </button>
-          </form>
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full py-3.5 px-6 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-heading font-bold text-base shadow-lg shadow-primary/25 hover:shadow-xl transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2 cursor-pointer"
+              >
+                {isLoading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <span>Sending Verification Link...</span>
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-5 h-5" />
+                    <span>Send Verification Link</span>
+                  </>
+                )}
+              </button>
+            </form>
+          )}
 
           {/* Quick Demo Help Banner */}
           <div className="mt-6 p-3 rounded-xl bg-primary-fixed/20 border border-primary-container/40 flex items-center justify-between text-xs text-primary">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 shrink-0" />
-              <span>Demo Mode active: Ready with Super Admin permissions</span>
+              <span>Citizen Supabase Verification Link active</span>
             </div>
             <button
               onClick={handleDemoFill}
               className="font-bold underline cursor-pointer hover:opacity-80"
             >
-              Auto-fill
+              Auto-fill Citizen Email
             </button>
           </div>
         </section>
@@ -193,7 +173,7 @@ export function AdminLogin() {
         <footer className="mt-8 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-container-low border border-outline-variant/40 text-xs text-on-surface-variant">
             <Shield className="w-4 h-4 text-emerald-600 shrink-0" />
-            <span>Authorized personnel only. All access is logged and audited by NIC.</span>
+            <span>Secure Citizen Authentication powered by Bharat Sewa.</span>
           </div>
         </footer>
       </main>
@@ -202,3 +182,4 @@ export function AdminLogin() {
 }
 
 export default AdminLogin;
+
