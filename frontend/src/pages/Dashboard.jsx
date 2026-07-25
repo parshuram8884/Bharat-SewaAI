@@ -6,6 +6,7 @@ import { Shield, FolderOpen, FileText, CheckCircle, Clock, AlertCircle, ChevronR
 import { applicationTrackingService } from '../services/applicationTrackingService';
 import { ApplicationStatusConfig } from '../data/applicationStatusModel';
 import { notificationService } from '../services/notificationService';
+import { CitizenOnboardingModal } from '../components/citizen/CitizenOnboardingModal';
 
 export function Dashboard() {
   const navigate = useNavigate();
@@ -51,6 +52,7 @@ export function Dashboard() {
 
   return (
     <div className="flex-1 p-6 md:p-8 bg-neutral-950 text-neutral-100 overflow-y-auto space-y-8 font-sans">
+      <CitizenOnboardingModal />
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>

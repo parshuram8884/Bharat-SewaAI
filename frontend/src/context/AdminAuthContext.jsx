@@ -15,7 +15,7 @@ const MOCK_ADMIN_USER = {
 export function AdminAuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem('bharat_sewa_admin_user');
-    return saved ? JSON.parse(saved) : MOCK_ADMIN_USER;
+    return saved ? JSON.parse(saved) : null;
   });
   const [loadingSession, setLoadingSession] = useState(true);
 
@@ -40,15 +40,16 @@ export function AdminAuthProvider({ children }) {
         .from('citizen_profiles')
         .select('*')
         .eq('email', sbUser.email)
-        .maybeSingle();
+        .limit(1);
 
-      if (data) {
+      if (data && data.length > 0) {
+        const profile = data[0];
         localStorage.setItem(`onboarding_completed_${sbUser.email}`, 'true');
         setUser((prev) =>
           prev ? {
             ...prev,
-            name: data.full_name || prev.name,
-            language: data.preferred_language || 'English',
+            name: profile.full_name || prev.name,
+            language: profile.preferred_language || 'English',
             hasCompletedOnboarding: true
           } : null
         );
@@ -103,10 +104,16 @@ export function AdminAuthProvider({ children }) {
     return data;
   };
 
-  const login = (email, password) => {
+  const login = (email) => {
+    const isCompletedLocal = localStorage.getItem(`onboarding_completed_${email}`) === 'true';
     const authenticatedUser = {
-      ...MOCK_ADMIN_USER,
-      email: email || MOCK_ADMIN_USER.email,
+      id: `CIT-${Date.now().toString().slice(-4)}`,
+      name: email?.split('@')[0] || 'Citizen',
+      email: email || 'citizen@bharatsewa.gov.in',
+      role: 'Citizen',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+      hasCompletedOnboarding: isCompletedLocal,
+      permissions: ['all:access', 'users:manage', 'schemes:crud', 'applications:review', 'reports:export', 'settings:edit']
     };
     setUser(authenticatedUser);
     localStorage.setItem('bharat_sewa_admin_user', JSON.stringify(authenticatedUser));
@@ -144,30 +151,38 @@ export function AdminAuthProvider({ children }) {
       localStorage.setItem(`onboarding_completed_${user.email}`, 'true');
     }
 
-    // Save to Supabase database table 'citizen_profiles'
+    // Save to Supabase database table 'citizen_profiles' (Check first to avoid duplicate emails)
     const profilePayload = {
       email: user.email || 'citizen@bharatsewa.gov.in',
       full_name: name,
       preferred_language: language || 'English'
     };
 
-    const { error } = await supabase
-      .from('citizen_profiles')
-      .upsert([profilePayload], { onConflict: 'email' });
-
-    if (error) {
-      console.warn('Supabase upsert notice, trying direct insert:', error.message);
-      const { error: insertErr } = await supabase
+    try {
+      const { data: existing } = await supabase
         .from('citizen_profiles')
-        .insert([profilePayload]);
+        .select('id')
+        .eq('email', profilePayload.email);
 
-      if (!insertErr) {
-        console.log('✅ Citizen profile saved into Supabase "citizen_profiles"!');
+      if (existing && existing.length > 0) {
+        // Update existing entry instead of adding duplicate
+        await supabase
+          .from('citizen_profiles')
+          .update({
+            full_name: profilePayload.full_name,
+            preferred_language: profilePayload.preferred_language
+          })
+          .eq('email', profilePayload.email);
+        console.log('✅ Updated existing citizen profile in Supabase table "citizen_profiles"!');
       } else {
-        console.warn('Supabase insert notice:', insertErr.message);
+        // Insert new entry
+        await supabase
+          .from('citizen_profiles')
+          .insert([profilePayload]);
+        console.log('✅ Saved new citizen profile into Supabase table "citizen_profiles"!');
       }
-    } else {
-      console.log('✅ Citizen profile saved into Supabase "citizen_profiles"!');
+    } catch (err) {
+      console.warn('Supabase profile save notice:', err?.message);
     }
   };
 

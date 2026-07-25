@@ -28,23 +28,42 @@ import { Home as CitizenHome } from './pages/Home';
 import { Login as CitizenLogin } from './pages/Login';
 import { Onboarding } from './pages/Onboarding';
 
-// Citizen Components
+import { useAdminAuth } from './context/AdminAuthContext';
 import { CitizenOnboardingModal } from './components/citizen/CitizenOnboardingModal';
+
+function RootRedirect() {
+  const { isAuthenticated, loadingSession } = useAdminAuth();
+  const hasAuthTokenInHash = window.location.hash.includes('access_token') || window.location.href.includes('access_token');
+
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  if (loadingSession || hasAuthTokenInHash) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-surface text-primary font-bold gap-3">
+        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        <span className="text-sm font-heading font-extrabold text-base text-primary">Authenticating email link... Redirecting to Dashboard</span>
+      </div>
+    );
+  }
+
+  return <Navigate to="/login" replace />;
+}
 
 function App() {
   return (
     <AdminAuthProvider>
       <AdminDataProvider>
         <ToastProvider>
-          <CitizenOnboardingModal />
           <BrowserRouter>
             <Routes>
               {/* Public Citizen Login Route */}
               <Route path="/login" element={<AdminLogin />} />
+              <Route path="/" element={<RootRedirect />} />
 
               {/* Protected Citizen Portal Routes */}
               <Route element={<AdminLayout />}>
-                <Route path="/" element={<Navigate to="/dashboard" replace />} />
                 <Route path="/dashboard" element={<CitizenDashboard />} />
                 <Route path="/citizens" element={<CitizensList />} />
                 <Route path="/citizens/:id" element={<CitizenDetail />} />

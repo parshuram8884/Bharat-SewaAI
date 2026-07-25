@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -15,7 +16,8 @@ export function AdminLogin() {
   const [linkSent, setLinkSent] = useState(false);
   const [sentEmail, setSentEmail] = useState('');
   
-  const { sendMagicLink } = useAdminAuth();
+  const navigate = useNavigate();
+  const { sendMagicLink, login } = useAdminAuth();
   const { showToast } = useToast();
 
   const {
@@ -44,10 +46,10 @@ export function AdminLogin() {
       await sendMagicLink(email);
       setSentEmail(email);
       setLinkSent(true);
-      showToast(`Verification link sent to ${email}! Check your inbox.`, 'success');
+      showToast(`Verification link sent to ${email}! Open your email inbox and click the Sign In link.`, 'success');
     } catch (err) {
       console.error("Supabase magic link error:", err);
-      showToast(err.message || 'Failed to send verification link. Check Supabase setup.', 'error');
+      showToast(err.message || 'Failed to send verification link. Check email address.', 'error');
     } finally {
       setIsLoading(false);
     }
