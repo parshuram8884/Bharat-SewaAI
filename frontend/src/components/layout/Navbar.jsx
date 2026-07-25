@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useClerk, UserButton, SignedIn, SignedOut } from '@clerk/clerk-react';
+import { UserButton, Show } from '@clerk/react';
 import Button from '../common/Button';
 
 export function Navbar() {
@@ -13,17 +13,17 @@ export function Navbar() {
       </div>
 
       <div className="flex items-center gap-4">
-        <SignedIn>
+        <Show when="signed-in">
           <Link to="/dashboard" className="text-sm text-neutral-300 hover:text-emerald-400 transition-colors">
             Digital Locker
           </Link>
           <UserButton afterSignOutUrl="/login" />
-        </SignedIn>
-        <SignedOut>
+        </Show>
+        <Show when="signed-out">
           <Link to="/login">
             <Button variant="primary" size="sm">Sign In</Button>
           </Link>
-        </SignedOut>
+        </Show>
       </div>
     </nav>
   );
