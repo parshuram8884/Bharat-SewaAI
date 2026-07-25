@@ -34,19 +34,20 @@ export function ComplaintsManagement() {
 
   const filteredComplaints = useMemo(() => {
     return complaints.filter((c) => {
-      // Filter by logged-in citizen email / name
+      // Strictly filter by logged-in citizen email / name
       if (user && user.email) {
         const cEmail = (c.citizen_email || c.citizenEmail || '').toLowerCase();
         const cName = (c.citizen_name || c.citizenName || '').toLowerCase();
         const uEmail = user.email.toLowerCase();
         const uName = (user.name || '').toLowerCase();
+        const uPrefix = uEmail.split('@')[0];
 
-        const belongsToUser =
-          cEmail === uEmail ||
-          cName === uName ||
-          (uEmail && cName.includes(uEmail.split('@')[0]));
+        const isMine =
+          (cEmail && cEmail === uEmail) ||
+          (cName && cName === uName) ||
+          (cName && cName.includes(uPrefix));
 
-        if (!belongsToUser && (cEmail || cName !== 'citizen user')) {
+        if (!isMine) {
           return false;
         }
       }

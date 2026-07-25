@@ -84,7 +84,11 @@ export function CitizenAssistant() {
       const res = await axios.post('http://localhost:5000/api/chat/message', {
         message: messageText,
         history: updatedHistory,
-        contextData: { mode }
+        contextData: {
+          mode,
+          language: user?.language || 'English',
+          citizenName: user?.name || user?.email || 'Citizen User'
+        }
       });
 
       const replyText = res.data?.reply || `Thank you for providing that information. How else can I assist you?`;

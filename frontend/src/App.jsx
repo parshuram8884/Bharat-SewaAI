@@ -28,11 +28,15 @@ import { Home as CitizenHome } from './pages/Home';
 import { Login as CitizenLogin } from './pages/Login';
 import { Onboarding } from './pages/Onboarding';
 
+// Citizen Components
+import { CitizenOnboardingModal } from './components/citizen/CitizenOnboardingModal';
+
 function App() {
   return (
     <AdminAuthProvider>
       <AdminDataProvider>
         <ToastProvider>
+          <CitizenOnboardingModal />
           <BrowserRouter>
             <Routes>
               {/* Public Citizen Login Route */}

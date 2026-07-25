@@ -184,6 +184,7 @@ export function AdminDataProvider({ children }) {
     const tempItem = {
       id: Date.now(),
       citizen_name: newComplaintData.citizenName || 'Citizen User',
+      citizen_email: newComplaintData.citizenEmail || '',
       what_happend: newComplaintData.whatHappened || 'Public Grievance Report',
       where_happend: newComplaintData.whereHappened || 'Local Ward',
       status: 'In Progress'
@@ -197,6 +198,7 @@ export function AdminDataProvider({ children }) {
       .insert([
         {
           citizen_name: tempItem.citizen_name,
+          citizen_email: tempItem.citizen_email,
           what_happend: tempItem.what_happend,
           where_happend: tempItem.where_happend,
           status: tempItem.status
@@ -210,7 +212,23 @@ export function AdminDataProvider({ children }) {
             prev.map((c) => (c.id === tempItem.id ? data[0] : c))
           );
         } else if (error) {
-          console.warn('Supabase insert error on table "complain":', error.message);
+          console.warn('Supabase insert notice (retrying without citizen_email if missing):', error.message);
+          supabase
+            .from('complain')
+            .insert([
+              {
+                citizen_name: tempItem.citizen_name,
+                what_happend: tempItem.what_happend,
+                where_happend: tempItem.where_happend,
+                status: tempItem.status
+              }
+            ])
+            .select()
+            .then(({ data: d2 }) => {
+              if (d2 && d2.length > 0) {
+                setComplaints((prev) => prev.map((c) => (c.id === tempItem.id ? d2[0] : c)));
+              }
+            });
         }
       })
       .catch((err) => console.warn('Supabase insert exception:', err?.message));

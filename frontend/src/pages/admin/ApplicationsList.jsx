@@ -14,6 +14,7 @@ import {
   Layers
 } from 'lucide-react';
 import { useAdminData } from '../../context/AdminDataContext';
+import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useToast } from '../../context/ToastContext';
 import { Table } from '../../components/common/Table';
 import { Badge } from '../../components/common/Badge';
@@ -23,6 +24,7 @@ import { Select } from '../../components/common/Select';
 
 export function ApplicationsList() {
   const { applications, schemes, approveApplication, rejectApplication, assignReviewer } = useAdminData();
+  const { user } = useAdminAuth();
   const { showToast } = useToast();
   const navigate = useNavigate();
 
@@ -34,11 +36,24 @@ export function ApplicationsList() {
 
   const filteredApps = useMemo(() => {
     return (applications || []).filter((app) => {
+      // Strictly filter by logged-in citizen email / name
+      if (user && user.email) {
+        const cName = (app?.citizenName || '').toLowerCase();
+        const uEmail = (user.email || '').toLowerCase();
+        const uName = (user.name || '').toLowerCase();
+        const uPrefix = uEmail.split('@')[0];
+
+        const isMine = (cName && cName === uName) || (cName && cName.includes(uPrefix));
+        if (!isMine) {
+          return false;
+        }
+      }
+
       const matchStatus = statusFilter === 'All' || app?.status === statusFilter;
       const matchScheme = schemeFilter === 'All' || (app?.schemeName || '').toLowerCase().includes((schemeFilter || '').toLowerCase());
       return matchStatus && matchScheme;
     });
-  }, [applications, statusFilter, schemeFilter]);
+  }, [applications, user, statusFilter, schemeFilter]);
 
   const handleApprove = (appId) => {
     approveApplication(appId, 'Tejas Mail', 'Approved via quick action table.');

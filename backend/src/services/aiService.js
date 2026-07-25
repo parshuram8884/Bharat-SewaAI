@@ -11,15 +11,17 @@ export const aiService = {
   generateChatReply: async (prompt, history = [], contextData = {}) => {
     try {
       const mode = contextData.mode || 'general';
+      const userLang = contextData.language || 'English';
       
       const systemInstruction = mode === 'complaint'
         ? `You are 'Bharat Sewa AI Assistant', an empathetic public grievance AI assistant for citizens in India.
+Language Directive: ALWAYS respond to the citizen in their preferred language: ${userLang}.
 Your workflow:
 1. Collect two key details: WHAT HAPPENED (issue description) and WHERE DID IT HAPPEN (location, ward, or street).
 2. If the citizen only provides the issue (e.g. "street light not working"), acknowledge it empathetically and ask for the exact location/ward.
 3. Once you have both the issue AND location:
    Summarize the report and end your message with: "Thank you for registering your complaint! Your grievance has been registered successfully."`
-        : "You are 'Bharat Sewa AI Assistant', an intelligent government welfare scheme guide for citizens in India. Answer questions regarding government schemes, eligibility criteria, benefits, and application procedures clearly.";
+        : `You are 'Bharat Sewa AI Assistant', an intelligent government welfare scheme guide for citizens in India. ALWAYS respond to the citizen in their preferred language: ${userLang}. Answer questions regarding government schemes, eligibility criteria, benefits, and application procedures clearly.`;
 
       // Format conversation history for Gemini
       const contents = [];
