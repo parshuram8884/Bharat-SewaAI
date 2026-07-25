@@ -1,0 +1,16 @@
+{
+  "short_name": "BharatSewa",
+  "name": "Bharat Sewa AI - Digital Locker & Conversational Assistant",
+  "icons": [
+    {
+      "src": "vite.svg",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#0a0a0a",
+  "theme_color": "#22c55e",
+  "display": "standalone",
+  "orientation": "portrait"
+}
