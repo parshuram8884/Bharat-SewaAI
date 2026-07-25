@@ -2,6 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useOfficerReviewUiStore } from '../../stores/officerReviewUiStore';
 import { officerAuthService } from '../../services/officerAuthService';
+import DemoModeBanner from './DemoModeBanner';
+
+import UniversalSearch from '../search/UniversalSearch';
+import CommandPalette from '../command/CommandPalette';
+import HelpDrawer from '../help/HelpDrawer';
 
 const OfficerLayout = () => {
   const { isSidebarOpen, setSidebarOpen } = useOfficerReviewUiStore();
@@ -45,7 +50,9 @@ const OfficerLayout = () => {
   }
 
   return (
-    <div className="flex h-screen bg-slate-50 text-slate-900 font-sans">
+    <div className="flex h-screen bg-slate-50 text-slate-900 font-sans flex-col">
+      <DemoModeBanner />
+      <div className="flex flex-1 overflow-hidden">
       {/* Mobile Sidebar Overlay */}
       {isSidebarOpen && (
         <div 
@@ -124,6 +131,12 @@ const OfficerLayout = () => {
           <Outlet />
         </main>
       </div>
+      </div>
+      
+      {/* Phase 17 Globals */}
+      <UniversalSearch userContext={user} />
+      <CommandPalette userContext={user} />
+      <HelpDrawer userContext={user} />
     </div>
   );
 };

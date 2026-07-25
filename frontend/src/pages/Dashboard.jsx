@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CameraScanner from '../components/scanner/CameraScanner';
-import Button from '../components/common/Button';
+import { LegacyButtonAdapter as Button } from '../components/ui/LegacyButtonAdapter';
 import { Shield, FolderOpen, FileText, CheckCircle, Clock, AlertCircle, ChevronRight, Activity } from 'lucide-react';
 import { applicationTrackingService } from '../services/applicationTrackingService';
 import { ApplicationStatusConfig } from '../data/applicationStatusModel';

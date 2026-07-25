@@ -5,7 +5,13 @@ export const Roles = {
   DEPARTMENT_ADMIN: 'department-admin',
   SUPER_ADMIN: 'super-admin',
   GRIEVANCE_OFFICER: 'grievance-officer',
-  GRIEVANCE_MANAGER: 'grievance-manager'
+  GRIEVANCE_MANAGER: 'grievance-manager',
+  PAYMENT_OFFICER: 'payment-officer',
+  FINANCE_MANAGER: 'finance-manager',
+  DOCUMENT_OFFICER: 'document-officer',
+  VERIFICATION_MANAGER: 'verification-manager',
+  CSC_OPERATOR: 'csc-operator',
+  CSC_MANAGER: 'csc-manager'
 };
 
 export const Permissions = {
@@ -59,14 +65,111 @@ export const Permissions = {
   GRIEVANCE_ANALYTICS_VIEW: 'grievance.analytics_view',
   GRIEVANCE_CONFIG_MANAGE: 'grievance.config_manage',
   GRIEVANCE_CATEGORY_MANAGE: 'grievance.category_manage',
-  GRIEVANCE_SLA_MANAGE: 'grievance.sla_manage'
+  GRIEVANCE_SLA_MANAGE: 'grievance.sla_manage',
+
+  // Phase 11 Payment permissions
+  BENEFIT_VIEW_OWN: 'benefit.view_own',
+  BENEFIT_VIEW: 'benefit.view',
+  BENEFIT_CREATE_SANCTION: 'benefit.create_sanction',
+  BENEFIT_REVIEW_SANCTION: 'benefit.review_sanction',
+  BENEFIT_APPROVE_SANCTION: 'benefit.approve_sanction',
+  BENEFIT_DOWNLOAD_SANCTION: 'benefit.download_sanction',
+  PAYMENT_VIEW: 'payment.view',
+  PAYMENT_VIEW_DEPARTMENT: 'payment.view_department',
+  PAYMENT_PREPARE: 'payment.prepare',
+  PAYMENT_BATCH_CREATE: 'payment.batch_create',
+  PAYMENT_BATCH_VIEW: 'payment.batch_view',
+  PAYMENT_BATCH_APPROVE: 'payment.batch_approve',
+  PAYMENT_BATCH_REJECT: 'payment.batch_reject',
+  PAYMENT_RELEASE: 'payment.release',
+  PAYMENT_RETRY: 'payment.retry',
+  PAYMENT_FREEZE: 'payment.freeze',
+  PAYMENT_RESUME: 'payment.resume',
+  PAYMENT_MANUAL_REVIEW: 'payment.manual_review',
+  PAYMENT_FAILURE_REVIEW: 'payment.failure_review',
+  PAYMENT_PUBLISH_REMARK: 'payment.publish_remark',
+  PAYMENT_ADD_NOTE: 'payment.add_note',
+  PAYMENT_AUDIT_VIEW: 'payment.audit_view',
+  PAYMENT_ANALYTICS_VIEW: 'payment.analytics_view',
+  PAYMENT_CONFIG_MANAGE: 'payment.config_manage',
+  PAYMENT_OFFICER_MANAGE: 'payment.officer_manage',
+
+  // Phase 12 Document permissions
+  DOCUMENT_VIEW_OWN: 'document.view_own',
+  DOCUMENT_UPLOAD: 'document.upload',
+  DOCUMENT_METADATA_UPDATE: 'document.metadata_update',
+  DOCUMENT_VERIFICATION_REQUEST: 'document.verification_request',
+  DOCUMENT_SHARE: 'document.share',
+  DOCUMENT_ESIGN: 'document.esign',
+  DOCUMENT_DIGILOCKER_IMPORT: 'document.digilocker_import',
+  DOCUMENT_DOWNLOAD: 'document.download',
+  DOCUMENT_RENEW: 'document.renew',
+  DOCUMENT_REPLACE: 'document.replace',
+  DOCUMENT_ARCHIVE: 'document.archive',
+  DOCUMENT_HISTORY_VIEW: 'document.history_view',
+
+  DOCUMENT_OFFICER_REVIEW: 'document.officer_review',
+  DOCUMENT_ASSIGN: 'document.assign',
+  DOCUMENT_VERIFICATION_DECISION: 'document.verification_decision',
+  DOCUMENT_REPLACEMENT_REQUEST: 'document.replacement_request',
+  DOCUMENT_CLARIFICATION_REQUEST: 'document.clarification_request',
+  DOCUMENT_INTERNAL_NOTE: 'document.internal_note',
+  DOCUMENT_VERIFICATION_OVERRIDE: 'document.verification_override',
+  DOCUMENT_VERIFICATION_REVOKE: 'document.verification_revoke',
+  DOCUMENT_AUDIT_VIEW: 'document.audit_view',
+  DOCUMENT_ANALYTICS_VIEW: 'document.analytics_view',
+  DOCUMENT_CATEGORY_CONFIG: 'document.category_config',
+  DOCUMENT_RETENTION_CONFIG: 'document.retention_config',
+  DOCUMENT_EXPIRY_RULES: 'document.expiry_rules',
+  DOCUMENT_OFFICER_MANAGE: 'document.officer_manage',
+
+  // Phase 13 CSC permissions
+  CSC_CENTRE_ACCESS: 'csc.centre_access',
+  CSC_APPOINTMENT_BOOKING: 'csc.appointment_booking', // Citizen
+  CSC_APPOINTMENT_RESCHEDULE: 'csc.appointment_reschedule',
+  CSC_APPOINTMENT_CANCEL: 'csc.appointment_cancel',
+  CSC_APPOINTMENT_CHECK_IN: 'csc.appointment_check_in',
+  CSC_WALKIN_REGISTER: 'csc.walkin_register',
+  CSC_TOKEN_GENERATE: 'csc.token_generate',
+  CSC_TOKEN_CALL: 'csc.token_call',
+  CSC_QUEUE_MANAGE: 'csc.queue_manage',
+  CSC_VISIT_MANAGE: 'csc.visit_manage',
+  CSC_ASSISTED_APPLICATION: 'csc.assisted_application',
+  CSC_ASSISTED_DOCUMENT: 'csc.assisted_document',
+  CSC_ASSISTED_GRIEVANCE: 'csc.assisted_grievance',
+  CSC_OPERATOR_MANAGE: 'csc.operator_manage',
+  CSC_SCHEDULE_MANAGE: 'csc.schedule_manage',
+  CSC_ANALYTICS_VIEW: 'csc.analytics_view',
+  CSC_AUDIT_VIEW: 'csc.audit_view',
+  CSC_CONFIG_MANAGE: 'csc.config_manage'
 };
 
 export const RolePermissions = {
   [Roles.CITIZEN]: [
     Permissions.GRIEVANCE_CREATE,
     Permissions.GRIEVANCE_VIEW_OWN,
-    Permissions.GRIEVANCE_REOPEN
+    Permissions.GRIEVANCE_REOPEN,
+    Permissions.BENEFIT_VIEW_OWN,
+    Permissions.BENEFIT_DOWNLOAD_SANCTION,
+    Permissions.DOCUMENT_VIEW_OWN,
+    Permissions.DOCUMENT_UPLOAD,
+    Permissions.DOCUMENT_METADATA_UPDATE,
+    Permissions.DOCUMENT_VERIFICATION_REQUEST,
+    Permissions.DOCUMENT_SHARE,
+    Permissions.DOCUMENT_ESIGN,
+    Permissions.DOCUMENT_DIGILOCKER_IMPORT,
+    Permissions.DOCUMENT_DOWNLOAD,
+    Permissions.DOCUMENT_RENEW,
+    Permissions.DOCUMENT_REPLACE,
+    Permissions.DOCUMENT_ARCHIVE,
+    Permissions.DOCUMENT_HISTORY_VIEW,
+    // CSC permissions (self-service)
+    Permissions.CSC_CENTRE_ACCESS,
+    Permissions.CSC_APPOINTMENT_BOOKING,
+    Permissions.CSC_APPOINTMENT_RESCHEDULE,
+    Permissions.CSC_APPOINTMENT_CANCEL,
+    Permissions.CSC_APPOINTMENT_CHECK_IN,
+    Permissions.CSC_WALKIN_REGISTER
   ],
   
   [Roles.REVIEWER]: [
@@ -143,6 +246,91 @@ export const RolePermissions = {
     Permissions.GRIEVANCE_APPEAL_REVIEW,
     Permissions.GRIEVANCE_ANALYTICS_VIEW
   ],
+
+  [Roles.PAYMENT_OFFICER]: [
+    Permissions.PAYMENT_VIEW,
+    Permissions.PAYMENT_VIEW_DEPARTMENT,
+    Permissions.PAYMENT_PREPARE,
+    Permissions.PAYMENT_BATCH_CREATE,
+    Permissions.PAYMENT_BATCH_VIEW,
+    Permissions.PAYMENT_FAILURE_REVIEW,
+    Permissions.PAYMENT_RETRY,
+    Permissions.PAYMENT_ADD_NOTE,
+    Permissions.PAYMENT_PUBLISH_REMARK,
+    Permissions.BENEFIT_VIEW,
+    Permissions.BENEFIT_CREATE_SANCTION,
+    Permissions.BENEFIT_REVIEW_SANCTION,
+    Permissions.BENEFIT_DOWNLOAD_SANCTION
+  ],
+
+  [Roles.FINANCE_MANAGER]: [
+    Permissions.PAYMENT_VIEW,
+    Permissions.PAYMENT_VIEW_DEPARTMENT,
+    Permissions.PAYMENT_BATCH_VIEW,
+    Permissions.PAYMENT_BATCH_APPROVE,
+    Permissions.PAYMENT_BATCH_REJECT,
+    Permissions.PAYMENT_RELEASE,
+    Permissions.PAYMENT_RETRY,
+    Permissions.PAYMENT_FREEZE,
+    Permissions.PAYMENT_RESUME,
+    Permissions.PAYMENT_MANUAL_REVIEW,
+    Permissions.PAYMENT_FAILURE_REVIEW,
+    Permissions.PAYMENT_ADD_NOTE,
+    Permissions.PAYMENT_PUBLISH_REMARK,
+    Permissions.PAYMENT_ANALYTICS_VIEW,
+    Permissions.BENEFIT_VIEW,
+    Permissions.BENEFIT_REVIEW_SANCTION,
+    Permissions.BENEFIT_APPROVE_SANCTION,
+    Permissions.BENEFIT_DOWNLOAD_SANCTION
+  ],
+
+  [Roles.DOCUMENT_OFFICER]: [
+    Permissions.DOCUMENT_OFFICER_REVIEW,
+    Permissions.DOCUMENT_ASSIGN,
+    Permissions.DOCUMENT_VERIFICATION_DECISION,
+    Permissions.DOCUMENT_REPLACEMENT_REQUEST,
+    Permissions.DOCUMENT_CLARIFICATION_REQUEST,
+    Permissions.DOCUMENT_INTERNAL_NOTE
+  ],
+
+  [Roles.VERIFICATION_MANAGER]: [
+    Permissions.DOCUMENT_OFFICER_REVIEW,
+    Permissions.DOCUMENT_ASSIGN,
+    Permissions.DOCUMENT_VERIFICATION_DECISION,
+    Permissions.DOCUMENT_REPLACEMENT_REQUEST,
+    Permissions.DOCUMENT_CLARIFICATION_REQUEST,
+    Permissions.DOCUMENT_INTERNAL_NOTE,
+    Permissions.DOCUMENT_VERIFICATION_OVERRIDE,
+    Permissions.DOCUMENT_VERIFICATION_REVOKE,
+    Permissions.DOCUMENT_AUDIT_VIEW,
+    Permissions.DOCUMENT_ANALYTICS_VIEW
+  ],
+
+  [Roles.CSC_OPERATOR]: [
+    Permissions.CSC_CENTRE_ACCESS,
+    Permissions.CSC_TOKEN_GENERATE,
+    Permissions.CSC_TOKEN_CALL,
+    Permissions.CSC_QUEUE_MANAGE,
+    Permissions.CSC_VISIT_MANAGE,
+    Permissions.CSC_ASSISTED_APPLICATION,
+    Permissions.CSC_ASSISTED_DOCUMENT,
+    Permissions.CSC_ASSISTED_GRIEVANCE
+  ],
+
+  [Roles.CSC_MANAGER]: [
+    Permissions.CSC_CENTRE_ACCESS,
+    Permissions.CSC_TOKEN_GENERATE,
+    Permissions.CSC_TOKEN_CALL,
+    Permissions.CSC_QUEUE_MANAGE,
+    Permissions.CSC_VISIT_MANAGE,
+    Permissions.CSC_ASSISTED_APPLICATION,
+    Permissions.CSC_ASSISTED_DOCUMENT,
+    Permissions.CSC_ASSISTED_GRIEVANCE,
+    Permissions.CSC_OPERATOR_MANAGE,
+    Permissions.CSC_SCHEDULE_MANAGE,
+    Permissions.CSC_ANALYTICS_VIEW,
+    Permissions.CSC_AUDIT_VIEW
+  ],
   
   [Roles.DEPARTMENT_ADMIN]: [
     Permissions.QUEUE_VIEW,
@@ -170,7 +358,19 @@ export const RolePermissions = {
     Permissions.GRIEVANCE_AUDIT_VIEW,
     Permissions.GRIEVANCE_ANALYTICS_VIEW,
     Permissions.GRIEVANCE_SLA_MANAGE,
-    Permissions.GRIEVANCE_CATEGORY_MANAGE
+    Permissions.GRIEVANCE_CATEGORY_MANAGE,
+    Permissions.PAYMENT_VIEW_DEPARTMENT,
+    Permissions.PAYMENT_BATCH_VIEW,
+    Permissions.PAYMENT_ANALYTICS_VIEW,
+    Permissions.PAYMENT_AUDIT_VIEW,
+    Permissions.PAYMENT_CONFIG_MANAGE,
+    Permissions.PAYMENT_OFFICER_MANAGE,
+    Permissions.BENEFIT_VIEW,
+    Permissions.DOCUMENT_AUDIT_VIEW,
+    Permissions.DOCUMENT_ANALYTICS_VIEW,
+    Permissions.DOCUMENT_OFFICER_MANAGE,
+    Permissions.CSC_ANALYTICS_VIEW,
+    Permissions.CSC_AUDIT_VIEW
   ],
   
   [Roles.SUPER_ADMIN]: [
@@ -199,6 +399,26 @@ export const RolePermissions = {
     Permissions.GRIEVANCE_ANALYTICS_VIEW,
     Permissions.GRIEVANCE_SLA_MANAGE,
     Permissions.GRIEVANCE_CATEGORY_MANAGE,
-    Permissions.GRIEVANCE_CONFIG_MANAGE
+    Permissions.GRIEVANCE_CONFIG_MANAGE,
+    Permissions.BENEFIT_VIEW,
+    Permissions.PAYMENT_VIEW_DEPARTMENT,
+    Permissions.PAYMENT_BATCH_VIEW,
+    Permissions.PAYMENT_ANALYTICS_VIEW,
+    Permissions.PAYMENT_AUDIT_VIEW,
+    Permissions.PAYMENT_CONFIG_MANAGE,
+    Permissions.PAYMENT_OFFICER_MANAGE,
+    Permissions.DOCUMENT_AUDIT_VIEW,
+    Permissions.DOCUMENT_ANALYTICS_VIEW,
+    Permissions.DOCUMENT_CATEGORY_CONFIG,
+    Permissions.DOCUMENT_RETENTION_CONFIG,
+    Permissions.DOCUMENT_EXPIRY_RULES,
+    Permissions.DOCUMENT_OFFICER_MANAGE,
+    Permissions.CSC_ANALYTICS_VIEW,
+    Permissions.CSC_AUDIT_VIEW,
+    Permissions.CSC_CONFIG_MANAGE,
+    Permissions.CSC_OPERATOR_MANAGE,
+    Permissions.CSC_SCHEDULE_MANAGE
   ]
 };
+
+

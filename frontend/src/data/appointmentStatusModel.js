@@ -1,0 +1,1 @@
+export const AppointmentStatus = { DRAFT: 'draft', REQUESTED: 'requested', CONFIRMED: 'confirmed', CHECKED_IN: 'checked-in', WAITING: 'waiting', TOKEN_CALLED: 'token-called', IN_SERVICE: 'in-service', COMPLETED: 'completed', CANCELLED: 'cancelled', RESCHEDULED: 'rescheduled', MISSED: 'missed' };

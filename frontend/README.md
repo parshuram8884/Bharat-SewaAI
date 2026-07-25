@@ -1,16 +1,25 @@
-# React + Vite
+# Bharat Sewa AI (v1.0.0)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Final Demonstration Release**
 
-Currently, two official plugins are available:
+Bharat Sewa AI Version 1.0.0 is a frontend-only demonstration platform developed using React and Vite with mock services and browser-local storage. No production backend, database, real government integration, cloud infrastructure, or AI services are included. The project is prepared for academic demonstration, technical evaluation, and future production enhancement.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Documentation Index
+Please see the `docs/` directory for the complete suite of handover documentation:
+- [Handover Guide](./docs/HANDOVER_GUIDE.md)
+- [Architecture & Design](./docs/ARCHITECTURE.md)
+- [Deployment](./docs/DEPLOYMENT.md)
+- [Demonstration Guide](./docs/DEMO_GUIDE.md)
+- [Known Limitations](./docs/KNOWN_LIMITATIONS.md)
 
-## React Compiler
+## Quick Start
+```bash
+npm install
+npm run dev
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Security & Reliability
+This application leverages aggressive client-side mock networks, error boundaries, and `localStorage` partitioning to securely demo workflows without relying on backend servers.
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+*Developed for Phase 21 Final Handover.*

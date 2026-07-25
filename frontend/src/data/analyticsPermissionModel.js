@@ -1,0 +1,40 @@
+export const AnalyticsPermissions = {
+  DASHBOARD_VIEW: 'analytics.dashboard_view',
+  GLOBAL_VIEW: 'analytics.global_view',
+  DEPARTMENT_VIEW: 'analytics.department_view',
+  SCHEME_VIEW: 'analytics.scheme_view',
+  APPLICATION_VIEW: 'analytics.application_view',
+  GRIEVANCE_VIEW: 'analytics.grievance_view',
+  PAYMENT_VIEW: 'analytics.payment_view',
+  DOCUMENT_VIEW: 'analytics.document_view',
+  CSC_VIEW: 'analytics.csc_view',
+  OFFICER_VIEW: 'analytics.officer_view',
+  SLA_VIEW: 'analytics.sla_view',
+  REPORT_CREATE: 'analytics.report_create',
+  REPORT_VIEW: 'analytics.report_view',
+  REPORT_EDIT_OWN: 'analytics.report_edit_own',
+  REPORT_DELETE_OWN: 'analytics.report_delete_own',
+  REPORT_PUBLISH: 'analytics.report_publish',
+  REPORT_EXPORT: 'analytics.report_export',
+  REPORT_SCHEDULE: 'analytics.report_schedule',
+  METRIC_VIEW: 'analytics.metric_view',
+  METRIC_MANAGE: 'analytics.metric_manage',
+  FILTER_SAVE: 'analytics.filter_save',
+  COMPARISON_VIEW: 'analytics.comparison_view',
+  DATA_QUALITY_VIEW: 'analytics.data_quality_view',
+  DATA_QUALITY_MANAGE: 'analytics.data_quality_manage',
+  OPEN_DATA_VIEW: 'analytics.open_data_view',
+  OPEN_DATA_MANAGE: 'analytics.open_data_manage',
+  OPEN_DATA_APPROVE: 'analytics.open_data_approve',
+  OPEN_DATA_PUBLISH: 'analytics.open_data_publish',
+  OPEN_DATA_DOWNLOAD: 'analytics.open_data_download',
+  AUDIT_VIEW: 'analytics.audit_view',
+  ACCESS_LOG_VIEW: 'analytics.access_log_view',
+  CONFIG_MANAGE: 'analytics.config_manage'
+};
+
+export const AnalyticsRoles = {
+  MIS_ANALYST: 'mis-analyst',
+  DEPARTMENT_ANALYST: 'department-analyst',
+  DATA_GOVERNANCE_MANAGER: 'data-governance-manager'
+};

@@ -1,0 +1,1 @@
+export const TokenStatus = { GENERATED: 'generated', WAITING: 'waiting', CALLED: 'called', SERVING: 'serving', COMPLETED: 'completed', EXPIRED: 'expired', CANCELLED: 'cancelled', SKIPPED: 'skipped', RESTORED: 'restored' };
