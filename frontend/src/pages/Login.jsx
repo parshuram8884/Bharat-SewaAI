@@ -4,6 +4,12 @@ import { supabase } from '../config/supabase';
 import { useAuth } from '../context/AuthContext';
 import { Mail, ArrowRight, RefreshCw, AlertCircle, CheckCircle } from 'lucide-react';
 
+const generateUniqueUsername = (emailStr) => {
+  const prefix = (emailStr || '').split('@')[0].replace(/[^a-zA-Z0-9]/g, '').toLowerCase().slice(0, 15) || 'user';
+  const randomSuffix = Math.random().toString(36).substring(2, 6) + Math.floor(100 + Math.random() * 900);
+  return `${prefix}_${randomSuffix}`;
+};
+
 export function Login() {
   const { isSignedIn, loading: authLoading } = useAuth();
   const navigate = useNavigate();
