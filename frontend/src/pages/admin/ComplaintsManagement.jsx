@@ -12,6 +12,7 @@ import {
   FileSpreadsheet
 } from 'lucide-react';
 import { useAdminData } from '../../context/AdminDataContext';
+import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useToast } from '../../context/ToastContext';
 import { Table } from '../../components/common/Table';
 import { Badge } from '../../components/common/Badge';
@@ -21,6 +22,7 @@ import { Input } from '../../components/common/Input';
 
 export function ComplaintsManagement() {
   const { complaints, updateComplaintStatus, addComplaintComment } = useAdminData();
+  const { user } = useAdminAuth();
   const { showToast } = useToast();
 
   const [statusFilter, setStatusFilter] = useState('All');
@@ -32,11 +34,28 @@ export function ComplaintsManagement() {
 
   const filteredComplaints = useMemo(() => {
     return complaints.filter((c) => {
+      // Filter by logged-in citizen email / name
+      if (user && user.email) {
+        const cEmail = (c.citizen_email || c.citizenEmail || '').toLowerCase();
+        const cName = (c.citizen_name || c.citizenName || '').toLowerCase();
+        const uEmail = user.email.toLowerCase();
+        const uName = (user.name || '').toLowerCase();
+
+        const belongsToUser =
+          cEmail === uEmail ||
+          cName === uName ||
+          (uEmail && cName.includes(uEmail.split('@')[0]));
+
+        if (!belongsToUser && (cEmail || cName !== 'citizen user')) {
+          return false;
+        }
+      }
+
       const matchStatus = statusFilter === 'All' || c.status === statusFilter;
       const matchPriority = priorityFilter === 'All' || c.priority === priorityFilter;
       return matchStatus && matchPriority;
     });
-  }, [complaints, statusFilter, priorityFilter]);
+  }, [complaints, user, statusFilter, priorityFilter]);
 
   const handleStatusChange = (ticketId, newStatus) => {
     updateComplaintStatus(ticketId, newStatus);
