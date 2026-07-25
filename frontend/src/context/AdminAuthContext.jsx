@@ -21,14 +21,41 @@ export function AdminAuthProvider({ children }) {
 
   const formatSupabaseUser = (sbUser) => {
     if (!sbUser) return null;
+    const isCompletedLocal = localStorage.getItem(`onboarding_completed_${sbUser.email}`) === 'true';
     return {
       id: sbUser.id,
       name: sbUser.user_metadata?.full_name || sbUser.email?.split('@')[0] || 'Citizen',
       email: sbUser.email,
       role: sbUser.user_metadata?.role || 'Citizen',
       avatar: sbUser.user_metadata?.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+      hasCompletedOnboarding: isCompletedLocal,
       permissions: ['all:access', 'users:manage', 'schemes:crud', 'applications:review', 'reports:export', 'settings:edit']
     };
+  };
+
+  const syncCitizenProfile = async (sbUser) => {
+    if (!sbUser || !sbUser.email) return;
+    try {
+      const { data } = await supabase
+        .from('citizen_profiles')
+        .select('*')
+        .eq('email', sbUser.email)
+        .maybeSingle();
+
+      if (data) {
+        localStorage.setItem(`onboarding_completed_${sbUser.email}`, 'true');
+        setUser((prev) =>
+          prev ? {
+            ...prev,
+            name: data.full_name || prev.name,
+            language: data.preferred_language || 'English',
+            hasCompletedOnboarding: true
+          } : null
+        );
+      }
+    } catch (e) {
+      console.warn('Profile sync notice:', e?.message);
+    }
   };
 
   useEffect(() => {
@@ -38,6 +65,7 @@ export function AdminAuthProvider({ children }) {
         const formatted = formatSupabaseUser(session.user);
         setUser(formatted);
         localStorage.setItem('bharat_sewa_admin_user', JSON.stringify(formatted));
+        syncCitizenProfile(session.user);
       }
       setLoadingSession(false);
     }).catch(err => {
@@ -45,12 +73,13 @@ export function AdminAuthProvider({ children }) {
       setLoadingSession(false);
     });
 
-    // Listen for auth changes (e.g. when coming back from verification magic link)
+    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session?.user) {
         const formatted = formatSupabaseUser(session.user);
         setUser(formatted);
         localStorage.setItem('bharat_sewa_admin_user', JSON.stringify(formatted));
+        syncCitizenProfile(session.user);
       } else if (event === 'SIGNED_OUT') {
         setUser(null);
         localStorage.removeItem('bharat_sewa_admin_user');
@@ -100,8 +129,50 @@ export function AdminAuthProvider({ children }) {
     return user.permissions.includes(perm);
   };
 
+  const updateUserProfile = async ({ name, language }) => {
+    if (!user) return;
+    const updatedUser = {
+      ...user,
+      name: name || user.name,
+      language: language || user.language || 'English',
+      hasCompletedOnboarding: true
+    };
+
+    setUser(updatedUser);
+    localStorage.setItem('bharat_sewa_admin_user', JSON.stringify(updatedUser));
+    if (user.email) {
+      localStorage.setItem(`onboarding_completed_${user.email}`, 'true');
+    }
+
+    // Save to Supabase database table 'citizen_profiles'
+    const profilePayload = {
+      email: user.email || 'citizen@bharatsewa.gov.in',
+      full_name: name,
+      preferred_language: language || 'English'
+    };
+
+    const { error } = await supabase
+      .from('citizen_profiles')
+      .upsert([profilePayload], { onConflict: 'email' });
+
+    if (error) {
+      console.warn('Supabase upsert notice, trying direct insert:', error.message);
+      const { error: insertErr } = await supabase
+        .from('citizen_profiles')
+        .insert([profilePayload]);
+
+      if (!insertErr) {
+        console.log('✅ Citizen profile saved into Supabase "citizen_profiles"!');
+      } else {
+        console.warn('Supabase insert notice:', insertErr.message);
+      }
+    } else {
+      console.log('✅ Citizen profile saved into Supabase "citizen_profiles"!');
+    }
+  };
+
   return (
-    <AdminAuthContext.Provider value={{ user, isAuthenticated: !!user, loadingSession, login, logout, sendMagicLink, hasPermission }}>
+    <AdminAuthContext.Provider value={{ user, isAuthenticated: !!user, loadingSession, login, logout, sendMagicLink, updateUserProfile, hasPermission }}>
       {children}
     </AdminAuthContext.Provider>
   );
