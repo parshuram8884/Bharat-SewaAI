@@ -16,30 +16,48 @@ const AdminDataContext = createContext(null);
 export function AdminDataProvider({ children }) {
   const [stats, setStats] = useState(initialStats);
   const [citizens, setCitizens] = useState(initialCitizens);
-  const [applications, setApplications] = useState(initialApplications);
+  const [applications, setApplications] = useState([]);
   const [schemes, setSchemes] = useState(initialSchemes);
   const [complaints, setComplaints] = useState([]);
   const [notifications, setNotifications] = useState(initialNotifications);
   const [auditLogs, setAuditLogs] = useState(initialAuditLogs);
   const [roles, setRoles] = useState(adminRolesList);
 
-  // Fetch complaints directly from Supabase database table 'complain'
+  // Fetch complaints & applications directly from Supabase database tables
   useEffect(() => {
-    const fetchSupabaseComplaints = async () => {
+    const fetchSupabaseData = async () => {
       try {
-        const { data, error } = await supabase
+        const { data: compData } = await supabase
           .from('complain')
           .select('*')
           .order('id', { ascending: false });
 
-        if (!error && data) {
-          setComplaints(data);
+        if (compData) {
+          setComplaints(compData);
+        }
+
+        const { data: appData } = await supabase
+          .from('applications')
+          .select('*')
+          .order('id', { ascending: false });
+
+        if (appData && appData.length > 0) {
+          const formattedApps = appData.map((item) => ({
+            id: item.id || `APP-${item.id}`,
+            citizenName: item.citizen_name || 'Citizen User',
+            citizenEmail: item.citizen_email || '',
+            schemeName: item.service_name || 'Government Scheme',
+            details: item.what_happend || 'Application Details',
+            status: item.status || 'In Progress',
+            submissionDate: item.created_at ? new Date(item.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Today'
+          }));
+          setApplications(formattedApps);
         }
       } catch (err) {
-        console.warn('Supabase fetch complaints error:', err?.message);
+        console.warn('Supabase fetch data notice:', err?.message);
       }
     };
-    fetchSupabaseComplaints();
+    fetchSupabaseData();
   }, []);
 
   const addAuditLog = (action, target, details) => {
@@ -272,6 +290,48 @@ export function AdminDataProvider({ children }) {
     addAuditLog('SENT_NOTIFICATION', newNotif.title, `Broadcasted alert via ${newNotif.channel}`);
   };
 
+  const addApplication = (newAppData) => {
+    const sName = newAppData.serviceName || (newAppData.serviceType === 'farmer_disaster' ? 'Farmer Disaster Relief Scheme' : newAppData.serviceType === 'income_certificate' ? 'Income Certificate Application' : 'Government Welfare Application');
+    
+    const tempItem = {
+      id: `APP-${Date.now().toString().slice(-4)}`,
+      citizenName: newAppData.citizenName || 'Citizen User',
+      citizenEmail: newAppData.citizenEmail || '',
+      schemeName: sName,
+      details: newAppData.details || newAppData.whatHappened || 'Application form submitted successfully.',
+      status: 'In Progress',
+      submissionDate: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
+      category: 'Welfare Scheme',
+      notes: [],
+      timeline: [{ date: 'Just now', action: 'Application Created via AI Assistant', author: newAppData.citizenName || 'Citizen' }]
+    };
+
+    setApplications((prev) => [tempItem, ...prev]);
+
+    // Insert directly into Supabase database table 'applications'
+    supabase
+      .from('applications')
+      .insert([
+        {
+          citizen_name: tempItem.citizenName,
+          citizen_email: tempItem.citizenEmail,
+          service_name: tempItem.schemeName,
+          what_happend: tempItem.details,
+          status: tempItem.status
+        }
+      ])
+      .select()
+      .then(({ data, error }) => {
+        if (!error && data && data.length > 0) {
+          console.log('✅ Application stored in Supabase database table "applications":', data[0]);
+        } else if (error) {
+          console.warn('Supabase application insert notice:', error.message);
+        }
+      });
+
+    return tempItem;
+  };
+
   return (
     <AdminDataContext.Provider
       value={{
@@ -283,6 +343,7 @@ export function AdminDataProvider({ children }) {
         notifications,
         auditLogs,
         roles,
+        addApplication,
         approveApplication,
         rejectApplication,
         requestApplicationDocs,
