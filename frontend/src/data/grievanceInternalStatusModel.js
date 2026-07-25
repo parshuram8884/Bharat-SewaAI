@@ -1,0 +1,41 @@
+export const GrievanceInternalStatus = {
+  QUEUED: 'queued',
+  ASSIGNED: 'assigned',
+  REVIEW_STARTED: 'review-started',
+  CLASSIFICATION_REVIEW: 'classification-review',
+  APPLICATION_CONTEXT_REVIEW: 'application-context-review',
+  EVIDENCE_REVIEW: 'evidence-review',
+  CITIZEN_RESPONSE_PENDING: 'citizen-response-pending',
+  MANAGER_REVIEW: 'manager-review',
+  ESCALATION_REVIEW: 'escalation-review',
+  RESOLUTION_DRAFTING: 'resolution-drafting',
+  RESOLUTION_APPROVAL_PENDING: 'resolution-approval-pending',
+  RESOLUTION_APPROVED: 'resolution-approved',
+  CLOSURE_PENDING: 'closure-pending',
+  CLOSED: 'closed',
+  REOPENED_REVIEW: 'reopened-review',
+  APPEAL_REVIEW: 'appeal-review',
+  APPEAL_DECISION_PENDING: 'appeal-decision-pending',
+  APPEAL_CLOSED: 'appeal-closed'
+};
+
+export const GrievanceInternalToPublicMap = {
+  [GrievanceInternalStatus.QUEUED]: 'received',
+  [GrievanceInternalStatus.ASSIGNED]: 'under-review',
+  [GrievanceInternalStatus.REVIEW_STARTED]: 'under-review',
+  [GrievanceInternalStatus.CLASSIFICATION_REVIEW]: 'under-review',
+  [GrievanceInternalStatus.APPLICATION_CONTEXT_REVIEW]: 'under-review',
+  [GrievanceInternalStatus.EVIDENCE_REVIEW]: 'under-review',
+  [GrievanceInternalStatus.CITIZEN_RESPONSE_PENDING]: 'clarification-required',
+  [GrievanceInternalStatus.MANAGER_REVIEW]: 'under-review',
+  [GrievanceInternalStatus.ESCALATION_REVIEW]: 'escalated',
+  [GrievanceInternalStatus.RESOLUTION_DRAFTING]: 'under-review',
+  [GrievanceInternalStatus.RESOLUTION_APPROVAL_PENDING]: 'under-review',
+  [GrievanceInternalStatus.RESOLUTION_APPROVED]: 'resolution-proposed',
+  [GrievanceInternalStatus.CLOSURE_PENDING]: 'resolved',
+  [GrievanceInternalStatus.CLOSED]: 'closed',
+  [GrievanceInternalStatus.REOPENED_REVIEW]: 'reopened',
+  [GrievanceInternalStatus.APPEAL_REVIEW]: 'appeal-under-review',
+  [GrievanceInternalStatus.APPEAL_DECISION_PENDING]: 'appeal-under-review',
+  [GrievanceInternalStatus.APPEAL_CLOSED]: 'appeal-resolved'
+};
