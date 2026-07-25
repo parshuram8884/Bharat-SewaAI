@@ -422,50 +422,7 @@ export const initialSchemes = [
   }
 ];
 
-export const initialComplaints = [
-  {
-    id: 'CMP-2026-104',
-    citizenId: 'CIT-003',
-    citizenName: 'Manoj Kumar Meena',
-    category: 'OCR / Document Rejection',
-    priority: 'High',
-    status: 'Open',
-    assignedTo: 'Tejas Mail',
-    district: 'Jaipur',
-    coordinates: { lat: 26.9124, lng: 75.7873 },
-    description: 'My Aadhaar card was rejected twice by the AI OCR system claiming it is blurry, but I uploaded a 4K scanned copy from E-Mitra center. Please check manually and activate my account.',
-    createdAt: '2026-07-24, 02:30 PM',
-    comments: [
-      { id: 'C-1', author: 'Manoj Kumar Meena (Citizen)', date: '24 Jul 2026, 02:30 PM', text: 'Attached the PDF scan receipt from E-Mitra kiosk #8812.' },
-      { id: 'C-2', author: 'Tejas Mail (Admin)', date: '25 Jul 2026, 10:00 AM', text: 'I am reviewing the raw OCR logs. The hologram reflection caused glare on the Aadhaar QR code. We will manually override and approve.' }
-    ],
-    timeline: [
-      { date: '24 Jul 2026, 02:30 PM', event: 'Complaint lodged via Web Portal' },
-      { date: '25 Jul 2026, 09:30 AM', event: 'Escalated to High Priority by AI Triage Assistant' },
-      { date: '25 Jul 2026, 10:00 AM', event: 'Assigned to Senior Officer Tejas Mail' }
-    ]
-  },
-  {
-    id: 'CMP-2026-105',
-    citizenId: 'CIT-005',
-    citizenName: 'Amitabh Verma',
-    category: 'Scheme Benefit Delay',
-    priority: 'Medium',
-    status: 'In Progress',
-    assignedTo: 'Khushi Zope',
-    district: 'Patna',
-    coordinates: { lat: 25.5941, lng: 85.1376 },
-    description: 'Applied for MGNREGA job card 10 days ago. Status still shows pending review at Gram Panchayat level. Seeking urgent resolution for seasonal work.',
-    createdAt: '2026-07-22, 11:15 AM',
-    comments: [
-      { id: 'C-3', author: 'Khushi Zope (Admin)', date: '23 Jul 2026, 03:45 PM', text: 'Contacted Block Development Officer (BDO) Patna. Verification is scheduled for tomorrow morning.' }
-    ],
-    timeline: [
-      { date: '22 Jul 2026, 11:15 AM', event: 'Complaint logged from mobile app' },
-      { date: '23 Jul 2026, 03:45 PM', event: 'Status updated to In Progress' }
-    ]
-  }
-];
+export const initialComplaints = [];
 
 export const initialNotifications = [
   {

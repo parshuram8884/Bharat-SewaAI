@@ -24,15 +24,10 @@ export function Sidebar({ isOpen, onClose }) {
   const navigate = useNavigate();
 
   const links = [
-    { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    
     { to: '/citizens', label: 'Citizens', icon: Users },
     { to: '/applications', label: 'Applications', icon: FileText },
-    { to: '/document-review', label: 'Documents', icon: FolderOpen },
-    { to: '/schemes', label: 'Schemes', icon: Layers },
     { to: '/complaints', label: 'Complaints', icon: AlertCircle },
-    { to: '/reports', label: 'Analytics & Reports', icon: BarChart3 },
-    { to: '/notifications', label: 'Notifications', icon: Bell },
-    { to: '/settings', label: 'Settings', icon: Settings },
   ];
 
   const handleVoiceAssistant = () => {
@@ -51,7 +46,7 @@ export function Sidebar({ isOpen, onClose }) {
       <div className="mb-6 px-3 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-heading font-extrabold tracking-tight text-on-primary">Bharat Sewa AI</h1>
-          <p className="text-xs text-on-primary/60 font-medium">Admin Portal</p>
+          <p className="text-xs text-on-primary/60 font-medium">Citizen Portal</p>
         </div>
         {onClose && (
           <button
@@ -110,13 +105,7 @@ export function Sidebar({ isOpen, onClose }) {
           <span>Help Center</span>
         </a>
 
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-3 px-3.5 py-2 text-xs font-medium text-on-primary/75 hover:bg-error-container/30 hover:text-error rounded-lg transition-colors w-full text-left cursor-pointer"
-        >
-          <LogOut className="w-4 h-4 shrink-0" />
-          <span>Logout</span>
-        </button>
+       
       </div>
     </div>
   );

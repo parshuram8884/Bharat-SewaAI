@@ -62,22 +62,22 @@ export function Navbar({ onToggleSidebar }) {
 
         <div className="flex items-center gap-3 pl-3 md:pl-4 border-l border-outline-variant/60">
           <div className="text-right hidden lg:block">
-            <p className="text-sm font-bold text-on-surface leading-none">{user?.name || 'Rajesh Kumar'}</p>
-            <p className="text-[11px] text-on-surface-variant uppercase tracking-wider font-semibold mt-1">{user?.role || 'Super Admin'}</p>
+            <p className="text-sm font-bold text-on-surface leading-none">{user?.name || 'Citizen User'}</p>
+            <p className="text-[11px] text-on-surface-variant uppercase tracking-wider font-semibold mt-1">{user?.role || 'Citizen'}</p>
           </div>
           <div className="relative group">
             <div className="w-10 h-10 rounded-full bg-primary-fixed overflow-hidden border-2 border-primary-container/40 cursor-pointer flex items-center justify-center font-bold text-primary">
               {user?.avatar ? (
-                <img src={user.avatar} alt="Admin" className="w-full h-full object-cover" />
+                <img src={user.avatar} alt="User Profile" className="w-full h-full object-cover" />
               ) : (
-                <span>{user?.name?.substring(0, 2) || 'AD'}</span>
+                <span>{user?.name?.substring(0, 2) || 'CU'}</span>
               )}
             </div>
             {/* Quick Profile Dropdown */}
             <div className="absolute right-0 top-12 w-48 bg-surface-container-lowest border border-outline-variant rounded-xl shadow-xl py-2 hidden group-hover:block z-50">
               <div className="px-4 py-2 border-b border-outline-variant/30 lg:hidden">
-                <p className="text-sm font-bold text-on-surface">{user?.name || 'Rajesh Kumar'}</p>
-                <p className="text-xs text-on-surface-variant">{user?.role || 'Super Admin'}</p>
+                <p className="text-sm font-bold text-on-surface">{user?.name || 'Citizen User'}</p>
+                <p className="text-xs text-on-surface-variant">{user?.role || 'Citizen'}</p>
               </div>
               <Link to="/settings" className="block px-4 py-2 text-sm text-on-surface hover:bg-surface-container transition-colors">
                 Account Settings
