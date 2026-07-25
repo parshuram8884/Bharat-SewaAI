@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Settings - Bharat Sewa AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Theme Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "tertiary-fixed": "#ffdbca",
+                "on-tertiary": "#ffffff",
+                "on-tertiary-fixed-variant": "#783200",
+                "on-error": "#ffffff",
+                "on-primary-container": "#8aa4cf",
+                "primary-fixed": "#d5e3ff",
+                "on-tertiary-container": "#ff8031",
+                "outline": "#74777f",
+                "secondary-fixed-dim": "#b4c5ff",
+                "surface-bright": "#faf8ff",
+                "on-secondary-fixed": "#00174b",
+                "primary-container": "#1e3a5f",
+                "surface-variant": "#dae2fd",
+                "surface-container-lowest": "#ffffff",
+                "on-surface": "#131b2e",
+                "error": "#ba1a1a",
+                "tertiary-fixed-dim": "#ffb690",
+                "surface-container-low": "#f2f3ff",
+                "on-secondary-container": "#fefcff",
+                "on-error-container": "#93000a",
+                "on-secondary": "#ffffff",
+                "surface-container-high": "#e2e7ff",
+                "surface-container-highest": "#dae2fd",
+                "on-surface-variant": "#43474e",
+                "inverse-surface": "#283044",
+                "surface-container": "#eaedff",
+                "primary-fixed-dim": "#adc8f5",
+                "on-primary-fixed-variant": "#2d486d",
+                "on-tertiary-fixed": "#341100",
+                "inverse-on-surface": "#eef0ff",
+                "surface": "#faf8ff",
+                "on-background": "#131b2e",
+                "surface-tint": "#455f87",
+                "secondary": "#0051d5",
+                "on-secondary-fixed-variant": "#003ea8",
+                "secondary-fixed": "#dbe1ff",
+                "secondary-container": "#316bf3",
+                "on-primary-fixed": "#001c3b",
+                "background": "#faf8ff",
+                "on-primary": "#ffffff",
+                "primary": "#022448",
+                "outline-variant": "#c4c6cf",
+                "error-container": "#ffdad6",
+                "tertiary": "#411800",
+                "tertiary-container": "#632800",
+                "inverse-primary": "#adc8f5",
+                "surface-dim": "#d2d9f4"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "lg": "24px",
+                "sm": "12px",
+                "xs": "8px",
+                "xl": "32px",
+                "touch-target-min": "44px",
+                "md": "16px",
+                "base": "4px",
+                "2xl": "48px"
+            },
+            "fontFamily": {
+                "label-sm": ["Inter"], "body-lg": ["Inter"], "headline-md": ["Manrope"], "headline-xl-mobile": ["Manrope"], "headline-lg-mobile": ["Manrope"], "label-md": ["Inter"], "body-md": ["Inter"], "headline-xl": ["Manrope"], "headline-lg": ["Manrope"]
+            },
+            "fontSize": {
+                "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                "headline-xl-mobile": ["30px", {"lineHeight": "36px", "fontWeight": "700"}],
+                "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-tab-indicator {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 24px;
+            background-color: #0051d5;
+            border-radius: 4px 0 0 4px;
+        }
+        .bento-card {
+            background: #ffffff;
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            transition: transform 0.2s ease;
+        }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- Side Navigation Shell -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-primary border-r border-outline-variant shadow-sm flex flex-col py-4 z-50">
+<div class="px-6 mb-8">
+<h1 class="text-headline-md font-headline-md font-bold text-on-primary">Bharat Sewa AI</h1>
+<p class="text-label-sm text-on-primary/70">Admin Portal</p>
+</div>
+<nav class="flex-1 space-y-1">
+<!-- Navigation items from JSON -->
+<a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 transition-colors duration-200 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 transition-colors duration-200 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3">description</span>
+<span class="font-label-md text-label-md">Applications</span>
+</a>
+<a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 transition-colors duration-200 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3">report_problem</span>
+<span class="font-label-md text-label-md">Complaints</span>
+</a>
+<a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 transition-colors duration-200 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3">group</span>
+<span class="font-label-md text-label-md">Citizens</span>
+</a>
+<a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 transition-colors duration-200 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3">account_balance</span>
+<span class="font-label-md text-label-md">Schemes</span>
+</a>
+<a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 transition-colors duration-200 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3">folder_open</span>
+<span class="font-label-md text-label-md">Documents</span>
+</a>
+<a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 transition-colors duration-200 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3">analytics</span>
+<span class="font-label-md text-label-md">Analytics</span>
+</a>
+<a class="bg-secondary-container text-on-secondary-container rounded-lg mx-2 my-1 flex items-center px-4 py-3 transition-colors duration-200 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<div class="mt-auto px-4 pb-4">
+<div class="flex items-center space-x-3 p-3 bg-primary-container/20 rounded-xl">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="A professional headshot of a female administrative officer in her 40s, wearing formal business attire. She has a confident, welcoming smile. The lighting is soft and studio-quality with a neutral corporate background that matches the navy and white color palette of the Bharat Sewa AI interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_t1C3ljOzoD9uOLoiTJ7_Xd7gh8wB8XoCKq40MGfl3QruCccSmI3G4a-WiKq_8IKtUwBjEmd52dNRMuCVESfoOqZ15wQdWjCrT5PjdP5H7e5gQBXkiEpoqNQTOn9bKw6qwt7JOVWdran3jejrqPElxc4FjFfopXhNYaq9S0A011k0Jv5MqTaMZH4s2S7n8y3nMAbMJ980Xx-40AH3BspR30BV8Btg2jLDmH4Eva5I_kecRXKEaCAi-FNPiH4g6nwLfS47S9tz0Oip"/>
+<div>
+<p class="text-label-md font-bold text-on-primary">Admin User</p>
+<p class="text-[10px] text-on-primary/60 uppercase tracking-wider">Super Administrator</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen flex flex-col">
+<!-- Top Bar Shell -->
+<header class="h-16 bg-surface border-b border-outline-variant flex justify-between items-center px-6 sticky top-0 z-40">
+<div class="flex items-center space-x-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="bg-surface-container-low border-none rounded-full pl-10 pr-4 py-2 w-72 text-body-md focus:ring-2 focus:ring-primary" placeholder="Search settings or logs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center space-x-6">
+<button class="relative text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full border-2 border-surface"></span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">history</span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant mx-2"></div>
+<div class="flex items-center space-x-3 cursor-pointer">
+<span class="text-label-md font-bold text-primary">Bharat Sewa AI</span>
+<span class="material-symbols-outlined text-primary">expand_more</span>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<section class="p-lg flex-1 flex flex-col space-y-6">
+<div class="flex justify-between items-end">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary">Portal Administration</h2>
+<p class="text-body-md text-on-surface-variant">Manage organization parameters, AI logic, and security protocols.</p>
+</div>
+<div class="flex space-x-3">
+<button class="px-6 py-2.5 border border-outline text-on-surface font-label-md rounded-lg hover:bg-surface-container-low transition-colors">Cancel</button>
+<button class="px-6 py-2.5 bg-primary text-on-primary font-label-md rounded-lg hover:opacity-90 shadow-md transition-all active:scale-95">Save All Changes</button>
+</div>
+</div>
+<!-- Settings Layout -->
+<div class="flex flex-1 gap-6">
+<!-- Vertical Tabs -->
+<nav class="w-64 flex flex-col space-y-1 bg-surface-container-lowest p-2 rounded-xl border border-outline-variant h-fit sticky top-24">
+<button class="flex items-center px-4 py-3 rounded-lg bg-secondary-container text-on-secondary-container transition-all group relative" id="tab-org" onclick="switchTab('org')">
+<span class="material-symbols-outlined mr-3">corporate_fare</span>
+<span class="font-label-md">Organisation Info</span>
+</button>
+<button class="flex items-center px-4 py-3 rounded-lg hover:bg-surface-container-high text-on-surface-variant transition-all group" id="tab-ai" onclick="switchTab('ai')">
+<span class="material-symbols-outlined mr-3">psychology</span>
+<span class="font-label-md">AI Configuration</span>
+</button>
+<button class="flex items-center px-4 py-3 rounded-lg hover:bg-surface-container-high text-on-surface-variant transition-all group" id="tab-ocr" onclick="switchTab('ocr')">
+<span class="material-symbols-outlined mr-3">document_scanner</span>
+<span class="font-label-md">OCR Settings</span>
+</button>
+<button class="flex items-center px-4 py-3 rounded-lg hover:bg-surface-container-high text-on-surface-variant transition-all group" id="tab-lang" onclick="switchTab('lang')">
+<span class="material-symbols-outlined mr-3">translate</span>
+<span class="font-label-md">Language Support</span>
+</button>
+<button class="flex items-center px-4 py-3 rounded-lg hover:bg-surface-container-high text-on-surface-variant transition-all group" id="tab-notif" onclick="switchTab('notif')">
+<span class="material-symbols-outlined mr-3">notifications_active</span>
+<span class="font-label-md">Notification Templates</span>
+</button>
+<button class="flex items-center px-4 py-3 rounded-lg hover:bg-surface-container-high text-on-surface-variant transition-all group" id="tab-security" onclick="switchTab('security')">
+<span class="material-symbols-outlined mr-3">security</span>
+<span class="font-label-md">Security &amp; Access</span>
+</button>
+<button class="flex items-center px-4 py-3 rounded-lg hover:bg-surface-container-high text-on-surface-variant transition-all group" id="tab-roles" onclick="switchTab('roles')">
+<span class="material-symbols-outlined mr-3">view_stream</span>
+<span class="font-label-md">Roles (RBAC)</span>
+</button>
+<button class="flex items-center px-4 py-3 rounded-lg hover:bg-surface-container-high text-on-surface-variant transition-all group" id="tab-audit" onclick="switchTab('audit')">
+<span class="material-symbols-outlined mr-3">receipt_long</span>
+<span class="font-label-md">Audit Logs</span>
+</button>
+</nav>
+<!-- Content Area -->
+<div class="flex-1 space-y-6">
+<!-- Section: Organisation Info -->
+<div class="settings-section bento-card p-xl rounded-2xl" id="section-org">
+<h3 class="font-headline-md text-headline-md text-primary mb-6 flex items-center">
+<span class="material-symbols-outlined mr-2">corporate_fare</span> Organisation Info
+                        </h3>
+<div class="grid grid-cols-2 gap-lg">
+<div class="space-y-base">
+<label class="text-label-md font-bold text-on-surface-variant">Organisation Name</label>
+<input class="w-full p-md border border-outline-variant rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none" type="text" value="Ministry of Electronics and Information Technology"/>
+</div>
+<div class="space-y-base">
+<label class="text-label-md font-bold text-on-surface-variant">Portal URL Alias</label>
+<div class="flex">
+<span class="bg-surface-container-low px-4 py-md border border-r-0 border-outline-variant rounded-l-lg text-on-surface-variant">bharatsewa.gov.in/</span>
+<input class="flex-1 p-md border border-outline-variant rounded-r-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none" type="text" value="admin"/>
+</div>
+</div>
+<div class="space-y-base col-span-2">
+<label class="text-label-md font-bold text-on-surface-variant">Primary Contact Email</label>
+<input class="w-full p-md border border-outline-variant rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none" type="email" value="it-admin@meity.gov.in"/>
+</div>
+</div>
+</div>
+<!-- Section: AI Configuration -->
+<div class="settings-section bento-card p-xl rounded-2xl hidden" id="section-ai">
+<h3 class="font-headline-md text-headline-md text-primary mb-6 flex items-center">
+<span class="material-symbols-outlined mr-2">psychology</span> AI Configuration
+                        </h3>
+<div class="space-y-lg">
+<div class="p-lg bg-surface-container-low rounded-xl border border-outline-variant">
+<div class="flex justify-between items-center mb-4">
+<label class="text-label-md font-bold text-on-surface">Auto-Approval Threshold</label>
+<span class="px-3 py-1 bg-primary text-on-primary rounded-full font-label-md" id="threshold-val">85%</span>
+</div>
+<input class="w-full h-2 bg-outline-variant rounded-lg appearance-none cursor-pointer accent-primary" max="100" min="50" oninput="document.getElementById('threshold-val').innerText = this.value + '%'" type="range" value="85"/>
+<p class="mt-2 text-label-sm text-on-surface-variant">Confidence score required to bypass human review for basic scheme eligibility.</p>
+</div>
+<div class="flex items-center justify-between p-lg border border-outline-variant rounded-xl">
+<div>
+<p class="font-label-md text-on-surface">Context-Aware Disambiguation</p>
+<p class="text-label-sm text-on-surface-variant">Enable semantic mapping for complex regional dialect queries.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+</div>
+</div>
+<!-- Section: Security -->
+<div class="settings-section bento-card p-xl rounded-2xl hidden" id="section-security">
+<h3 class="font-headline-md text-headline-md text-primary mb-6 flex items-center">
+<span class="material-symbols-outlined mr-2">security</span> Security &amp; Access
+                        </h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<div class="p-lg border border-outline-variant rounded-xl space-y-md">
+<div class="flex items-center text-primary mb-2">
+<span class="material-symbols-outlined mr-2">password</span>
+<h4 class="font-label-md">MFA Enforcement</h4>
+</div>
+<div class="space-y-sm">
+<label class="flex items-center space-x-3 cursor-pointer">
+<input checked="" class="text-primary focus:ring-primary" name="mfa" type="radio"/>
+<span class="text-body-md text-on-surface">Required for all Admin Users</span>
+</label>
+<label class="flex items-center space-x-3 cursor-pointer">
+<input class="text-primary focus:ring-primary" name="mfa" type="radio"/>
+<span class="text-body-md text-on-surface">Required for Super Admins only</span>
+</label>
+</div>
+</div>
+<div class="p-lg border border-outline-variant rounded-xl space-y-md">
+<div class="flex items-center text-primary mb-2">
+<span class="material-symbols-outlined mr-2">lan</span>
+<h4 class="font-label-md">IP Restrictions</h4>
+</div>
+<textarea class="w-full h-24 p-md border border-outline-variant rounded-lg text-body-md focus:border-primary outline-none resize-none" placeholder="Enter allowed IP ranges (comma separated)...">10.0.0.0/8, 192.168.1.1</textarea>
+</div>
+</div>
+</div>
+<!-- Section: Audit Logs Table -->
+<div class="settings-section bento-card rounded-2xl overflow-hidden hidden" id="section-audit">
+<div class="p-xl border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-headline-md text-headline-md text-primary flex items-center">
+<span class="material-symbols-outlined mr-2">receipt_long</span> Audit Logs
+                            </h3>
+<button class="flex items-center px-4 py-2 bg-surface-container-high rounded-lg text-primary font-label-md hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined mr-2">download</span> Export CSV
+                            </button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low text-on-surface-variant font-label-md uppercase text-[12px] tracking-wider">
+<tr>
+<th class="px-6 py-4">Timestamp</th>
+<th class="px-6 py-4">Admin User</th>
+<th class="px-6 py-4">Action</th>
+<th class="px-6 py-4">Status</th>
+<th class="px-6 py-4">IP Address</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-4 text-body-md">2023-11-24 14:22:10</td>
+<td class="px-6 py-4 flex items-center">
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold mr-2">RA</div>
+<span class="font-label-md">Rahul A.</span>
+</td>
+<td class="px-6 py-4 text-body-md">Modified AI Threshold</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-[12px] font-bold">SUCCESS</span>
+</td>
+<td class="px-6 py-4 text-on-surface-variant">10.2.45.18</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-4 text-body-md">2023-11-24 12:05:44</td>
+<td class="px-6 py-4 flex items-center">
+<div class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold mr-2">SK</div>
+<span class="font-label-md">Sita K.</span>
+</td>
+<td class="px-6 py-4 text-body-md">Login Attempt</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-red-100 text-red-800 rounded-full text-[12px] font-bold">FAILED</span>
+</td>
+<td class="px-6 py-4 text-on-surface-variant">192.168.1.101</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-4 text-body-md">2023-11-23 18:40:12</td>
+<td class="px-6 py-4 flex items-center">
+<div class="w-8 h-8 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center font-bold mr-2">MJ</div>
+<span class="font-label-md">Manish J.</span>
+</td>
+<td class="px-6 py-4 text-body-md">Updated Notification Template</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-[12px] font-bold">SUCCESS</span>
+</td>
+<td class="px-6 py-4 text-on-surface-variant">10.2.45.22</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-md bg-surface-container-low flex justify-center">
+<button class="text-primary font-label-md hover:underline">View All Audit Logs</button>
+</div>
+</div>
+<!-- Placeholders for other tabs to keep UI clean -->
+<div class="settings-section bento-card p-xl rounded-2xl hidden" id="section-ocr">
+<h3 class="font-headline-md text-headline-md text-primary mb-4">OCR &amp; Document Processing</h3>
+<p class="text-on-surface-variant">Configure accuracy levels and retry logic for Aadhaar and Ration Card scanning.</p>
+<div class="mt-8 p-lg border-2 border-dashed border-outline-variant rounded-xl flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[48px] mb-4">settings_suggest</span>
+<p>Advanced OCR parameters are available in the Professional Tier.</p>
+</div>
+</div>
+<div class="settings-section bento-card p-xl rounded-2xl hidden" id="section-lang">
+<h3 class="font-headline-md text-headline-md text-primary mb-4">Language Support</h3>
+<p class="text-on-surface-variant">Enable or disable regional language translation modules.</p>
+<div class="grid grid-cols-3 gap-md mt-6">
+<div class="p-md bg-green-50 border border-green-200 rounded-lg flex items-center justify-between">
+<span class="font-label-md">Hindi (HI)</span>
+<span class="material-symbols-outlined text-green-600">check_circle</span>
+</div>
+<div class="p-md bg-green-50 border border-green-200 rounded-lg flex items-center justify-between">
+<span class="font-label-md">Marathi (MR)</span>
+<span class="material-symbols-outlined text-green-600">check_circle</span>
+</div>
+<div class="p-md bg-surface-container-low border border-outline-variant rounded-lg flex items-center justify-between">
+<span class="font-label-md">Tamil (TA)</span>
+<button class="text-[12px] font-bold text-primary">ENABLE</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="p-6 border-t border-outline-variant text-center text-on-surface-variant text-[12px]">
+            © 2023 Bharat Sewa AI • Empowering Citizens Through Inclusive Technology • v2.4.1-stable
+        </footer>
+</main>
+<!-- Floating Voice Assistant (Theme Alignment) -->
+<button class="fixed bottom-8 right-8 w-16 h-16 bg-tertiary-container text-on-tertiary-container rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-50 group">
+<span class="material-symbols-outlined text-2xl group-hover:hidden">mic</span>
+<span class="hidden group-hover:block font-label-sm">Talk to AI</span>
+</button>
+<script>
+        function switchTab(tabId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.settings-section');
+            sections.forEach(s => s.classList.add('hidden'));
+
+            // Show target section
+            const target = document.getElementById('section-' + tabId);
+            if (target) target.classList.remove('hidden');
+
+            // Reset tab button styles
+            const buttons = document.querySelectorAll('nav button');
+            buttons.forEach(btn => {
+                btn.classList.remove('bg-secondary-container', 'text-on-secondary-container');
+                btn.classList.add('hover:bg-surface-container-high', 'text-on-surface-variant');
+            });
+
+            // Set active button style
+            const activeBtn = document.getElementById('tab-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-secondary-container', 'text-on-secondary-container');
+                activeBtn.classList.remove('hover:bg-surface-container-high', 'text-on-surface-variant');
+            }
+        }
+    </script>
+</body></html>

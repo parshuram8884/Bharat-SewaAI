@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Bharat Sewa AI - Application Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#c4c6cf",
+                        "tertiary-fixed": "#ffdbca",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#faf8ff",
+                        "on-error": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#8aa4cf",
+                        "primary-container": "#1e3a5f",
+                        "background": "#faf8ff",
+                        "surface-container-highest": "#dae2fd",
+                        "secondary-fixed": "#dbe1ff",
+                        "inverse-on-surface": "#eef0ff",
+                        "surface-variant": "#dae2fd",
+                        "on-tertiary-fixed": "#341100",
+                        "surface-container-low": "#f2f3ff",
+                        "primary": "#022448",
+                        "on-surface-variant": "#43474e",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "on-secondary-fixed": "#00174b",
+                        "primary-fixed-dim": "#adc8f5",
+                        "on-secondary-container": "#fefcff",
+                        "on-background": "#131b2e",
+                        "surface-container": "#eaedff",
+                        "secondary": "#0051d5",
+                        "secondary-container": "#316bf3",
+                        "on-error-container": "#93000a",
+                        "tertiary-container": "#632800",
+                        "outline": "#74777f",
+                        "inverse-surface": "#283044",
+                        "surface-container-high": "#e2e7ff",
+                        "primary-fixed": "#d5e3ff",
+                        "on-tertiary-container": "#ff8031",
+                        "surface-dim": "#d2d9f4",
+                        "on-secondary-fixed-variant": "#003ea8",
+                        "surface-tint": "#455f87",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "inverse-primary": "#adc8f5",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed": "#001c3b",
+                        "on-primary-fixed-variant": "#2d486d",
+                        "tertiary": "#411800",
+                        "surface-bright": "#faf8ff",
+                        "on-tertiary-fixed-variant": "#783200",
+                        "on-surface": "#131b2e",
+                        "tertiary-fixed-dim": "#ffb690"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "xs": "8px",
+                        "2xl": "48px",
+                        "touch-target-min": "44px",
+                        "md": "16px",
+                        "xl": "32px",
+                        "base": "4px",
+                        "sm": "12px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Manrope"],
+                        "label-sm": ["Inter"],
+                        "headline-xl": ["Manrope"],
+                        "headline-md": ["Manrope"],
+                        "headline-lg": ["Manrope"],
+                        "headline-xl-mobile": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "headline-xl-mobile": ["30px", {"lineHeight": "36px", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #faf8ff;
+            color: #131b2e;
+            -webkit-font-smoothing: antialiased;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #c4c6cf; border-radius: 10px; }
+    </style>
+</head>
+<body class="font-body-md text-body-md overflow-x-hidden">
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-full flex flex-col p-md z-50 bg-primary dark:bg-inverse-surface shadow-md w-64">
+<div class="mb-xl">
+<h1 class="text-headline-md font-headline-md font-bold text-on-primary dark:text-inverse-on-surface">Bharat Sewa AI</h1>
+<p class="text-label-sm text-on-primary/60">Admin Portal</p>
+</div>
+<nav class="flex-1 space-y-xs">
+<a class="flex items-center gap-md px-md py-sm text-on-primary/70 dark:text-inverse-on-surface/70 hover:bg-primary-fixed-dim/20 dark:hover:bg-primary-fixed-dim/10 hover:text-on-primary transition-all duration-200 active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-lg transition-all duration-200 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span class="font-label-md text-label-md">Applications</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-primary/70 dark:text-inverse-on-surface/70 hover:bg-primary-fixed-dim/20 dark:hover:bg-primary-fixed-dim/10 hover:text-on-primary transition-all duration-200 active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="assignment_late">assignment_late</span>
+<span class="font-label-md text-label-md">Complaints</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-primary/70 dark:text-inverse-on-surface/70 hover:bg-primary-fixed-dim/20 dark:hover:bg-primary-fixed-dim/10 hover:text-on-primary transition-all duration-200 active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="folder_open">folder_open</span>
+<span class="font-label-md text-label-md">Documents</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-primary/70 dark:text-inverse-on-surface/70 hover:bg-primary-fixed-dim/20 dark:hover:bg-primary-fixed-dim/10 hover:text-on-primary transition-all duration-200 active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-label-md text-label-md">Analytics</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-primary/70 dark:text-inverse-on-surface/70 hover:bg-primary-fixed-dim/20 dark:hover:bg-primary-fixed-dim/10 hover:text-on-primary transition-all duration-200 active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-on-primary/10 pt-md space-y-xs">
+<a class="flex items-center gap-md px-md py-sm text-on-primary/70 dark:text-inverse-on-surface/70 hover:bg-primary-fixed-dim/20 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-label-md text-label-md">Help Center</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-primary/70 dark:text-inverse-on-surface/70 hover:bg-primary-fixed-dim/20 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-md text-label-md">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen flex flex-col">
+<!-- TopNavBar Shell -->
+<header class="fixed top-0 right-0 left-64 h-16 bg-surface dark:bg-surface-container-low border-b border-outline-variant dark:border-outline flex justify-between items-center px-lg z-40">
+<div class="flex items-center gap-md">
+<span class="font-headline-md text-headline-md font-extrabold text-primary dark:text-inverse-primary">Application #APP-88219</span>
+<div class="bg-secondary-container text-on-secondary-container px-sm py-xs rounded-full text-label-sm">Under Review</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-sm text-on-surface-variant hover:bg-surface-container rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-sm text-on-surface-variant hover:bg-surface-container rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+</button>
+<div class="h-8 w-px bg-outline-variant mx-xs"></div>
+<button class="flex items-center gap-xs p-xs pr-sm hover:bg-surface-container rounded-full transition-colors">
+<img class="w-8 h-8 rounded-full border border-outline-variant" data-alt="A professional headshot of a government administrator in a crisp white shirt, clean lighting, blurred office background, high professional contrast, corporate photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtPdLnESjN73mFX67XoINyzETldp2UQd_-kP8Iq1piwWE9YQnospHqIUgCmSS7o4EqVIspdc7MzI2_Nkyuja9dGHCrcj1yzXf6oTt5CDzQvAFC6C-KVElwtM8T7FP4T9A4SFKhZ0Q3vtaVKHAzEyg24-F9DPk-iuD1PdKNKnHmnhn1WU3CCQFLu4JFN70GFvFXlZ2NEPkngfXmpteUxcKqIu2C9koWKBUyc8zuufkC7MafTxAbwHE9tP42bhlV_GnoehJrWkueU0Jl"/>
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Page Content -->
+<div class="mt-16 p-lg flex flex-col gap-lg flex-1">
+<!-- Actions Header -->
+<section class="flex justify-between items-center bg-surface-container-low p-md rounded-xl shadow-sm border border-outline-variant">
+<div class="flex items-center gap-sm">
+<button class="px-lg py-sm bg-primary text-on-primary rounded-lg font-label-md flex items-center gap-xs hover:opacity-90 transition-all">
+<span class="material-symbols-outlined text-[20px]" data-icon="person_add">person_add</span>
+                        Assign Reviewer
+                    </button>
+<button class="px-lg py-sm bg-secondary-container text-on-secondary-container rounded-lg font-label-md flex items-center gap-xs hover:brightness-95 transition-all">
+<span class="material-symbols-outlined text-[20px]" data-icon="mail">mail</span>
+                        Request Information
+                    </button>
+</div>
+<div class="flex items-center gap-sm">
+<button class="px-lg py-sm border-2 border-error text-error rounded-lg font-label-md hover:bg-error/5 transition-all">Reject</button>
+<button class="px-lg py-sm bg-secondary text-on-secondary rounded-lg font-label-md shadow-md hover:shadow-lg transition-all">Approve Application</button>
+</div>
+</section>
+<!-- Three Column Layout -->
+<div class="grid grid-cols-12 gap-lg flex-1">
+<!-- Left Sidebar: Citizen Profile & Eligibility -->
+<aside class="col-span-3 flex flex-col gap-lg">
+<!-- Citizen Profile Card -->
+<div class="bg-white p-lg rounded-xl border border-outline-variant shadow-sm">
+<div class="flex flex-col items-center mb-lg">
+<div class="w-24 h-24 rounded-full overflow-hidden mb-md border-2 border-secondary-container p-1">
+<img class="w-full h-full rounded-full object-cover" data-alt="A portrait of an elderly rural Indian citizen with a kind expression, wearing traditional clothing, warm natural sunlight, sharp focus, high detail, cinematic lighting, corporate-inclusive photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFzIakKRzpRiorDfnvb61YuAWNat9oBI_GmI5FjlCkpkkGcVsdr8_hktDcWjIQ30ywF4lKAj8rd5drnumtsJf-3xHh78SB38duswU5cNCSAjCS88z4LRKZjO9OCWXnXNnGnfynNyztRGBBc5cvKtaKwmNAAXEnnjcRJ69XYVeyoXUKvFotaoEbYTJBnPVMOM6C1rMozy5icTzlnFYyfS1cXN7CjZOIV0LbnE-tw11QlpRLsxkbB5-c4SAiJ-ShnMbxEQlaELVGfkNA"/>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Ramesh Kumar</h2>
+<p class="text-label-sm text-outline">ID: VID-2993-4410</p>
+</div>
+<div class="space-y-md">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary" data-icon="phone">phone</span>
+<span class="text-body-md">+91 98765 43210</span>
+</div>
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary" data-icon="location_on">location_on</span>
+<span class="text-body-md">Sohna, Haryana</span>
+</div>
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary" data-icon="cake">cake</span>
+<span class="text-body-md">64 Years Old</span>
+</div>
+</div>
+</div>
+<!-- Eligibility Answers -->
+<div class="bg-white p-lg rounded-xl border border-outline-variant shadow-sm flex-1">
+<h3 class="font-label-md text-label-md text-outline uppercase tracking-wider mb-lg">Eligibility Check</h3>
+<div class="space-y-lg">
+<div class="space-y-xs">
+<p class="text-label-sm text-outline">Annual Household Income</p>
+<p class="font-body-md font-semibold">₹1,20,000</p>
+<div class="flex items-center gap-xs text-[12px] text-green-600 font-bold">
+<span class="material-symbols-outlined text-[14px]" data-icon="check_circle">check_circle</span>
+                                    Within Threshold
+                                </div>
+</div>
+<div class="space-y-xs">
+<p class="text-label-sm text-outline">Land Ownership (Acres)</p>
+<p class="font-body-md font-semibold">0.5 Acres</p>
+<div class="flex items-center gap-xs text-[12px] text-green-600 font-bold">
+<span class="material-symbols-outlined text-[14px]" data-icon="check_circle">check_circle</span>
+                                    Verified via Land Records
+                                </div>
+</div>
+<div class="space-y-xs">
+<p class="text-label-sm text-outline">Previous Benefits Received</p>
+<p class="font-body-md font-semibold">None</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Central: Form Details & Documents -->
+<section class="col-span-6 flex flex-col gap-lg">
+<!-- Form Details (Bento Style) -->
+<div class="bg-white p-lg rounded-xl border border-outline-variant shadow-sm">
+<div class="flex items-center justify-between mb-lg">
+<h3 class="font-headline-md text-headline-md">Application Details</h3>
+<button class="text-secondary font-label-md flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+                                Edit Details
+                            </button>
+</div>
+<div class="grid grid-cols-2 gap-lg">
+<div class="p-md bg-surface rounded-lg">
+<p class="text-label-sm text-outline mb-xs">Scheme Name</p>
+<p class="font-body-md font-bold">PM-Kisan Samman Nidhi</p>
+</div>
+<div class="p-md bg-surface rounded-lg">
+<p class="text-label-sm text-outline mb-xs">Bank Account Number</p>
+<p class="font-body-md font-bold">**** **** 9012</p>
+</div>
+<div class="p-md bg-surface rounded-lg col-span-2">
+<p class="text-label-sm text-outline mb-xs">Permanent Address</p>
+<p class="font-body-md">House No. 124, Gali 2, Sector 4, Sohna, Gurugram, Haryana - 122103</p>
+</div>
+</div>
+</div>
+<!-- Documents List with AI Confidence -->
+<div class="bg-white p-lg rounded-xl border border-outline-variant shadow-sm">
+<div class="flex items-center justify-between mb-lg">
+<h3 class="font-headline-md text-headline-md">Submitted Documents</h3>
+<span class="text-label-sm bg-primary-fixed-dim/20 text-primary-fixed px-sm py-1 rounded-full">4 Documents</span>
+</div>
+<div class="space-y-md">
+<!-- Document Row 1 -->
+<div class="flex items-center gap-md p-md border border-outline-variant rounded-lg hover:border-secondary transition-colors group cursor-pointer">
+<div class="w-12 h-12 bg-surface-container rounded flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="badge">badge</span>
+</div>
+<div class="flex-1">
+<p class="font-label-md text-label-md">Aadhar Card.pdf</p>
+<div class="flex items-center gap-md mt-1">
+<div class="flex items-center gap-xs">
+<div class="w-16 h-1.5 bg-outline-variant rounded-full overflow-hidden">
+<div class="h-full bg-green-500 w-[98%]"></div>
+</div>
+<span class="text-[10px] font-bold text-green-600">98% Confidence</span>
+</div>
+<span class="text-[10px] text-outline">OCR Verified</span>
+</div>
+</div>
+<button class="p-sm text-outline hover:text-secondary">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+</button>
+</div>
+<!-- Document Row 2 -->
+<div class="flex items-center gap-md p-md border border-outline-variant rounded-lg hover:border-secondary transition-colors group cursor-pointer">
+<div class="w-12 h-12 bg-surface-container rounded flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+</div>
+<div class="flex-1">
+<p class="font-label-md text-label-md">Land_Records_2023.jpg</p>
+<div class="flex items-center gap-md mt-1">
+<div class="flex items-center gap-xs">
+<div class="w-16 h-1.5 bg-outline-variant rounded-full overflow-hidden">
+<div class="h-full bg-green-500 w-[92%]"></div>
+</div>
+<span class="text-[10px] font-bold text-green-600">92% Confidence</span>
+</div>
+<span class="text-[10px] text-outline">Manual Review Recommended</span>
+</div>
+</div>
+<button class="p-sm text-outline hover:text-secondary">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+</button>
+</div>
+<!-- Document Row 3 -->
+<div class="flex items-center gap-md p-md border border-outline-variant rounded-lg hover:border-secondary transition-colors group cursor-pointer">
+<div class="w-12 h-12 bg-surface-container rounded flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+</div>
+<div class="flex-1">
+<p class="font-label-md text-label-md">Income_Certificate.pdf</p>
+<div class="flex items-center gap-md mt-1">
+<div class="flex items-center gap-xs">
+<div class="w-16 h-1.5 bg-outline-variant rounded-full overflow-hidden">
+<div class="h-full bg-error w-[45%]"></div>
+</div>
+<span class="text-[10px] font-bold text-error">45% Confidence</span>
+</div>
+<span class="text-[10px] text-error font-bold">Seal Not Detected</span>
+</div>
+</div>
+<button class="p-sm text-outline hover:text-secondary">
+<span class="material-symbols-outlined" data-icon="warning">warning</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Sidebar: Timeline & Notes -->
+<aside class="col-span-3 flex flex-col gap-lg">
+<!-- Status Timeline -->
+<div class="bg-white p-lg rounded-xl border border-outline-variant shadow-sm">
+<h3 class="font-label-md text-label-md text-outline uppercase tracking-wider mb-lg">Status History</h3>
+<div class="relative space-y-lg before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-outline-variant">
+<!-- Timeline Item 1 -->
+<div class="relative pl-lg">
+<div class="absolute left-0 top-1.5 w-[24px] h-[24px] bg-secondary-container text-on-secondary-container rounded-full flex items-center justify-center z-10 border-4 border-white">
+<span class="material-symbols-outlined text-[12px]" data-icon="hourglass_empty">hourglass_empty</span>
+</div>
+<p class="font-label-md text-label-md">Under Review</p>
+<p class="text-[12px] text-outline">Today, 10:45 AM</p>
+<p class="text-[12px] mt-xs text-on-surface-variant">Review initiated by <span class="font-bold">System AI</span></p>
+</div>
+<!-- Timeline Item 2 -->
+<div class="relative pl-lg">
+<div class="absolute left-0 top-1.5 w-[24px] h-[24px] bg-green-100 text-green-700 rounded-full flex items-center justify-center z-10 border-4 border-white">
+<span class="material-symbols-outlined text-[12px]" data-icon="check">check</span>
+</div>
+<p class="font-label-md text-label-md">Document Verification</p>
+<p class="text-[12px] text-outline">Oct 24, 02:30 PM</p>
+<p class="text-[12px] mt-xs text-on-surface-variant">3 of 4 documents auto-verified.</p>
+</div>
+<!-- Timeline Item 3 -->
+<div class="relative pl-lg">
+<div class="absolute left-0 top-1.5 w-[24px] h-[24px] bg-surface-container-highest text-on-surface-variant rounded-full flex items-center justify-center z-10 border-4 border-white">
+<span class="material-symbols-outlined text-[12px]" data-icon="description">description</span>
+</div>
+<p class="font-label-md text-label-md">Application Submitted</p>
+<p class="text-[12px] text-outline">Oct 22, 09:15 AM</p>
+</div>
+</div>
+</div>
+<!-- Internal Notes -->
+<div class="bg-white p-lg rounded-xl border border-outline-variant shadow-sm flex-1 flex flex-col">
+<h3 class="font-label-md text-label-md text-outline uppercase tracking-wider mb-lg">Internal Notes</h3>
+<div class="flex-1 custom-scrollbar overflow-y-auto space-y-md mb-md pr-xs">
+<div class="p-sm bg-surface rounded-lg border-l-4 border-secondary">
+<p class="text-label-sm font-bold mb-xs">Meera Sharma (Manager)</p>
+<p class="text-[13px] text-on-surface-variant">The income certificate seal seems blurred. Citizen might need to re-upload or provide original for manual check.</p>
+<p class="text-[10px] text-outline mt-xs">Yesterday, 4:20 PM</p>
+</div>
+<div class="p-sm bg-surface rounded-lg">
+<p class="text-label-sm font-bold mb-xs">System Bot</p>
+<p class="text-[13px] text-on-surface-variant">Automated land record cross-check successful. Coordinates match applicant data.</p>
+<p class="text-[10px] text-outline mt-xs">2 days ago</p>
+</div>
+</div>
+<div class="mt-auto pt-md border-t border-outline-variant">
+<div class="relative">
+<textarea class="w-full bg-surface border-outline-variant rounded-lg p-sm text-body-md focus:ring-2 focus:ring-primary focus:border-primary resize-none" placeholder="Add a note..." rows="3"></textarea>
+<button class="absolute bottom-2 right-2 p-xs bg-primary text-on-primary rounded-full hover:scale-105 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[20px]" data-icon="send">send</span>
+</button>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</div>
+</main>
+<!-- Voice Assistant FAB -->
+<button class="fixed bottom-lg right-lg w-16 h-16 bg-[#ff9933] text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-90 transition-all z-50">
+<span class="material-symbols-outlined text-[32px]" data-icon="mic" style="font-variation-settings: 'FILL' 1;">mic</span>
+</button>
+<script>
+        // Micro-interactions and accessibility features
+        document.addEventListener('DOMContentLoaded', () => {
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(btn => {
+                btn.addEventListener('mouseenter', () => {
+                    // Slight hover feedback logic can go here if needed
+                });
+            });
+            
+            // Auto-resize textarea logic
+            const textarea = document.querySelector('textarea');
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+            });
+        });
+    </script>
+</body></html>

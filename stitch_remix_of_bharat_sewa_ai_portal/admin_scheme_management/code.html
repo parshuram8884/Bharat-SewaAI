@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Scheme Management | Bharat Sewa AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Manrope:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#ffdbca",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#783200",
+                    "on-error": "#ffffff",
+                    "on-primary-container": "#8aa4cf",
+                    "primary-fixed": "#d5e3ff",
+                    "on-tertiary-container": "#ff8031",
+                    "outline": "#74777f",
+                    "secondary-fixed-dim": "#b4c5ff",
+                    "surface-bright": "#faf8ff",
+                    "on-secondary-fixed": "#00174b",
+                    "primary-container": "#1e3a5f",
+                    "surface-variant": "#dae2fd",
+                    "surface-container-lowest": "#ffffff",
+                    "on-surface": "#131b2e",
+                    "error": "#ba1a1a",
+                    "tertiary-fixed-dim": "#ffb690",
+                    "surface-container-low": "#f2f3ff",
+                    "on-secondary-container": "#fefcff",
+                    "on-error-container": "#93000a",
+                    "on-secondary": "#ffffff",
+                    "surface-container-high": "#e2e7ff",
+                    "surface-container-highest": "#dae2fd",
+                    "on-surface-variant": "#43474e",
+                    "inverse-surface": "#283044",
+                    "surface-container": "#eaedff",
+                    "primary-fixed-dim": "#adc8f5",
+                    "on-primary-fixed-variant": "#2d486d",
+                    "on-tertiary-fixed": "#341100",
+                    "inverse-on-surface": "#eef0ff",
+                    "surface": "#faf8ff",
+                    "on-background": "#131b2e",
+                    "surface-tint": "#455f87",
+                    "secondary": "#0051d5",
+                    "on-secondary-fixed-variant": "#003ea8",
+                    "secondary-fixed": "#dbe1ff",
+                    "secondary-container": "#316bf3",
+                    "on-primary-fixed": "#001c3b",
+                    "background": "#faf8ff",
+                    "on-primary": "#ffffff",
+                    "primary": "#022448",
+                    "outline-variant": "#c4c6cf",
+                    "error-container": "#ffdad6",
+                    "tertiary": "#411800",
+                    "tertiary-container": "#632800",
+                    "inverse-primary": "#adc8f5",
+                    "surface-dim": "#d2d9f4"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "lg": "24px",
+                    "sm": "12px",
+                    "xs": "8px",
+                    "xl": "32px",
+                    "touch-target-min": "44px",
+                    "md": "16px",
+                    "base": "4px",
+                    "2xl": "48px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-md": ["Manrope"],
+                    "headline-xl-mobile": ["Manrope"],
+                    "headline-lg-mobile": ["Manrope"],
+                    "label-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-xl": ["Manrope"],
+                    "headline-lg": ["Manrope"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-xl-mobile": ["30px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scheme-card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid #E2E8F0;
+        }
+        .bento-cell {
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .bento-cell:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- Side Navigation Bar -->
+<aside class="bg-primary dark:bg-surface-container-lowest h-screen w-64 fixed left-0 top-0 border-r border-outline-variant dark:border-outline shadow-sm flex flex-col h-full py-4 z-50">
+<div class="px-6 mb-8">
+<h1 class="text-headline-md font-headline-md font-bold text-on-primary dark:text-primary">Bharat Sewa AI</h1>
+<p class="text-label-sm font-label-sm text-on-primary/60">Admin Portal</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer active:scale-95 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer active:scale-95 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">description</span>
+<span class="font-label-md text-label-md">Applications</span>
+</a>
+<a class="bg-secondary-container text-on-secondary-container rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer active:scale-95 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">account_balance</span>
+<span class="font-label-md text-label-md">Schemes</span>
+</a>
+<a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer active:scale-95 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">group</span>
+<span class="font-label-md text-label-md">Citizens</span>
+</a>
+<a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer active:scale-95 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">report_problem</span>
+<span class="font-label-md text-label-md">Complaints</span>
+</a>
+<a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer active:scale-95 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">folder_open</span>
+<span class="font-label-md text-label-md">Documents</span>
+</a>
+<a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer active:scale-95 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">analytics</span>
+<span class="font-label-md text-label-md">Analytics</span>
+</a>
+<a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer active:scale-95 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="bg-surface dark:bg-surface-dim fixed top-0 right-0 w-[calc(100%-16rem)] h-16 border-b border-outline-variant dark:border-outline flex justify-between items-center px-6 w-full z-40">
+<div class="flex items-center flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full font-body-md text-body-md focus:ring-2 focus:ring-primary outline-none" placeholder="Search schemes, IDs, or categories..." type="text"/>
+</div>
+</div>
+<div class="flex items-center space-x-4">
+<button class="p-2 rounded-full hover:bg-surface-container-low transition-all relative">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-2 rounded-full hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-on-surface-variant">history</span>
+</button>
+<div class="flex items-center pl-4 border-l border-outline-variant space-x-3">
+<div class="text-right">
+<p class="font-label-md text-label-md text-on-surface">Admin User</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Super Administrator</p>
+</div>
+<img class="w-10 h-10 rounded-full object-cover border-2 border-primary-container" data-alt="Professional headshot of a senior government administrative official in a sharp navy blue blazer, set against a neutral, blurred office background. The lighting is bright and even, reinforcing a corporate and trustworthy persona consistent with an official government portal." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDK0enaGdwpn0WcOP6-PRm3ZVvEgQXlqq6CKPFKKds5RMundN6CjCNZ48y1Rtew5gNFJwYRtRP1w8g5w3UvRHOtx2IciMQNX9ArOpAhYE4t4EHLgTAye27LFxFrK7dfNfjdn866sV9JWgQjroQHrDvRKFtDdiBXRg4iFR5J_vG95voeHrYfvYZ11zUjNB48sAl0HpdOQq4gXJro1w6EIglf3jzPDNr_SSGZS-i7YGKVQCEMVlVMYJ13avgH57Dlf0cMWNZKmojoxgnK"/>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="mt-16 p-lg flex-1 overflow-y-auto">
+<!-- Header Action Row -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-xl gap-md">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Scheme Management</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Monitor, edit, and publish government welfare schemes across all sectors.</p>
+</div>
+<button class="flex items-center px-6 py-3 bg-primary text-on-primary rounded-lg font-label-md text-label-md hover:shadow-lg transition-all active:scale-95">
+<span class="material-symbols-outlined mr-2">add</span>
+                    Create New Scheme
+                </button>
+</div>
+<!-- Stats Overview Bento (Small) -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-md mb-lg">
+<div class="bg-surface-container-low p-md rounded-xl scheme-card-shadow flex items-center">
+<div class="p-3 bg-primary-container/20 rounded-lg mr-md">
+<span class="material-symbols-outlined text-primary">account_balance</span>
+</div>
+<div>
+<p class="text-label-sm text-on-surface-variant">Total Schemes</p>
+<p class="text-headline-md font-headline-md">124</p>
+</div>
+</div>
+<div class="bg-surface-container-low p-md rounded-xl scheme-card-shadow flex items-center">
+<div class="p-3 bg-success-container/20 bg-green-100 rounded-lg mr-md">
+<span class="material-symbols-outlined text-green-700">check_circle</span>
+</div>
+<div>
+<p class="text-label-sm text-on-surface-variant">Active</p>
+<p class="text-headline-md font-headline-md">98</p>
+</div>
+</div>
+<div class="bg-surface-container-low p-md rounded-xl scheme-card-shadow flex items-center">
+<div class="p-3 bg-tertiary-container/20 rounded-lg mr-md">
+<span class="material-symbols-outlined text-tertiary">pending</span>
+</div>
+<div>
+<p class="text-label-sm text-on-surface-variant">Pending Reviews</p>
+<p class="text-headline-md font-headline-md">12</p>
+</div>
+</div>
+<div class="bg-surface-container-low p-md rounded-xl scheme-card-shadow flex items-center">
+<div class="p-3 bg-secondary-container/20 rounded-lg mr-md">
+<span class="material-symbols-outlined text-secondary">trending_up</span>
+</div>
+<div>
+<p class="text-label-sm text-on-surface-variant">Total Apps</p>
+<p class="text-headline-md font-headline-md">1.2M</p>
+</div>
+</div>
+</div>
+<!-- Scheme Grid (Bento Style) -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-md">
+<!-- Filters Panel -->
+<div class="md:col-span-12 bg-white p-4 rounded-xl scheme-card-shadow flex flex-wrap items-center gap-4">
+<div class="flex items-center space-x-2">
+<span class="text-label-md font-label-md text-on-surface-variant">Category:</span>
+<select class="border-outline-variant rounded-lg text-label-md focus:ring-primary">
+<option>All Categories</option>
+<option>Agriculture</option>
+<option>Education</option>
+<option>Healthcare</option>
+<option>Financial Inclusion</option>
+</select>
+</div>
+<div class="flex items-center space-x-2">
+<span class="text-label-md font-label-md text-on-surface-variant">Status:</span>
+<select class="border-outline-variant rounded-lg text-label-md focus:ring-primary">
+<option>All Status</option>
+<option>Active</option>
+<option>Inactive</option>
+</select>
+</div>
+<div class="flex-1"></div>
+<button class="flex items-center text-primary font-label-md py-2 px-4 hover:bg-primary-container/10 rounded-lg">
+<span class="material-symbols-outlined mr-1">filter_list</span>
+                        Advanced Filters
+                    </button>
+</div>
+<!-- Scheme Cards -->
+<!-- Card 1 -->
+<div class="md:col-span-6 lg:col-span-4 bento-cell bg-white rounded-xl scheme-card-shadow overflow-hidden flex flex-col">
+<div class="h-32 relative">
+<div class="absolute inset-0 bg-primary/10"></div>
+<img class="w-full h-full object-cover" data-alt="A lush green agricultural field in rural India with a modern irrigation system under a bright clear sky. The image conveys prosperity and technological advancement in farming, with vibrant green tones and high-contrast lighting to suit a clean light-mode UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuANGcuo-2_vxMoezJkU3ph255lAbIpo2_2ZtUXb-ijhHbg71Kzt0_g9IONIUjdrXwq525b-L_icbZ538Bx-3wbFRcq8jIhHRPiGQZnAg_T-DbiYunu67lwZ5E1GOWxlThUwb5r06FOjtvAOL3wWIfheuiYM4_BCAIOZfIbz3cl_M4v2UCsgNk-RIpyq5G6SL0qloS4VmuSoCNfd3knzPbK7XQCdCsfFkTy2CyAg8c-uDlIyLPJyO3DSHQ3S-ZSt91XeZDq0mCnGpGJU"/>
+<div class="absolute top-3 right-3">
+<span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-label-sm font-label-sm flex items-center">
+<span class="w-1.5 h-1.5 bg-green-600 rounded-full mr-2"></span>
+                                Active
+                            </span>
+</div>
+</div>
+<div class="p-md flex flex-col flex-1">
+<div class="mb-xs">
+<span class="text-[10px] uppercase font-bold tracking-widest text-primary">Agriculture</span>
+<h3 class="font-headline-md text-headline-md text-on-surface mt-1">PM Kisan Samman Nidhi</h3>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant line-clamp-2 mb-md">Income support of ₹6,000 per year in three equal installments to all landholding farmer families.</p>
+<div class="mt-auto space-y-3">
+<div class="flex justify-between items-center text-label-sm">
+<span class="text-on-surface-variant">Target Audience</span>
+<span class="text-on-surface font-semibold">Small Farmers</span>
+</div>
+<div class="flex justify-between items-center text-label-sm">
+<span class="text-on-surface-variant">Current Applications</span>
+<span class="text-on-surface font-semibold">452,103</span>
+</div>
+<div class="pt-3 border-t border-outline-variant flex gap-2">
+<button class="flex-1 py-2 bg-primary text-on-primary rounded-lg text-label-sm font-label-sm hover:opacity-90 transition-all">Edit Details</button>
+<button class="p-2 border border-outline-variant rounded-lg text-on-surface-variant hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="md:col-span-6 lg:col-span-4 bento-cell bg-white rounded-xl scheme-card-shadow overflow-hidden flex flex-col">
+<div class="h-32 relative">
+<div class="absolute inset-0 bg-primary/10"></div>
+<img class="w-full h-full object-cover" data-alt="A brightly lit, modern Indian classroom with young students using tablets and laptops. The atmosphere is optimistic and tech-forward, featuring a soft color palette of light blues and warm wooden textures, emphasizing education and digital empowerment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnSypze0T5YffvGMRn4mT2UZTzKgHRsnu9i0HvOeGJh5w5O3fHKtFWOnpMvcEQRC6KGXNaeyM9iHwKX5le5MiWdddFQc6o4lYEInuvPS1wd8lUkmtVllnf2JiS0wNHnlFgk4LkJ65QRh3le49gAYNWcp_vvTmoVtNUk5lYOsyDeuC0puLj6nZZwKbjNYcyB6tuGfNWdLADOTZOXoT5QRyzVXdXpD6Cpvf8Qh-TitDZbu8B3rNNBq93l4mQaQEVhqnu205Sj3CSLyEL"/>
+<div class="absolute top-3 right-3">
+<span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-label-sm font-label-sm flex items-center">
+<span class="w-1.5 h-1.5 bg-green-600 rounded-full mr-2"></span>
+                                Active
+                            </span>
+</div>
+</div>
+<div class="p-md flex flex-col flex-1">
+<div class="mb-xs">
+<span class="text-[10px] uppercase font-bold tracking-widest text-primary">Education</span>
+<h3 class="font-headline-md text-headline-md text-on-surface mt-1">Beti Bachao Beti Padhao</h3>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant line-clamp-2 mb-md">A social campaign of the Government of India that aims to generate awareness and improve efficiency.</p>
+<div class="mt-auto space-y-3">
+<div class="flex justify-between items-center text-label-sm">
+<span class="text-on-surface-variant">Target Audience</span>
+<span class="text-on-surface font-semibold">Girl Child (U18)</span>
+</div>
+<div class="flex justify-between items-center text-label-sm">
+<span class="text-on-surface-variant">Current Applications</span>
+<span class="text-on-surface font-semibold">289,500</span>
+</div>
+<div class="pt-3 border-t border-outline-variant flex gap-2">
+<button class="flex-1 py-2 bg-primary text-on-primary rounded-lg text-label-sm font-label-sm hover:opacity-90 transition-all">Edit Details</button>
+<button class="p-2 border border-outline-variant rounded-lg text-on-surface-variant hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="md:col-span-6 lg:col-span-4 bento-cell bg-white rounded-xl scheme-card-shadow overflow-hidden flex flex-col">
+<div class="h-32 relative">
+<div class="absolute inset-0 bg-primary/10"></div>
+<img class="w-full h-full object-cover" data-alt="A minimalist architectural shot of a clean, white modern clinic in a rural setting, surrounded by flowering plants. The image should feel clinical yet welcoming, with soft shadows and high-key lighting to represent healthcare accessibility and purity in a corporate visual language." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMY1xjBdB2P9cawJfBPytUBN1nJo-Rl1MbqvrUr6AfsBcjIW9BbCN95GYTknj1ZMWeS6z_hPZQsKRzBM7eJe5JzG2Md7Mx5fEf2SmJmrp85Av3uf0GAF_Ro1ctfEz9SWc7fpNiB2vvELUXHqcmotRRjInKRu-KbFaCetfVMZTdEaUZGqDYcUtPLwu8H7nYhu3neLP2xnLTazmQ_Ukiwug5LIQROu1Km60q9F0eZ6zPIgivBmSLj3z5IQtmOLCdFMWaF-zgz6Qhwz9S"/>
+<div class="absolute top-3 right-3">
+<span class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-label-sm font-label-sm flex items-center">
+<span class="w-1.5 h-1.5 bg-gray-500 rounded-full mr-2"></span>
+                                Inactive
+                            </span>
+</div>
+</div>
+<div class="p-md flex flex-col flex-1">
+<div class="mb-xs">
+<span class="text-[10px] uppercase font-bold tracking-widest text-primary">Healthcare</span>
+<h3 class="font-headline-md text-headline-md text-on-surface mt-1">Ayushman Bharat</h3>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant line-clamp-2 mb-md">PM-JAY provides health cover of ₹5 lakh per family per year for secondary and tertiary care.</p>
+<div class="mt-auto space-y-3">
+<div class="flex justify-between items-center text-label-sm">
+<span class="text-on-surface-variant">Target Audience</span>
+<span class="text-on-surface font-semibold">Low Income Families</span>
+</div>
+<div class="flex justify-between items-center text-label-sm">
+<span class="text-on-surface-variant">Current Applications</span>
+<span class="text-on-surface font-semibold">812,000</span>
+</div>
+<div class="pt-3 border-t border-outline-variant flex gap-2">
+<button class="flex-1 py-2 bg-primary text-on-primary rounded-lg text-label-sm font-label-sm hover:opacity-90 transition-all">Edit Details</button>
+<button class="p-2 border border-outline-variant rounded-lg text-on-surface-variant hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Detailed Table View (Alternative) -->
+<div class="md:col-span-12 bg-white rounded-xl scheme-card-shadow overflow-hidden mt-lg">
+<div class="px-6 py-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low/30">
+<h3 class="font-headline-md text-label-md font-bold text-on-surface">All Managed Schemes</h3>
+<div class="flex space-x-2">
+<button class="text-label-sm font-label-sm text-primary flex items-center px-3 py-1 rounded hover:bg-primary-container/10">
+<span class="material-symbols-outlined text-[18px] mr-1">download</span> Export CSV
+                            </button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low/50 text-on-surface-variant font-label-sm text-label-sm border-b border-outline-variant">
+<tr>
+<th class="px-6 py-3 font-semibold">Scheme Name</th>
+<th class="px-6 py-3 font-semibold">Category</th>
+<th class="px-6 py-3 font-semibold">Target Audience</th>
+<th class="px-6 py-3 font-semibold text-center">Status</th>
+<th class="px-6 py-3 font-semibold text-right">Apps</th>
+<th class="px-6 py-3"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-low/20 transition-colors">
+<td class="px-6 py-4">
+<p class="font-label-md text-on-surface">Ujjwala Yojana</p>
+<p class="text-[12px] text-on-surface-variant">LPG connections to BPL families</p>
+</td>
+<td class="px-6 py-4">
+<span class="text-label-sm text-on-surface">Energy</span>
+</td>
+<td class="px-6 py-4">
+<span class="text-label-sm text-on-surface">Rural Women</span>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="bg-green-50 text-green-700 px-2 py-0.5 rounded text-[11px] font-bold">ACTIVE</span>
+</td>
+<td class="px-6 py-4 text-right font-semibold">142k</td>
+<td class="px-6 py-4 text-right">
+<button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined">edit</span></button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low/20 transition-colors">
+<td class="px-6 py-4">
+<p class="font-label-md text-on-surface">Jan Dhan Yojana</p>
+<p class="text-[12px] text-on-surface-variant">Universal access to banking</p>
+</td>
+<td class="px-6 py-4">
+<span class="text-label-sm text-on-surface">Finance</span>
+</td>
+<td class="px-6 py-4">
+<span class="text-label-sm text-on-surface">All Citizens</span>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="bg-green-50 text-green-700 px-2 py-0.5 rounded text-[11px] font-bold">ACTIVE</span>
+</td>
+<td class="px-6 py-4 text-right font-semibold">500k+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined">edit</span></button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low/20 transition-colors">
+<td class="px-6 py-4">
+<p class="font-label-md text-on-surface">Skill India</p>
+<p class="text-[12px] text-on-surface-variant">Skill development initiative</p>
+</td>
+<td class="px-6 py-4">
+<span class="text-label-sm text-on-surface">Employment</span>
+</td>
+<td class="px-6 py-4">
+<span class="text-label-sm text-on-surface">Youth (18-35)</span>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="bg-orange-50 text-orange-700 px-2 py-0.5 rounded text-[11px] font-bold">DRAFT</span>
+</td>
+<td class="px-6 py-4 text-right font-semibold">0</td>
+<td class="px-6 py-4 text-right">
+<button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined">edit</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-6 py-4 bg-surface-container-low/30 border-t border-outline-variant flex justify-between items-center">
+<p class="text-label-sm text-on-surface-variant">Showing 1-10 of 124 schemes</p>
+<div class="flex space-x-2">
+<button class="px-3 py-1 border border-outline-variant rounded text-label-sm hover:bg-white">Previous</button>
+<button class="px-3 py-1 bg-primary text-on-primary rounded text-label-sm">Next</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="p-6 text-center text-label-sm text-on-surface-variant">
+            © 2024 Bharat Sewa AI Administration Portal. All rights reserved. Version 2.4.0
+        </footer>
+</main>
+<!-- Floating Voice Assistant (Admin Help) -->
+<button class="fixed bottom-lg right-lg w-16 h-16 bg-[#F97316] text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-50">
+<span class="material-symbols-outlined text-[32px]">mic</span>
+<div class="absolute -top-2 -right-2 bg-primary text-[10px] px-2 py-1 rounded-full border-2 border-white">AI HELP</div>
+</button>
+<script>
+        // Micro-interactions and effects
+        document.querySelectorAll('.bento-cell').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.borderColor = 'var(--primary)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.borderColor = '#E2E8F0';
+            });
+        });
+
+        // Simple Search Filter Simulation
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('input', (e) => {
+            console.log('Searching for:', e.target.value);
+            // Implement visual filtering logic here if needed
+        });
+    </script>
+</body></html>

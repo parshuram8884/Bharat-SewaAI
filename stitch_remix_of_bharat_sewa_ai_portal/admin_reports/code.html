@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Reports - Bharat Sewa AI Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-fixed": "#ffdbca",
+                      "on-tertiary": "#ffffff",
+                      "on-tertiary-fixed-variant": "#783200",
+                      "on-error": "#ffffff",
+                      "on-primary-container": "#8aa4cf",
+                      "primary-fixed": "#d5e3ff",
+                      "on-tertiary-container": "#ff8031",
+                      "outline": "#74777f",
+                      "secondary-fixed-dim": "#b4c5ff",
+                      "surface-bright": "#faf8ff",
+                      "on-secondary-fixed": "#00174b",
+                      "primary-container": "#1e3a5f",
+                      "surface-variant": "#dae2fd",
+                      "surface-container-lowest": "#ffffff",
+                      "on-surface": "#131b2e",
+                      "error": "#ba1a1a",
+                      "tertiary-fixed-dim": "#ffb690",
+                      "surface-container-low": "#f2f3ff",
+                      "on-secondary-container": "#fefcff",
+                      "on-error-container": "#93000a",
+                      "on-secondary": "#ffffff",
+                      "surface-container-high": "#e2e7ff",
+                      "surface-container-highest": "#dae2fd",
+                      "on-surface-variant": "#43474e",
+                      "inverse-surface": "#283044",
+                      "surface-container": "#eaedff",
+                      "primary-fixed-dim": "#adc8f5",
+                      "on-primary-fixed-variant": "#2d486d",
+                      "on-tertiary-fixed": "#341100",
+                      "inverse-on-surface": "#eef0ff",
+                      "surface": "#faf8ff",
+                      "on-background": "#131b2e",
+                      "surface-tint": "#455f87",
+                      "secondary": "#0051d5",
+                      "on-secondary-fixed-variant": "#003ea8",
+                      "secondary-fixed": "#dbe1ff",
+                      "secondary-container": "#316bf3",
+                      "on-primary-fixed": "#001c3b",
+                      "background": "#faf8ff",
+                      "on-primary": "#ffffff",
+                      "primary": "#022448",
+                      "outline-variant": "#c4c6cf",
+                      "error-container": "#ffdad6",
+                      "tertiary": "#411800",
+                      "tertiary-container": "#632800",
+                      "inverse-primary": "#adc8f5",
+                      "surface-dim": "#d2d9f4"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "lg": "24px",
+                      "sm": "12px",
+                      "xs": "8px",
+                      "xl": "32px",
+                      "touch-target-min": "44px",
+                      "md": "16px",
+                      "base": "4px",
+                      "2xl": "48px"
+              },
+              "fontFamily": {
+                      "label-sm": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-md": ["Manrope"],
+                      "headline-xl-mobile": ["Manrope"],
+                      "headline-lg-mobile": ["Manrope"],
+                      "label-md": ["Inter"],
+                      "body-md": ["Inter"],
+                      "headline-xl": ["Manrope"],
+                      "headline-lg": ["Manrope"]
+              },
+              "fontSize": {
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "headline-xl-mobile": ["30px", {"lineHeight": "36px", "fontWeight": "700"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .chart-gradient-primary {
+            background: linear-gradient(180deg, rgba(2, 36, 72, 0.1) 0%, rgba(2, 36, 72, 0) 100%);
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+        }
+        @keyframes fill-gauge {
+            from { stroke-dasharray: 0 100; }
+        }
+        .animate-gauge {
+            animation: fill-gauge 1.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md overflow-x-hidden">
+<!-- Side Navigation Shell -->
+<aside class="bg-primary dark:bg-surface-container-lowest h-screen w-64 fixed left-0 top-0 border-r border-outline-variant dark:border-outline shadow-sm flex flex-col h-full py-4 z-50">
+<div class="px-6 mb-8">
+<h1 class="text-headline-md font-headline-md font-bold text-on-primary dark:text-primary">Bharat Sewa AI</h1>
+<p class="text-label-sm text-on-primary/60">Admin Portal</p>
+</div>
+<nav class="flex-1 space-y-1">
+<div class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer active:scale-95 transition-colors duration-200">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</div>
+<div class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer active:scale-95 transition-colors duration-200">
+<span class="material-symbols-outlined mr-3">description</span>
+<span class="font-label-md text-label-md">Applications</span>
+</div>
+<div class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer active:scale-95 transition-colors duration-200">
+<span class="material-symbols-outlined mr-3">report_problem</span>
+<span class="font-label-md text-label-md">Complaints</span>
+</div>
+<div class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer active:scale-95 transition-colors duration-200">
+<span class="material-symbols-outlined mr-3">group</span>
+<span class="font-label-md text-label-md">Citizens</span>
+</div>
+<div class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer active:scale-95 transition-colors duration-200">
+<span class="material-symbols-outlined mr-3">account_balance</span>
+<span class="font-label-md text-label-md">Schemes</span>
+</div>
+<div class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer active:scale-95 transition-colors duration-200">
+<span class="material-symbols-outlined mr-3">folder_open</span>
+<span class="font-label-md text-label-md">Documents</span>
+</div>
+<!-- Active State: Analytics -->
+<div class="bg-secondary-container text-on-secondary-container rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer active:scale-95">
+<span class="material-symbols-outlined mr-3">analytics</span>
+<span class="font-label-md text-label-md">Analytics</span>
+</div>
+<div class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer active:scale-95 transition-colors duration-200">
+<span class="material-symbols-outlined mr-3">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</div>
+</nav>
+</aside>
+<!-- Top Navigation Shell -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 bg-surface dark:bg-surface-dim border-b border-outline-variant dark:border-outline flex justify-between items-center px-6 z-40">
+<div class="flex items-center flex-1 max-w-xl">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full pl-10 pr-4 py-2 text-body-md focus:ring-2 focus:ring-primary" placeholder="Search analytics, reports, or citizen records..." type="text"/>
+</div>
+</div>
+<div class="flex items-center space-x-6">
+<button class="relative hover:bg-surface-container-low p-2 rounded-full transition-all">
+<span class="material-symbols-outlined text-primary">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="hover:bg-surface-container-low p-2 rounded-full transition-all">
+<span class="material-symbols-outlined text-primary">history</span>
+</button>
+<div class="flex items-center space-x-3 border-l pl-6 border-outline-variant">
+<div class="text-right">
+<p class="font-label-md text-on-surface">Admin User</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Super Administrator</p>
+</div>
+<img class="w-10 h-10 rounded-full border-2 border-primary-container object-cover" data-alt="A professional headshot of a middle-aged South Asian male administrator in a light grey business suit, looking confident and friendly. The background is a clean, modern office environment with soft natural lighting and a hint of a digital dashboard on a screen behind him. The image quality is high-resolution, conveying trust and bureaucratic reliability in a modern government tech portal." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCK_XzD5_uLzrZd2Unk_7BMaO36MGrYYAHnDXWaaILpdakHgs4yPYb9Qw7oJ2q8Z1lWu6PzaVVb_CeEAFagBBqg0QV6SKIt5u9TNxcWJ-PItHG0fn1oZ1YyyiDxiQ8rZWk8f_G2OPLpKttBpJbVKpXVEIQd0huMbjDxxYH8zkCGRRI9sSFNc1UXABiYqq8owEVhxQU0UReMTAzZo9Gptjj6bxVX7vAhdjDzHqUU21B2WVJVwJXuLf_3M_c0890bRMDjOcsMx0nIae7N"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-24 pb-12 px-8 min-h-screen">
+<!-- Dashboard Header -->
+<div class="flex justify-between items-end mb-8">
+<div>
+<nav class="flex text-label-sm text-on-surface-variant mb-2">
+<span>Analytics</span>
+<span class="mx-2">/</span>
+<span class="text-primary font-bold">Comprehensive Reports</span>
+</nav>
+<h2 class="font-headline-lg text-headline-lg text-primary">Service Performance Insights</h2>
+<p class="text-body-md text-on-surface-variant">Real-time monitoring of Bharat Sewa AI ecosystem efficiency.</p>
+</div>
+<div class="flex space-x-3">
+<button class="flex items-center px-4 py-2 bg-surface-container-high text-primary rounded-lg font-label-md border border-outline-variant hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined mr-2">calendar_today</span>
+                    Last 30 Days
+                </button>
+<button class="flex items-center px-6 py-2 bg-primary text-on-primary rounded-lg font-label-md shadow-md hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined mr-2">download</span>
+                    Export PDF Report
+                </button>
+</div>
+</div>
+<!-- Reports Bento Grid -->
+<div class="bento-grid">
+<!-- Application Completion Rate (Gauge) -->
+<div class="col-span-12 md:col-span-4 bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm relative overflow-hidden">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-tight">App Completion Rate</h3>
+<p class="text-headline-md font-headline-md text-primary">87.4%</p>
+</div>
+<span class="material-symbols-outlined text-secondary bg-secondary-fixed p-2 rounded-lg">assignment_turned_in</span>
+</div>
+<div class="relative h-40 flex items-center justify-center">
+<svg class="w-32 h-32 transform -rotate-90" viewbox="0 0 36 36">
+<path class="text-surface-container-high" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="100, 100" stroke-width="3"></path>
+<path class="text-secondary animate-gauge" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="87.4, 100" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-primary font-bold text-lg">+2.1%</span>
+<span class="text-[10px] text-on-surface-variant">vs Last Month</span>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-outline-variant flex justify-between text-label-sm">
+<span class="text-on-surface-variant">Total Initiated: 1.2M</span>
+<span class="text-on-surface-variant">Completed: 1.05M</span>
+</div>
+</div>
+<!-- AI Recommendation Success (Bar Chart) -->
+<div class="col-span-12 md:col-span-8 bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm">
+<div class="flex justify-between items-start mb-8">
+<div>
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase">AI Recommendation Success</h3>
+<p class="text-body-md text-on-surface-variant">Citizen acceptance of AI-suggested schemes</p>
+</div>
+<div class="flex items-center space-x-2">
+<span class="inline-block w-3 h-3 rounded-full bg-primary"></span>
+<span class="text-label-sm">Accepted</span>
+<span class="inline-block w-3 h-3 rounded-full bg-surface-container-highest ml-4"></span>
+<span class="text-label-sm">Ignored</span>
+</div>
+</div>
+<div class="h-48 flex items-end justify-between space-x-4 px-2">
+<!-- Week Columns -->
+<div class="flex-1 flex flex-col items-center">
+<div class="w-full flex flex-col justify-end h-full gap-1">
+<div class="bg-surface-container-highest w-full rounded-t-sm" style="height: 15%"></div>
+<div class="bg-primary w-full rounded-t-sm" style="height: 65%"></div>
+</div>
+<span class="mt-3 text-[10px] text-on-surface-variant">WK 1</span>
+</div>
+<div class="flex-1 flex flex-col items-center">
+<div class="w-full flex flex-col justify-end h-full gap-1">
+<div class="bg-surface-container-highest w-full rounded-t-sm" style="height: 10%"></div>
+<div class="bg-primary w-full rounded-t-sm" style="height: 78%"></div>
+</div>
+<span class="mt-3 text-[10px] text-on-surface-variant">WK 2</span>
+</div>
+<div class="flex-1 flex flex-col items-center">
+<div class="w-full flex flex-col justify-end h-full gap-1">
+<div class="bg-surface-container-highest w-full rounded-t-sm" style="height: 12%"></div>
+<div class="bg-primary w-full rounded-t-sm" style="height: 72%"></div>
+</div>
+<span class="mt-3 text-[10px] text-on-surface-variant">WK 3</span>
+</div>
+<div class="flex-1 flex flex-col items-center">
+<div class="w-full flex flex-col justify-end h-full gap-1">
+<div class="bg-surface-container-highest w-full rounded-t-sm" style="height: 8%"></div>
+<div class="bg-primary w-full rounded-t-sm" style="height: 85%"></div>
+</div>
+<span class="mt-3 text-[10px] text-on-surface-variant">WK 4</span>
+</div>
+<div class="flex-1 flex flex-col items-center">
+<div class="w-full flex flex-col justify-end h-full gap-1">
+<div class="bg-surface-container-highest w-full rounded-t-sm" style="height: 18%"></div>
+<div class="bg-primary w-full rounded-t-sm" style="style_interaction_height: 62%"></div>
+</div>
+<span class="mt-3 text-[10px] text-on-surface-variant">WK 5</span>
+</div>
+</div>
+</div>
+<!-- Average Processing Time (Metric Card) -->
+<div class="col-span-12 md:col-span-4 bg-primary text-on-primary rounded-xl p-6 shadow-md flex flex-col justify-between">
+<div>
+<h3 class="text-on-primary/70 font-label-md uppercase text-xs tracking-widest mb-1">Avg Processing Time</h3>
+<p class="text-headline-xl font-bold">14.2 <span class="text-lg font-normal">Hrs</span></p>
+</div>
+<div class="mt-8 flex items-end space-x-1 h-12">
+<div class="flex-1 bg-on-primary/20 h-4 rounded-sm"></div>
+<div class="flex-1 bg-on-primary/20 h-6 rounded-sm"></div>
+<div class="flex-1 bg-on-primary/20 h-8 rounded-sm"></div>
+<div class="flex-1 bg-on-primary/40 h-10 rounded-sm"></div>
+<div class="flex-1 bg-secondary-fixed-dim h-12 rounded-sm"></div>
+<div class="flex-1 bg-on-primary/40 h-10 rounded-sm"></div>
+<div class="flex-1 bg-on-primary/20 h-7 rounded-sm"></div>
+</div>
+<div class="mt-4 flex items-center text-label-sm">
+<span class="material-symbols-outlined text-green-400 mr-1 text-sm">trending_down</span>
+<span class="text-green-400 font-bold">-4.5h</span>
+<span class="text-on-primary/60 ml-2">from last quarter</span>
+</div>
+</div>
+<!-- Complaint Resolution Rate (Mini Board) -->
+<div class="col-span-12 md:col-span-4 bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase mb-4">Complaint Resolution</h3>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between text-label-sm mb-1">
+<span class="text-on-surface font-semibold">Critical / 24h</span>
+<span class="text-primary font-bold">98%</span>
+</div>
+<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-error h-full rounded-full" style="width: 98%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-label-sm mb-1">
+<span class="text-on-surface font-semibold">Standard / 7d</span>
+<span class="text-primary font-bold">92%</span>
+</div>
+<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 92%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-label-sm mb-1">
+<span class="text-on-surface font-semibold">General Inquiry</span>
+<span class="text-primary font-bold">85%</span>
+</div>
+<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 85%"></div>
+</div>
+</div>
+</div>
+<div class="mt-6 flex items-center justify-between">
+<div class="text-center">
+<p class="text-headline-md text-primary font-bold">1,402</p>
+<p class="text-[10px] text-on-surface-variant uppercase">Resolved Today</p>
+</div>
+<div class="h-8 w-px bg-outline-variant"></div>
+<div class="text-center">
+<p class="text-headline-md text-on-surface-variant font-bold">48</p>
+<p class="text-[10px] text-on-surface-variant uppercase">Pending</p>
+</div>
+</div>
+</div>
+<!-- Document Verification Rate (Glass Card) -->
+<div class="col-span-12 md:col-span-4 glass-effect border border-outline-variant rounded-xl p-6 shadow-sm bg-surface-bright/50">
+<div class="flex items-center space-x-3 mb-6">
+<div class="w-10 h-10 rounded-full bg-tertiary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary">verified_user</span>
+</div>
+<h3 class="font-label-md text-label-md text-on-surface font-bold">Auto-Verification Rate</h3>
+</div>
+<p class="text-headline-xl font-bold text-tertiary">76.8%</p>
+<p class="text-body-md text-on-surface-variant mb-6">Digital documents verified by AI without human intervention.</p>
+<div class="grid grid-cols-2 gap-4">
+<div class="p-3 bg-white/40 border border-white/60 rounded-lg">
+<span class="text-[10px] text-on-surface-variant uppercase block mb-1">Aadhaar</span>
+<span class="font-bold text-primary">99.2%</span>
+</div>
+<div class="p-3 bg-white/40 border border-white/60 rounded-lg">
+<span class="text-[10px] text-on-surface-variant uppercase block mb-1">Income Cert</span>
+<span class="font-bold text-primary">64.5%</span>
+</div>
+</div>
+</div>
+<!-- Language Usage (Hindi vs English vs Regional) (Horizontal Bar) -->
+<div class="col-span-12 md:col-span-7 bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase mb-6">Language Demographic Distribution</h3>
+<div class="space-y-6">
+<div class="relative">
+<div class="flex h-12 w-full rounded-lg overflow-hidden border border-outline-variant/30">
+<div class="bg-primary h-full relative group cursor-pointer" style="width: 52%">
+<span class="absolute inset-0 flex items-center justify-center text-on-primary font-bold text-sm">HINDI (52%)</span>
+</div>
+<div class="bg-secondary h-full relative group cursor-pointer" style="width: 28%">
+<span class="absolute inset-0 flex items-center justify-center text-on-secondary font-bold text-sm">ENG (28%)</span>
+</div>
+<div class="bg-tertiary-fixed-dim h-full relative group cursor-pointer" style="width: 20%">
+<span class="absolute inset-0 flex items-center justify-center text-tertiary font-bold text-sm">REG (20%)</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-4">
+<div class="flex items-center space-x-2">
+<div class="w-3 h-3 rounded-full bg-primary"></div>
+<div>
+<p class="text-label-sm font-bold">Hindi</p>
+<p class="text-[10px] text-on-surface-variant">Rising in North India</p>
+</div>
+</div>
+<div class="flex items-center space-x-2">
+<div class="w-3 h-3 rounded-full bg-secondary"></div>
+<div>
+<p class="text-label-sm font-bold">English</p>
+<p class="text-[10px] text-on-surface-variant">Steady in Tier-1 cities</p>
+</div>
+</div>
+<div class="flex items-center space-x-2">
+<div class="w-3 h-3 rounded-full bg-tertiary-fixed-dim"></div>
+<div>
+<p class="text-label-sm font-bold">Regional</p>
+<p class="text-[10px] text-on-surface-variant">Bengali &amp; Telugu leads</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Voice vs Text Interaction (Interactive Toggle Mock) -->
+<div class="col-span-12 md:col-span-5 bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm overflow-hidden flex flex-col">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase">Interaction Preference</h3>
+<div class="bg-surface-container-high p-1 rounded-full flex">
+<button class="px-3 py-1 bg-white rounded-full text-[10px] font-bold shadow-sm">Daily</button>
+<button class="px-3 py-1 text-[10px] font-bold text-on-surface-variant">Weekly</button>
+</div>
+</div>
+<div class="flex-1 flex flex-col justify-center">
+<div class="flex items-center space-x-4 mb-4">
+<div class="w-12 h-12 bg-on-tertiary-container/10 flex items-center justify-center rounded-xl text-on-tertiary-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">mic</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between mb-1">
+<span class="font-bold text-primary">Voice Commands</span>
+<span class="text-on-surface-variant">62%</span>
+</div>
+<div class="w-full bg-surface-container-high h-3 rounded-full">
+<div class="bg-on-tertiary-container h-full rounded-full" style="width: 62%"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center space-x-4">
+<div class="w-12 h-12 bg-primary-container/10 flex items-center justify-center rounded-xl text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">keyboard</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between mb-1">
+<span class="font-bold text-primary">Text Interface</span>
+<span class="text-on-surface-variant">38%</span>
+</div>
+<div class="w-full bg-surface-container-high h-3 rounded-full">
+<div class="bg-primary h-full rounded-full" style="width: 38%"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-6 p-4 bg-surface-container-low rounded-lg border border-outline-variant/50">
+<p class="text-label-sm text-primary italic">"Voice interaction is the preferred method for citizens in rural districts using local dialects."</p>
+</div>
+</div>
+</div>
+<!-- Recent Activity Footer Table -->
+<div class="mt-8 bg-white border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+<div class="p-6 border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-headline-md text-primary">State-wise Performance Metrics</h3>
+<button class="text-primary font-label-md flex items-center hover:underline">
+                    View All States
+                    <span class="material-symbols-outlined ml-1">chevron_right</span>
+</button>
+</div>
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low text-[11px] uppercase tracking-wider text-on-surface-variant">
+<tr>
+<th class="px-6 py-4 font-bold">State Name</th>
+<th class="px-6 py-4 font-bold text-center">Processing Eff.</th>
+<th class="px-6 py-4 font-bold text-center">AI Trust Score</th>
+<th class="px-6 py-4 font-bold text-center">Daily Users</th>
+<th class="px-6 py-4 font-bold text-right">Trend</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-4 font-bold text-on-surface">Uttar Pradesh</td>
+<td class="px-6 py-4 text-center">
+<span class="px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold">Excellent</span>
+</td>
+<td class="px-6 py-4 text-center text-on-surface-variant">92%</td>
+<td class="px-6 py-4 text-center text-on-surface-variant">420,500</td>
+<td class="px-6 py-4 text-right text-green-600">
+<span class="material-symbols-outlined text-sm align-middle">trending_up</span> 12%
+                        </td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-4 font-bold text-on-surface">Maharashtra</td>
+<td class="px-6 py-4 text-center">
+<span class="px-2 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold">Stable</span>
+</td>
+<td class="px-6 py-4 text-center text-on-surface-variant">88%</td>
+<td class="px-6 py-4 text-center text-on-surface-variant">385,200</td>
+<td class="px-6 py-4 text-right text-green-600">
+<span class="material-symbols-outlined text-sm align-middle">trending_up</span> 4%
+                        </td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-4 font-bold text-on-surface">Bihar</td>
+<td class="px-6 py-4 text-center">
+<span class="px-2 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold">Pending Opt.</span>
+</td>
+<td class="px-6 py-4 text-center text-on-surface-variant">74%</td>
+<td class="px-6 py-4 text-center text-on-surface-variant">210,100</td>
+<td class="px-6 py-4 text-right text-error">
+<span class="material-symbols-outlined text-sm align-middle">trending_down</span> 2%
+                        </td>
+</tr>
+</tbody>
+</table>
+</div>
+</main>
+<script>
+        // Micro-interaction for hover effects on bento cards
+        document.querySelectorAll('.bento-grid > div').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.classList.add('shadow-md');
+                card.style.transform = 'translateY(-2px)';
+                card.style.transition = 'all 0.3s ease';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.classList.remove('shadow-md');
+                card.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body></html>

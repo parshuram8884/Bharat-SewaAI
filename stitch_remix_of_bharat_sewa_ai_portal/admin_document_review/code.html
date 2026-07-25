@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Document Review - Bharat Sewa AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#ffdbca",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#783200",
+                    "on-error": "#ffffff",
+                    "on-primary-container": "#8aa4cf",
+                    "primary-fixed": "#d5e3ff",
+                    "on-tertiary-container": "#ff8031",
+                    "outline": "#74777f",
+                    "secondary-fixed-dim": "#b4c5ff",
+                    "surface-bright": "#faf8ff",
+                    "on-secondary-fixed": "#00174b",
+                    "primary-container": "#1e3a5f",
+                    "surface-variant": "#dae2fd",
+                    "surface-container-lowest": "#ffffff",
+                    "on-surface": "#131b2e",
+                    "error": "#ba1a1a",
+                    "tertiary-fixed-dim": "#ffb690",
+                    "surface-container-low": "#f2f3ff",
+                    "on-secondary-container": "#fefcff",
+                    "on-error-container": "#93000a",
+                    "on-secondary": "#ffffff",
+                    "surface-container-high": "#e2e7ff",
+                    "surface-container-highest": "#dae2fd",
+                    "on-surface-variant": "#43474e",
+                    "inverse-surface": "#283044",
+                    "surface-container": "#eaedff",
+                    "primary-fixed-dim": "#adc8f5",
+                    "on-primary-fixed-variant": "#2d486d",
+                    "on-tertiary-fixed": "#341100",
+                    "inverse-on-surface": "#eef0ff",
+                    "surface": "#faf8ff",
+                    "on-background": "#131b2e",
+                    "surface-tint": "#455f87",
+                    "secondary": "#0051d5",
+                    "on-secondary-fixed-variant": "#003ea8",
+                    "secondary-fixed": "#dbe1ff",
+                    "secondary-container": "#316bf3",
+                    "on-primary-fixed": "#001c3b",
+                    "background": "#faf8ff",
+                    "on-primary": "#ffffff",
+                    "primary": "#022448",
+                    "outline-variant": "#c4c6cf",
+                    "error-container": "#ffdad6",
+                    "tertiary": "#411800",
+                    "tertiary-container": "#632800",
+                    "inverse-primary": "#adc8f5",
+                    "surface-dim": "#d2d9f4"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "lg": "24px",
+                    "sm": "12px",
+                    "xs": "8px",
+                    "xl": "32px",
+                    "touch-target-min": "44px",
+                    "md": "16px",
+                    "base": "4px",
+                    "2xl": "48px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-md": ["Manrope"],
+                    "headline-xl-mobile": ["Manrope"],
+                    "headline-lg-mobile": ["Manrope"],
+                    "label-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-xl": ["Manrope"],
+                    "headline-lg": ["Manrope"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-xl-mobile": ["30px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen">
+<!-- Side Navigation Shell -->
+<aside class="bg-primary h-screen w-64 fixed left-0 top-0 border-r border-outline-variant flex flex-col py-4 z-50">
+<div class="px-6 mb-8">
+<h1 class="text-headline-md font-headline-md font-bold text-on-primary">Bharat Sewa AI</h1>
+<p class="text-label-sm text-on-primary/60">Admin Portal</p>
+</div>
+<nav class="flex-1 space-y-1">
+<div class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer transition-colors duration-200">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</div>
+<div class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer transition-colors duration-200">
+<span class="material-symbols-outlined mr-3">description</span>
+<span class="font-label-md text-label-md">Applications</span>
+</div>
+<div class="bg-secondary-container text-on-secondary-container rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer active:scale-95 transition-all">
+<span class="material-symbols-outlined mr-3">folder_open</span>
+<span class="font-label-md text-label-md">Documents</span>
+</div>
+<div class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer transition-colors duration-200">
+<span class="material-symbols-outlined mr-3">report_problem</span>
+<span class="font-label-md text-label-md">Complaints</span>
+</div>
+<div class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer transition-colors duration-200">
+<span class="material-symbols-outlined mr-3">group</span>
+<span class="font-label-md text-label-md">Citizens</span>
+</div>
+<div class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer transition-colors duration-200">
+<span class="material-symbols-outlined mr-3">account_balance</span>
+<span class="font-label-md text-label-md">Schemes</span>
+</div>
+<div class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer transition-colors duration-200">
+<span class="material-symbols-outlined mr-3">analytics</span>
+<span class="font-label-md text-label-md">Analytics</span>
+</div>
+<div class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer transition-colors duration-200">
+<span class="material-symbols-outlined mr-3">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</div>
+</nav>
+<div class="px-6 py-4 mt-auto border-t border-on-primary/10">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center text-primary font-bold">JD</div>
+<div>
+<p class="text-label-md text-on-primary">Admin User</p>
+<p class="text-xs text-on-primary/50">Level 3 Officer</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Top Navigation Bar Shell -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 bg-surface flex justify-between items-center px-6 z-40 border-b border-outline-variant">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer">arrow_back</span>
+<h2 class="font-headline-md text-headline-md text-primary">Document Review</h2>
+</div>
+<div class="flex items-center space-x-6">
+<div class="relative group">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors">notifications</span>
+<span class="absolute -top-1 -right-1 w-2 h-2 bg-error rounded-full"></span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors">history</span>
+<div class="h-8 w-[1px] bg-outline-variant"></div>
+<div class="flex items-center space-x-3 cursor-pointer group">
+<img class="w-8 h-8 rounded-full border border-outline-variant object-cover" data-alt="A clean professional headshot of a government administrator wearing business casual attire, set against a soft blurred office background with warm lighting, 4k digital photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQDA_wMBGoCGOibGTGp1JNI5VS4q276gMad0Op94iGEiKNxK1dP9LXmGf51gzK34McLkaiwjxINrmSQyLFNAAB3c5Z6d-EsrAtFFCqyaqva9DK4w_kJ4cHM2UlHQkNLfK7xBTnyx4Vpv4esNGDqGVGvZ5GjT1sPrnZuxoRMBkHRnBBx7HYiJya74hgAdu_2_PMME0MQ6z3snqpKjRKVC5sCJUXfjfQpGXJB_Rj48Ex_ofyg9rDHL5Y0ofPtRHOEAS4OUTSALRrp3_2"/>
+<span class="font-label-md text-on-surface-variant group-hover:text-primary transition-colors">Admin Portal</span>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-16 p-lg h-screen overflow-hidden flex flex-col">
+<!-- Breadcrumbs & Context -->
+<div class="flex items-center justify-between mb-lg">
+<div class="space-y-1">
+<div class="flex items-center space-x-2 text-label-sm text-on-surface-variant">
+<span>Applications</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span>#APP-98421</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-primary font-bold">Aadhaar Verification</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface">Rajesh Kumar Sharma</h3>
+</div>
+<div class="flex items-center gap-md">
+<span class="px-4 py-1.5 rounded-full bg-secondary-fixed text-primary text-label-md font-semibold">In Progress</span>
+<span class="text-label-sm text-on-surface-variant">Last updated: 14 mins ago</span>
+</div>
+</div>
+<!-- Two-Column Review Layout -->
+<div class="flex-1 grid grid-cols-12 gap-lg overflow-hidden">
+<!-- Left: Document Preview Pane (7 Columns) -->
+<div class="col-span-7 flex flex-col h-full space-y-md">
+<div class="glass-panel rounded-xl flex-1 relative overflow-hidden flex flex-col shadow-sm">
+<!-- Toolbar -->
+<div class="p-sm bg-surface-container-low border-b border-outline-variant flex justify-between items-center">
+<div class="flex space-x-2">
+<button class="p-2 hover:bg-surface-container-high rounded-lg transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">zoom_in</span>
+</button>
+<button class="p-2 hover:bg-surface-container-high rounded-lg transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">zoom_out</span>
+</button>
+<button class="p-2 hover:bg-surface-container-high rounded-lg transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">rotate_right</span>
+</button>
+</div>
+<div class="flex items-center space-x-2">
+<span class="text-label-md font-medium px-3 py-1 bg-primary text-on-primary rounded-md">Page 1 / 1</span>
+<button class="p-2 hover:bg-surface-container-high rounded-lg transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">download</span>
+</button>
+</div>
+</div>
+<!-- Document Display -->
+<div class="flex-1 overflow-auto bg-surface-dim/30 p-xl flex justify-center items-start custom-scrollbar">
+<div class="shadow-2xl border-4 border-white rounded-lg max-w-full">
+<img class="w-[600px] h-auto pointer-events-none" data-alt="A highly detailed close-up of a sample Indian Aadhaar identity card layout, featuring standard blue and red watermarks, placeholders for name and address in Hindi and English, and a barcode. The style is clean, sharp, and corporate, presented as a scanned digital document on a neutral gray workspace." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbOPqc568CzScBWckR2_tCUCVt5rHj3bS5Rms0e0qGX7WH535-r9XVE6PalnL0QOhmxJHKpJCHi7PE25VUMyWwFQcMSQJXA3OYr0eKjjTRoq2cm5dSm1BbVLAPNZ0qq84L9oiTDt5whKO4_V6huhNx_VQh6ZewmoFfFrHh_xBT2ZipZWBkj8uJ_JG3TwKYU1ZG1FUYged340L4sQmwwWRN3Z0n1s4TCXXS-k4D_uzbJp8KYTw5GjPQIgUvNTSN1K1yXBbsEGEqyXwo"/>
+</div>
+</div>
+</div>
+<!-- Feedback Section -->
+<div class="glass-panel p-lg rounded-xl shadow-sm">
+<label class="block text-label-md font-bold text-on-surface mb-sm">Verification Notes / Rejection Reason</label>
+<textarea class="w-full h-24 bg-surface-container-low border border-outline-variant rounded-lg p-md focus:ring-2 focus:ring-primary focus:border-primary transition-all text-body-md" placeholder="Type the specific reason for document rejection or internal verification notes here..."></textarea>
+<div class="mt-md flex space-x-sm">
+<span class="px-3 py-1 bg-surface-container-high text-on-surface-variant text-label-sm rounded-full cursor-pointer hover:bg-outline-variant transition-colors">Photo blurry</span>
+<span class="px-3 py-1 bg-surface-container-high text-on-surface-variant text-label-sm rounded-full cursor-pointer hover:bg-outline-variant transition-colors">Name mismatch</span>
+<span class="px-3 py-1 bg-surface-container-high text-on-surface-variant text-label-sm rounded-full cursor-pointer hover:bg-outline-variant transition-colors">Incorrect document type</span>
+</div>
+</div>
+</div>
+<!-- Right: Verification Details Pane (5 Columns) -->
+<div class="col-span-5 flex flex-col h-full space-y-lg">
+<div class="glass-panel rounded-xl flex-1 flex flex-col shadow-sm overflow-hidden">
+<div class="p-lg bg-primary-container text-on-primary-container flex justify-between items-center">
+<div>
+<h4 class="font-headline-md text-headline-md">OCR Comparison</h4>
+<p class="text-label-sm opacity-80 uppercase tracking-wider">Automated Verification Check</p>
+</div>
+<div class="text-right">
+<span class="text-headline-lg font-bold">94%</span>
+<p class="text-label-sm opacity-80">Overall Confidence</p>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto p-lg custom-scrollbar space-y-lg">
+<!-- Field Row 1 -->
+<div class="space-y-sm">
+<div class="flex justify-between items-center">
+<span class="text-label-md font-bold text-on-surface-variant">Full Name</span>
+<span class="text-xs px-2 py-0.5 bg-green-100 text-green-700 font-bold rounded">98% CONFIDENCE</span>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div class="p-md bg-surface-container rounded-lg border border-outline-variant">
+<p class="text-[10px] text-on-surface-variant/60 font-bold uppercase mb-1">OCR Extracted</p>
+<p class="text-body-md font-bold text-on-surface">Rajesh Kumar Sharma</p>
+</div>
+<div class="p-md bg-secondary-container/10 border-2 border-secondary-container/30 rounded-lg">
+<p class="text-[10px] text-secondary font-bold uppercase mb-1">Citizen Input</p>
+<p class="text-body-md font-bold text-on-surface">Rajesh Kumar Sharma</p>
+</div>
+</div>
+</div>
+<!-- Field Row 2 -->
+<div class="space-y-sm">
+<div class="flex justify-between items-center">
+<span class="text-label-md font-bold text-on-surface-variant">Aadhaar Number</span>
+<span class="text-xs px-2 py-0.5 bg-green-100 text-green-700 font-bold rounded">99% CONFIDENCE</span>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div class="p-md bg-surface-container rounded-lg border border-outline-variant">
+<p class="text-[10px] text-on-surface-variant/60 font-bold uppercase mb-1">OCR Extracted</p>
+<p class="text-body-md font-bold text-on-surface">xxxx-xxxx-4215</p>
+</div>
+<div class="p-md bg-secondary-container/10 border-2 border-secondary-container/30 rounded-lg">
+<p class="text-[10px] text-secondary font-bold uppercase mb-1">Citizen Input</p>
+<p class="text-body-md font-bold text-on-surface">xxxx-xxxx-4215</p>
+</div>
+</div>
+</div>
+<!-- Field Row 3 (MISMATCH) -->
+<div class="space-y-sm">
+<div class="flex justify-between items-center">
+<span class="text-label-md font-bold text-on-surface-variant">Date of Birth</span>
+<span class="text-xs px-2 py-0.5 bg-error-container text-error font-bold rounded">72% LOW CONFIDENCE</span>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div class="p-md bg-error-container/20 rounded-lg border border-error/30">
+<p class="text-[10px] text-error font-bold uppercase mb-1">OCR Extracted</p>
+<p class="text-body-md font-bold text-on-surface">15/08/1985</p>
+</div>
+<div class="p-md bg-secondary-container/10 border-2 border-secondary-container/30 rounded-lg">
+<p class="text-[10px] text-secondary font-bold uppercase mb-1">Citizen Input</p>
+<p class="text-body-md font-bold text-on-surface">15/06/1985</p>
+</div>
+</div>
+<p class="text-xs text-error font-medium flex items-center">
+<span class="material-symbols-outlined text-sm mr-1">warning</span>
+                                Character '08' potentially misread. Re-verification required.
+                            </p>
+</div>
+<!-- Field Row 4 -->
+<div class="space-y-sm">
+<div class="flex justify-between items-center">
+<span class="text-label-md font-bold text-on-surface-variant">Address</span>
+<span class="text-xs px-2 py-0.5 bg-green-100 text-green-700 font-bold rounded">85% CONFIDENCE</span>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div class="p-md bg-surface-container rounded-lg border border-outline-variant">
+<p class="text-[10px] text-on-surface-variant/60 font-bold uppercase mb-1">OCR Extracted</p>
+<p class="text-label-sm text-on-surface leading-tight">House 42, Green Park, New Delhi, 110016</p>
+</div>
+<div class="p-md bg-secondary-container/10 border-2 border-secondary-container/30 rounded-lg">
+<p class="text-[10px] text-secondary font-bold uppercase mb-1">Citizen Input</p>
+<p class="text-label-sm text-on-surface leading-tight">42 Green Park Extension, Delhi, 110016</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Bar -->
+<div class="flex flex-col space-y-md">
+<div class="grid grid-cols-2 gap-md">
+<button class="flex items-center justify-center space-x-2 py-4 rounded-xl border-2 border-error text-error font-bold hover:bg-error-container/20 transition-all active:scale-95">
+<span class="material-symbols-outlined">cancel</span>
+<span>Reject</span>
+</button>
+<button class="flex items-center justify-center space-x-2 py-4 rounded-xl border-2 border-tertiary text-tertiary font-bold hover:bg-tertiary-fixed/30 transition-all active:scale-95">
+<span class="material-symbols-outlined">refresh</span>
+<span>Request Re-upload</span>
+</button>
+</div>
+<button class="w-full flex items-center justify-center space-x-2 py-5 rounded-xl bg-primary text-on-primary font-bold shadow-lg hover:shadow-xl active:scale-[0.98] transition-all transform">
+<span class="material-symbols-outlined">verified</span>
+<span class="text-lg">Verify &amp; Approve Document</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating AI Assistant Button -->
+<button class="fixed bottom-lg right-lg w-16 h-16 rounded-full bg-on-tertiary-container shadow-2xl flex items-center justify-center text-white hover:scale-110 active:scale-90 transition-all z-50 group">
+<span class="material-symbols-outlined text-3xl">mic</span>
+<div class="absolute right-20 bg-primary text-on-primary px-4 py-2 rounded-lg text-label-md font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+            Ask AI Assistant
+        </div>
+</button>
+<script>
+        // Simple micro-interactions for the review screen
+        document.querySelectorAll('span.cursor-pointer').forEach(tag => {
+            tag.addEventListener('click', () => {
+                const textarea = document.querySelector('textarea');
+                textarea.value = (textarea.value ? textarea.value + ', ' : '') + tag.innerText;
+                textarea.focus();
+            });
+        });
+
+        // Hover effect for OCR fields to highlight corresponding area (mockup)
+        const ocrRows = document.querySelectorAll('.grid.grid-cols-2.gap-md');
+        ocrRows.forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                row.classList.add('scale-[1.02]');
+                row.style.transition = 'transform 0.2s ease-out';
+            });
+            row.addEventListener('mouseleave', () => {
+                row.classList.remove('scale-[1.02]');
+            });
+        });
+    </script>
+</body></html>
