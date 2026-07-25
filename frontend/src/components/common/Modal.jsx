@@ -1,22 +1,27 @@
 import React from 'react';
 import Button from './Button';
+import { X } from 'lucide-react';
 
-export function Modal({ isOpen, onClose, title, children }) {
+export function Modal({ isOpen, onClose, title, children, maxWidth = 'max-w-lg' }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm transition-opacity duration-300">
-      <div className="bg-neutral-900 border border-neutral-800 rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl transform scale-100 transition-transform duration-300">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm transition-opacity duration-200">
+      <div className={`bg-surface-container-lowest border border-outline-variant/60 rounded-2xl ${maxWidth} w-full overflow-hidden shadow-2xl transform scale-100 transition-transform duration-200`}>
         {/* Header */}
-        <div className="px-6 py-4 border-b border-neutral-800 flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-neutral-100">{title}</h3>
-          <Button variant="ghost" size="sm" onClick={onClose}>
-            ✕
-          </Button>
+        <div className="px-6 py-4 border-b border-outline-variant/40 flex items-center justify-between bg-surface-container-low">
+          <h3 className="text-lg font-heading font-bold text-on-surface">{title}</h3>
+          <button
+            onClick={onClose}
+            className="p-1 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors cursor-pointer"
+            aria-label="Close modal"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
         
         {/* Content */}
-        <div className="px-6 py-4 text-neutral-300">
+        <div className="p-6 text-on-surface max-h-[80vh] overflow-y-auto">
           {children}
         </div>
       </div>

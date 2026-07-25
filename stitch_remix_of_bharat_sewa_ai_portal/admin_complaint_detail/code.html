@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Complaint Detail | Bharat Sewa AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary": "#ffffff",
+                    "outline-variant": "#c4c6cf",
+                    "tertiary-fixed": "#ffdbca",
+                    "surface-container-lowest": "#ffffff",
+                    "surface": "#faf8ff",
+                    "on-error": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "on-primary-container": "#8aa4cf",
+                    "primary-container": "#1e3a5f",
+                    "background": "#faf8ff",
+                    "surface-container-highest": "#dae2fd",
+                    "secondary-fixed": "#dbe1ff",
+                    "inverse-on-surface": "#eef0ff",
+                    "surface-variant": "#dae2fd",
+                    "on-tertiary-fixed": "#341100",
+                    "surface-container-low": "#f2f3ff",
+                    "primary": "#022448",
+                    "on-surface-variant": "#43474e",
+                    "secondary-fixed-dim": "#b4c5ff",
+                    "on-secondary-fixed": "#00174b",
+                    "primary-fixed-dim": "#adc8f5",
+                    "on-secondary-container": "#fefcff",
+                    "on-background": "#131b2e",
+                    "surface-container": "#eaedff",
+                    "secondary": "#0051d5",
+                    "secondary-container": "#316bf3",
+                    "on-error-container": "#93000a",
+                    "tertiary-container": "#632800",
+                    "outline": "#74777f",
+                    "inverse-surface": "#283044",
+                    "surface-container-high": "#e2e7ff",
+                    "primary-fixed": "#d5e3ff",
+                    "on-tertiary-container": "#ff8031",
+                    "surface-dim": "#d2d9f4",
+                    "on-secondary-fixed-variant": "#003ea8",
+                    "surface-tint": "#455f87",
+                    "error-container": "#ffdad6",
+                    "on-tertiary": "#ffffff",
+                    "inverse-primary": "#adc8f5",
+                    "error": "#ba1a1a",
+                    "on-primary-fixed": "#001c3b",
+                    "on-primary-fixed-variant": "#2d486d",
+                    "tertiary": "#411800",
+                    "surface-bright": "#faf8ff",
+                    "on-tertiary-fixed-variant": "#783200",
+                    "on-surface": "#131b2e",
+                    "tertiary-fixed-dim": "#ffb690"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "lg": "24px",
+                    "xs": "8px",
+                    "2xl": "48px",
+                    "touch-target-min": "44px",
+                    "md": "16px",
+                    "xl": "32px",
+                    "base": "4px",
+                    "sm": "12px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-lg-mobile": ["Manrope"],
+                    "label-sm": ["Inter"],
+                    "headline-xl": ["Manrope"],
+                    "headline-md": ["Manrope"],
+                    "headline-lg": ["Manrope"],
+                    "headline-xl-mobile": ["Manrope"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "headline-xl-mobile": ["30px", {"lineHeight": "36px", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #c4c6cf; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #74777f; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md overflow-hidden">
+<!-- SideNavBar -->
+<nav class="fixed left-0 top-0 h-full flex flex-col p-md z-50 docked w-64 bg-primary dark:bg-inverse-surface shadow-md">
+<div class="mb-xl px-sm">
+<h1 class="text-headline-md font-headline-md font-bold text-on-primary dark:text-inverse-on-surface">Bharat Sewa AI</h1>
+<p class="text-label-sm text-on-primary/60">Admin Portal</p>
+</div>
+<div class="flex flex-col gap-xs flex-grow">
+<a class="flex items-center gap-md px-md py-sm text-on-primary/70 dark:text-inverse-on-surface/70 hover:bg-primary-fixed-dim/20 dark:hover:bg-primary-fixed-dim/10 hover:text-on-primary transition-all duration-200 active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-primary/70 dark:text-inverse-on-surface/70 hover:bg-primary-fixed-dim/20 dark:hover:bg-primary-fixed-dim/10 hover:text-on-primary transition-all duration-200 active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span class="font-label-md text-label-md">Applications</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-lg transition-all duration-200 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="assignment_late">assignment_late</span>
+<span class="font-label-md text-label-md">Complaints</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-primary/70 dark:text-inverse-on-surface/70 hover:bg-primary-fixed-dim/20 dark:hover:bg-primary-fixed-dim/10 hover:text-on-primary transition-all duration-200 active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="folder_open">folder_open</span>
+<span class="font-label-md text-label-md">Documents</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-primary/70 dark:text-inverse-on-surface/70 hover:bg-primary-fixed-dim/20 dark:hover:bg-primary-fixed-dim/10 hover:text-on-primary transition-all duration-200 active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-label-md text-label-md">Analytics</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-primary/70 dark:text-inverse-on-surface/70 hover:bg-primary-fixed-dim/20 dark:hover:bg-primary-fixed-dim/10 hover:text-on-primary transition-all duration-200 active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</div>
+<div class="mt-auto flex flex-col gap-xs border-t border-on-primary/10 pt-md">
+<button class="bg-tertiary-container text-on-tertiary-container w-full py-sm rounded-lg mb-md flex items-center justify-center gap-xs font-label-md">
+<span class="material-symbols-outlined" data-icon="keyboard_voice">keyboard_voice</span>
+                Voice Assistant
+            </button>
+<a class="flex items-center gap-md px-md py-sm text-on-primary/70 hover:text-on-primary" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-label-md text-label-md">Help Center</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-primary/70 hover:text-on-primary" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-md text-label-md">Logout</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="fixed top-0 right-0 left-64 bottom-0 overflow-y-auto">
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 left-64 h-16 flex justify-between items-center px-lg z-40 bg-surface dark:bg-surface-container-low border-b border-outline-variant dark:border-outline">
+<div class="flex items-center gap-lg flex-1">
+<div class="relative w-96">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="search">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full pl-xl pr-md py-xs text-body-md focus:ring-2 focus:ring-primary" placeholder="Search complaints, IDs, or citizens..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-xs hover:bg-surface-container dark:hover:bg-surface-container-highest rounded-full transition-colors duration-150">
+<span class="material-symbols-outlined text-primary" data-icon="notifications">notifications</span>
+</button>
+<button class="p-xs hover:bg-surface-container dark:hover:bg-surface-container-highest rounded-full transition-colors duration-150">
+<span class="material-symbols-outlined text-primary" data-icon="history">history</span>
+</button>
+<div class="h-8 w-px bg-outline-variant mx-xs"></div>
+<button class="flex items-center gap-xs p-xs hover:bg-surface-container rounded-full transition-colors duration-150">
+<span class="material-symbols-outlined text-primary" data-icon="account_circle">account_circle</span>
+<span class="font-label-md text-on-surface">Admin User</span>
+</button>
+</div>
+</header>
+<!-- Page Canvas -->
+<div class="mt-16 p-lg space-y-lg">
+<!-- Breadcrumbs & Header Actions -->
+<div class="flex justify-between items-end">
+<div>
+<div class="flex items-center gap-xs text-label-sm text-on-surface-variant mb-xs">
+<span>Complaints</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="chevron_right">chevron_right</span>
+<span class="text-primary font-semibold">CMP-98234-2024</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-background">Potable Water Leakage in Block-C</h2>
+</div>
+<div class="flex gap-sm">
+<span class="bg-error-container text-on-error-container px-md py-xs rounded-full font-label-md flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]" data-icon="priority_high">priority_high</span>
+                        High Priority
+                    </span>
+<span class="bg-surface-container-highest text-on-surface-variant px-md py-xs rounded-full font-label-md">
+                        Open • 2 Days Ago
+                    </span>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-lg items-start">
+<!-- Left: Citizen Info & Description (4/12) -->
+<div class="col-span-12 lg:col-span-4 space-y-lg">
+<!-- Citizen Card -->
+<section class="glass-card p-md rounded-xl shadow-sm">
+<h3 class="font-label-md text-primary mb-md flex items-center gap-xs">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+                            Citizen Information
+                        </h3>
+<div class="flex items-center gap-md mb-md">
+<img class="w-16 h-16 rounded-full object-cover" data-alt="A professional studio portrait of a middle-aged Indian man with a kind expression, wearing a simple collared shirt. High-key soft lighting, minimalist clean background, corporate professional style for a government portal identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCp9R1srypujqNrIAC31BHMFH7RbRc1luVXKaMKNqHpiUVKrh_vHHbhc_YgQVsupWROOT6Hg9WrDYgBiZyfAZRJyGEm0XOQRl63uiypmDVy_MzmLXHvkKJt59uCUkJY7U5K-uAeyQRqIinYz3iSpdUTZkgUMW9G9uLK2f3E8S1ObjjaCpsvu68Hx_hrm_lz0UKJ8mdFvf7DjfeD6qvhFQQGsTvEephlsT3Brg57EdukH3xrhlls23qcxbc7-Nr7iXa0UpdLmUuI5YOu"/>
+<div>
+<p class="font-headline-md text-on-background">Rajesh Kumar</p>
+<p class="text-label-sm text-on-surface-variant">Verified Resident (ID: 8821)</p>
+</div>
+</div>
+<div class="space-y-sm text-body-md border-t border-outline-variant pt-md">
+<div class="flex justify-between">
+<span class="text-on-surface-variant">Phone:</span>
+<span class="font-medium">+91 98765 43210</span>
+</div>
+<div class="flex justify-between">
+<span class="text-on-surface-variant">Address:</span>
+<span class="font-medium text-right">House 42, Block C, Green Park</span>
+</div>
+</div>
+</section>
+<!-- Full Description -->
+<section class="glass-card p-md rounded-xl shadow-sm">
+<h3 class="font-label-md text-primary mb-md flex items-center gap-xs">
+<span class="material-symbols-outlined" data-icon="subject">subject</span>
+                            Full Description
+                        </h3>
+<p class="text-body-md text-on-surface mb-lg leading-relaxed">
+                            "Severe water leakage observed from the main underground pipe near the community center gate. The water has been flowing for over 6 hours, causing significant wastage and waterlogging on the main access road. Resident movement is restricted due to mud accumulation."
+                        </p>
+<div class="grid grid-cols-2 gap-sm">
+<div class="bg-cover bg-center h-32 rounded-lg cursor-pointer hover:opacity-90 transition-opacity" data-alt="A high-resolution photograph of a broken municipal water pipe on a paved street. Clear blue water is gushing out under pressure, pooling around the cracked asphalt in a suburban neighborhood. Realistic documentary photography with natural sunlight, high contrast and detail." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDmZNAOuGVQhOP60muGs7R0zqfOVU1hGag-iiymakAH_RaNfMn9cEo0N1XdM0QuVukO9FGeuXUB5nkwS3HuFaVcbGb56rlSKOVQso1KhjKp7zuJ0Wn8thNqntBgmZLd7Trl9FAtcBW1wO52-w-oQb2CgCoKuQKI0HYoys6-4SXK9rTfHIFY7cUMJxHlfAoKGmVLrPzaBPzfu78tk7f143STRZiP0CCOx6WjnaA6ihJ-iwuYTH2uTQx94JLrIqfmXMVNPMYwthujNzou')"></div>
+<div class="bg-cover bg-center h-32 rounded-lg cursor-pointer hover:opacity-90 transition-opacity" data-alt="A wide-angle shot showing a waterlogged street in a modern residential block. The reflection of surrounding buildings is visible in the large puddles. Soft morning lighting, corporate documentary style, emphasizing the scale of the issue for civil admin review." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAuReyKpNIbm6DSj3lw7-BaGXNjkr1idJhP3QmVgyD-Z05MEkHiwmaW2X8ObtIK3qprWAf3eoPBeCGDadFVJoSIVW8j2meKQoyAr34OayljsxmZ3pp3-Dz4XWd8A4QYt5kcjVnDUXzkUNp5h8zqBho5oUZsiuEBMTGh0dmZ4o8NsyIlJlaaj9xv0qc53J7A5_wHL9ZdsgX3bVmsHlvMXxwXzPV0cXyGo3syBSDheeR3JRqutXa4k_ursCj7STjlleKDVdYADlEkO19a')"></div>
+</div>
+</section>
+</div>
+<!-- Center: Map Preview (5/12) -->
+<div class="col-span-12 lg:col-span-5 h-[620px] glass-card rounded-xl shadow-sm overflow-hidden flex flex-col">
+<div class="p-md flex justify-between items-center border-b border-outline-variant bg-white/50">
+<h3 class="font-label-md text-primary flex items-center gap-xs">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+                            Incident Location
+                        </h3>
+<button class="text-secondary font-label-md flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]" data-icon="open_in_new">open_in_new</span>
+                            Expand Map
+                        </button>
+</div>
+<div class="flex-grow relative">
+<div class="absolute inset-0 bg-surface-container-highest" data-location="Green Park, Delhi, India" style="">
+<!-- Placeholder for map - image injection will handle this -->
+<div class="w-full h-full bg-cover bg-center" data-alt="A detailed aerial satellite map view of a metropolitan residential block with clear street markings and a red location pin highlighted on a specific intersection. The map style is clean and professional, typical of high-end GIS software, with high contrast labels and modern UI aesthetics." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAKl5Bhz7m5WBUtEJS-ld9tWgaaxrrrcxrn2aEMftR2ZwIbKK5Bb27XGppsvystHC26TOd4Vkpiuo19A0d0brpFdM-4BxRkYjiUsmeHNrP1Bj4gpkgcrBtE_vuP1CAurQW57qgMia8e2ioxLvnaTF7M-z6h4cXcrQoGc6B0dKe8MrchSXiLtO-JnMJdrTB9Bj3JplvzrVVx7T4buSmVFab8h70zKgm2KpXDMLvIt-2rOQun0Y-E-ciQAUF9D29qqbax_y8Dqo15-bdt')"></div>
+</div>
+<!-- Floating Location Detail -->
+<div class="absolute bottom-md left-md right-md bg-white p-sm rounded-lg shadow-lg flex items-center gap-md border border-outline-variant">
+<div class="bg-primary/10 p-xs rounded">
+<span class="material-symbols-outlined text-primary" data-icon="location_on">location_on</span>
+</div>
+<div class="flex-grow">
+<p class="text-label-md font-bold">28.5583° N, 77.2023° E</p>
+<p class="text-label-sm text-on-surface-variant">Green Park Ext., New Delhi</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Right: Timeline & Notes (3/12) -->
+<div class="col-span-12 lg:col-span-3 space-y-lg">
+<!-- Timeline Section -->
+<section class="glass-card p-md rounded-xl shadow-sm flex flex-col h-full">
+<h3 class="font-label-md text-primary mb-lg flex items-center gap-xs">
+<span class="material-symbols-outlined" data-icon="timeline">timeline</span>
+                            Activity Log
+                        </h3>
+<div class="relative space-y-lg before:content-[''] before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-px before:bg-outline-variant">
+<div class="relative pl-xl">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-white border-2 border-secondary flex items-center justify-center z-10">
+<div class="w-2 h-2 rounded-full bg-secondary"></div>
+</div>
+<p class="text-label-md font-bold">Complaint Registered</p>
+<p class="text-label-sm text-on-surface-variant">Oct 24, 09:15 AM</p>
+<p class="text-body-md text-on-surface-variant mt-xs">Via Mobile App</p>
+</div>
+<div class="relative pl-xl">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-white border-2 border-outline flex items-center justify-center z-10">
+<div class="w-2 h-2 rounded-full bg-outline"></div>
+</div>
+<p class="text-label-md font-bold text-outline">System Acknowledged</p>
+<p class="text-label-sm text-on-surface-variant">Oct 24, 09:16 AM</p>
+</div>
+<div class="relative pl-xl">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-white border-2 border-outline flex items-center justify-center z-10">
+<div class="w-2 h-2 rounded-full bg-outline"></div>
+</div>
+<p class="text-label-md font-bold text-outline">AI Triage Complete</p>
+<p class="text-label-sm text-on-surface-variant">Oct 24, 09:17 AM</p>
+<p class="text-body-md text-on-surface-variant mt-xs">Categorized as 'Water Supply'</p>
+</div>
+</div>
+<!-- Internal Notes -->
+<div class="mt-xl border-t border-outline-variant pt-md">
+<h3 class="font-label-md text-primary mb-md flex items-center gap-xs">
+<span class="material-symbols-outlined" data-icon="rate_review">rate_review</span>
+                                Dept. Internal Notes
+                            </h3>
+<div class="bg-surface-container-low p-sm rounded-lg mb-sm">
+<p class="text-label-sm font-bold text-on-surface mb-base">Admin Sarah</p>
+<p class="text-body-md text-on-surface-variant italic">"This area had a similar leak 3 months ago. May need to check the joints."</p>
+<p class="text-[10px] text-on-surface-variant/60 mt-xs">10:00 AM Today</p>
+</div>
+<textarea class="w-full bg-white border border-outline-variant rounded-lg p-sm text-body-md focus:ring-secondary focus:border-secondary h-24" placeholder="Add a private note..."></textarea>
+</div>
+</section>
+</div>
+</div>
+</div>
+<!-- Action Bar - Fixed Bottom (Anchored to Main) -->
+<div class="fixed bottom-0 right-0 left-64 bg-surface-container-high border-t border-outline-variant p-md px-lg flex items-center justify-between z-40">
+<div class="flex items-center gap-md">
+<button class="flex items-center gap-xs px-md py-sm bg-primary text-on-primary rounded-lg font-label-md transition-all active:scale-95 hover:bg-primary-container">
+<span class="material-symbols-outlined text-[20px]" data-icon="account_balance">account_balance</span>
+                    Assign Department
+                </button>
+<button class="flex items-center gap-xs px-md py-sm bg-primary text-on-primary rounded-lg font-label-md transition-all active:scale-95 hover:bg-primary-container">
+<span class="material-symbols-outlined text-[20px]" data-icon="person_add">person_add</span>
+                    Assign Officer
+                </button>
+<button class="flex items-center gap-xs px-md py-sm border border-outline text-on-surface rounded-lg font-label-md transition-all hover:bg-surface-container">
+<span class="material-symbols-outlined text-[20px]" data-icon="chat">chat</span>
+                    Request Information
+                </button>
+</div>
+<div class="flex items-center gap-md">
+<button class="flex items-center gap-xs px-lg py-sm bg-secondary text-on-secondary rounded-lg font-label-md transition-all active:scale-95 hover:brightness-110">
+<span class="material-symbols-outlined text-[20px]" data-icon="play_arrow">play_arrow</span>
+                    Mark In Progress
+                </button>
+<button class="flex items-center gap-xs px-lg py-sm bg-tertiary-container text-on-tertiary-container rounded-lg font-label-md transition-all active:scale-95 hover:brightness-105">
+<span class="material-symbols-outlined text-[20px]" data-icon="check_circle">check_circle</span>
+                    Resolve Complaint
+                </button>
+</div>
+</div>
+</main>
+<script>
+        // Simple Interaction logic
+        document.querySelectorAll('button, a').forEach(elem => {
+            elem.addEventListener('click', (e) => {
+                // Prevent defaults for demo
+                if(elem.tagName === 'A') e.preventDefault();
+                console.log('Interaction:', elem.innerText.trim());
+            });
+        });
+
+        // Dynamic visual cues
+        const canvas = document.querySelector('main');
+        canvas.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (canvas.scrollTop > 10) {
+                header.classList.add('shadow-md');
+            } else {
+                header.classList.remove('shadow-md');
+            }
+        });
+    </script>
+</body></html>

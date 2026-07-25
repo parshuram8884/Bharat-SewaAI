@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Citizens List - Bharat Sewa AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Manrope:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#ffdbca",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#783200",
+                        "on-error": "#ffffff",
+                        "on-primary-container": "#8aa4cf",
+                        "primary-fixed": "#d5e3ff",
+                        "on-tertiary-container": "#ff8031",
+                        "outline": "#74777f",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "surface-bright": "#faf8ff",
+                        "on-secondary-fixed": "#00174b",
+                        "primary-container": "#1e3a5f",
+                        "surface-variant": "#dae2fd",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#131b2e",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#ffb690",
+                        "surface-container-low": "#f2f3ff",
+                        "on-secondary-container": "#fefcff",
+                        "on-error-container": "#93000a",
+                        "on-secondary": "#ffffff",
+                        "surface-container-high": "#e2e7ff",
+                        "surface-container-highest": "#dae2fd",
+                        "on-surface-variant": "#43474e",
+                        "inverse-surface": "#283044",
+                        "surface-container": "#eaedff",
+                        "primary-fixed-dim": "#adc8f5",
+                        "on-primary-fixed-variant": "#2d486d",
+                        "on-tertiary-fixed": "#341100",
+                        "inverse-on-surface": "#eef0ff",
+                        "surface": "#faf8ff",
+                        "on-background": "#131b2e",
+                        "surface-tint": "#455f87",
+                        "secondary": "#0051d5",
+                        "on-secondary-fixed-variant": "#003ea8",
+                        "secondary-fixed": "#dbe1ff",
+                        "secondary-container": "#316bf3",
+                        "on-primary-fixed": "#001c3b",
+                        "background": "#faf8ff",
+                        "on-primary": "#ffffff",
+                        "primary": "#022448",
+                        "outline-variant": "#c4c6cf",
+                        "error-container": "#ffdad6",
+                        "tertiary": "#411800",
+                        "tertiary-container": "#632800",
+                        "inverse-primary": "#adc8f5",
+                        "surface-dim": "#d2d9f4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "sm": "12px",
+                        "xs": "8px",
+                        "xl": "32px",
+                        "touch-target-min": "44px",
+                        "md": "16px",
+                        "base": "4px",
+                        "2xl": "48px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Manrope"],
+                        "headline-xl-mobile": ["Manrope"],
+                        "headline-lg-mobile": ["Manrope"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-xl": ["Manrope"],
+                        "headline-lg": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-xl-mobile": ["30px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .table-row-hover:hover {
+            background-color: rgba(49, 107, 243, 0.04);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background custom-scrollbar">
+<!-- Sidebar Navigation -->
+<aside class="bg-primary h-screen w-64 fixed left-0 top-0 border-r border-outline-variant shadow-sm z-50 flex flex-col py-4">
+<div class="px-6 mb-8">
+<h1 class="text-headline-md font-headline-md font-bold text-on-primary">Bharat Sewa AI</h1>
+<p class="text-label-sm text-on-primary/60">Admin Portal</p>
+</div>
+<nav class="flex-1 space-y-1">
+<div class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer active:scale-95 transition-colors duration-200">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</div>
+<div class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer active:scale-95 transition-colors duration-200">
+<span class="material-symbols-outlined mr-3">description</span>
+<span class="font-label-md text-label-md">Applications</span>
+</div>
+<div class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer active:scale-95 transition-colors duration-200">
+<span class="material-symbols-outlined mr-3">report_problem</span>
+<span class="font-label-md text-label-md">Complaints</span>
+</div>
+<!-- Active Tab: Citizens -->
+<div class="bg-secondary-container text-on-secondary-container rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer active:scale-95 transition-colors duration-200">
+<span class="material-symbols-outlined mr-3">group</span>
+<span class="font-label-md text-label-md">Citizens</span>
+</div>
+<div class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer active:scale-95 transition-colors duration-200">
+<span class="material-symbols-outlined mr-3">account_balance</span>
+<span class="font-label-md text-label-md">Schemes</span>
+</div>
+<div class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer active:scale-95 transition-colors duration-200">
+<span class="material-symbols-outlined mr-3">folder_open</span>
+<span class="font-label-md text-label-md">Documents</span>
+</div>
+<div class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer active:scale-95 transition-colors duration-200">
+<span class="material-symbols-outlined mr-3">analytics</span>
+<span class="font-label-md text-label-md">Analytics</span>
+</div>
+<div class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg mx-2 my-1 flex items-center px-4 py-3 cursor-pointer active:scale-95 transition-colors duration-200">
+<span class="material-symbols-outlined mr-3">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</div>
+</nav>
+<div class="mt-auto px-6 pt-4 border-t border-on-primary/10">
+<div class="flex items-center space-x-3">
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold text-label-sm">AD</div>
+<div>
+<p class="text-label-md text-on-primary">Admin User</p>
+<p class="text-[10px] text-on-primary/50">Level 4 Clearance</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Wrapper -->
+<main class="ml-64 min-h-screen flex flex-col">
+<!-- Top Bar Navigation -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 bg-surface border-b border-outline-variant flex justify-between items-center px-6 z-40">
+<div class="flex items-center flex-1 max-w-xl">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-body-md focus:ring-2 focus:ring-primary transition-all" placeholder="Search citizens by Name, ID or Aadhaar..." type="text"/>
+</div>
+</div>
+<div class="flex items-center space-x-4 ml-6">
+<button class="w-10 h-10 rounded-full hover:bg-surface-container-low flex items-center justify-center text-on-surface-variant transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="w-10 h-10 rounded-full hover:bg-surface-container-low flex items-center justify-center text-on-surface-variant transition-all">
+<span class="material-symbols-outlined">history</span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant mx-2"></div>
+<img class="w-8 h-8 rounded-full border border-outline-variant" data-alt="A professional headshot of a senior government administrative officer, wearing a clean formal suit, neutral professional background, high-end corporate photography style with soft studio lighting, focused on reliability and authority, consistent with a modern clean government portal aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCm9rwpMEP9vt1gXi0Fk1RS_-nnOb935gCNxDABuGbuGte7rWzoGhza3_5SrFoHEn7dII0yIdg96Dv1n0ZznkAnlHZqVU4dYVR19lLx5H-s75Kk77oFvWHcaQwNEh7w60uxptZgm570DtbKCzkh4xriGBSwFHb0fJHR-JPhD2_EPYQGxgynVu5uffbYnXLFemPMYyGIDP3sSJ17QzlL1-H1-ZtuNk_fEGz7mSlHHSUzG8tfuapXwuP91TrilROr1OKOCGCkh55UX7n0"/>
+</div>
+</header>
+<!-- Content Canvas -->
+<section class="mt-16 p-lg space-y-lg">
+<!-- Page Header -->
+<div class="flex justify-between items-end">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Citizens Registry</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Manage and verify citizen profiles across all districts.</p>
+</div>
+<div class="flex space-x-3">
+<button class="flex items-center space-x-2 px-4 py-2 border border-outline-variant rounded-lg font-label-md text-on-surface hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-[20px]">download</span>
+<span>Export CSV</span>
+</button>
+<button class="flex items-center space-x-2 px-4 py-2 bg-primary text-on-primary rounded-lg font-label-md hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[20px]">person_add</span>
+<span>Register Citizen</span>
+</button>
+</div>
+</div>
+<!-- Filters Section -->
+<div class="bg-surface border border-outline-variant rounded-xl p-md grid grid-cols-4 gap-md items-end">
+<div class="space-y-1">
+<label class="font-label-sm text-on-surface-variant">Verification Status</label>
+<select class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-3 py-2 text-body-md focus:ring-primary">
+<option>All Statuses</option>
+<option>Verified</option>
+<option>Pending</option>
+<option>Rejected</option>
+<option>Aadhaar Linked</option>
+</select>
+</div>
+<div class="space-y-1">
+<label class="font-label-sm text-on-surface-variant">District</label>
+<select class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-3 py-2 text-body-md focus:ring-primary">
+<option>All Districts</option>
+<option>Lucknow</option>
+<option>Kanpur</option>
+<option>Varanasi</option>
+<option>Agra</option>
+<option>Gorakhpur</option>
+</select>
+</div>
+<div class="space-y-1">
+<label class="font-label-sm text-on-surface-variant">Verification Level</label>
+<select class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-3 py-2 text-body-md focus:ring-primary">
+<option>All Levels</option>
+<option>Level 1 (Basic)</option>
+<option>Level 2 (Address)</option>
+<option>Level 3 (Full Biometric)</option>
+</select>
+</div>
+<div>
+<button class="w-full h-[42px] flex items-center justify-center space-x-2 bg-secondary text-on-secondary rounded-lg font-label-md hover:bg-secondary/90 transition-all">
+<span class="material-symbols-outlined text-[20px]">filter_list</span>
+<span>Apply Filters</span>
+</button>
+</div>
+</div>
+<!-- Data Table Card -->
+<div class="bg-surface border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full border-collapse text-left">
+<thead>
+<tr class="bg-surface-container border-b border-outline-variant">
+<th class="px-6 py-4 font-label-md text-on-surface-variant">Citizen Name</th>
+<th class="px-6 py-4 font-label-md text-on-surface-variant">Citizen ID</th>
+<th class="px-6 py-4 font-label-md text-on-surface-variant">Location</th>
+<th class="px-6 py-4 font-label-md text-on-surface-variant">Reg. Date</th>
+<th class="px-6 py-4 font-label-md text-on-surface-variant text-center">Applications</th>
+<th class="px-6 py-4 font-label-md text-on-surface-variant text-center">Complaints</th>
+<th class="px-6 py-4 font-label-md text-on-surface-variant">Status</th>
+<th class="px-6 py-4 font-label-md text-on-surface-variant">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Row 1 -->
+<tr class="table-row-hover transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center space-x-3">
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center text-label-sm">RK</div>
+<div>
+<p class="font-label-md text-on-surface">Rajesh Kumar</p>
+<p class="text-label-sm text-on-surface-variant">+91 98765-XXXXX</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 font-body-md text-on-surface">#BSAI-88219</td>
+<td class="px-6 py-4 font-body-md text-on-surface">Lucknow, UP</td>
+<td class="px-6 py-4 font-body-md text-on-surface">12 Oct 2023</td>
+<td class="px-6 py-4 text-center">
+<span class="bg-secondary-container/20 text-secondary px-2 py-1 rounded-full text-label-sm font-bold">04</span>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="bg-error-container/20 text-error px-2 py-1 rounded-full text-label-sm font-bold">01</span>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2 py-1 rounded-full bg-green-100 text-green-700 text-[12px] font-bold">
+<span class="material-symbols-outlined text-[14px] mr-1" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                        Verified
+                                    </span>
+</td>
+<td class="px-6 py-4">
+<button class="p-2 hover:bg-surface-container rounded-full text-on-surface-variant">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="table-row-hover transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center space-x-3">
+<div class="w-8 h-8 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center text-label-sm">SM</div>
+<div>
+<p class="font-label-md text-on-surface">Sunita Maurya</p>
+<p class="text-label-sm text-on-surface-variant">+91 91234-XXXXX</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 font-body-md text-on-surface">#BSAI-88402</td>
+<td class="px-6 py-4 font-body-md text-on-surface">Varanasi, UP</td>
+<td class="px-6 py-4 font-body-md text-on-surface">05 Nov 2023</td>
+<td class="px-6 py-4 text-center">
+<span class="bg-secondary-container/20 text-secondary px-2 py-1 rounded-full text-label-sm font-bold">02</span>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="bg-on-surface-variant/10 text-on-surface-variant px-2 py-1 rounded-full text-label-sm font-bold">00</span>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2 py-1 rounded-full bg-yellow-100 text-yellow-700 text-[12px] font-bold">
+<span class="material-symbols-outlined text-[14px] mr-1">pending</span>
+                                        Pending
+                                    </span>
+</td>
+<td class="px-6 py-4">
+<button class="p-2 hover:bg-surface-container rounded-full text-on-surface-variant">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="table-row-hover transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center space-x-3">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center text-label-sm">AS</div>
+<div>
+<p class="font-label-md text-on-surface">Amit Singh</p>
+<p class="text-label-sm text-on-surface-variant">+91 99887-XXXXX</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 font-body-md text-on-surface">#BSAI-88911</td>
+<td class="px-6 py-4 font-body-md text-on-surface">Kanpur, UP</td>
+<td class="px-6 py-4 font-body-md text-on-surface">15 Nov 2023</td>
+<td class="px-6 py-4 text-center">
+<span class="bg-secondary-container/20 text-secondary px-2 py-1 rounded-full text-label-sm font-bold">01</span>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="bg-error-container/20 text-error px-2 py-1 rounded-full text-label-sm font-bold">03</span>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2 py-1 rounded-full bg-green-100 text-green-700 text-[12px] font-bold">
+<span class="material-symbols-outlined text-[14px] mr-1" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                        Verified
+                                    </span>
+</td>
+<td class="px-6 py-4">
+<button class="p-2 hover:bg-surface-container rounded-full text-on-surface-variant">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="table-row-hover transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center space-x-3">
+<div class="w-8 h-8 rounded-full bg-error text-on-error flex items-center justify-center text-label-sm">PY</div>
+<div>
+<p class="font-label-md text-on-surface">Pooja Yadav</p>
+<p class="text-label-sm text-on-surface-variant">+91 94556-XXXXX</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 font-body-md text-on-surface">#BSAI-89104</td>
+<td class="px-6 py-4 font-body-md text-on-surface">Agra, UP</td>
+<td class="px-6 py-4 font-body-md text-on-surface">22 Nov 2023</td>
+<td class="px-6 py-4 text-center">
+<span class="bg-on-surface-variant/10 text-on-surface-variant px-2 py-1 rounded-full text-label-sm font-bold">00</span>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="bg-on-surface-variant/10 text-on-surface-variant px-2 py-1 rounded-full text-label-sm font-bold">00</span>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2 py-1 rounded-full bg-red-100 text-red-700 text-[12px] font-bold">
+<span class="material-symbols-outlined text-[14px] mr-1">cancel</span>
+                                        Rejected
+                                    </span>
+</td>
+<td class="px-6 py-4">
+<button class="p-2 hover:bg-surface-container rounded-full text-on-surface-variant">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="table-row-hover transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center space-x-3">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center text-label-sm">MA</div>
+<div>
+<p class="font-label-md text-on-surface">Mohd. Arif</p>
+<p class="text-label-sm text-on-surface-variant">+91 92211-XXXXX</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 font-body-md text-on-surface">#BSAI-89233</td>
+<td class="px-6 py-4 font-body-md text-on-surface">Lucknow, UP</td>
+<td class="px-6 py-4 font-body-md text-on-surface">25 Nov 2023</td>
+<td class="px-6 py-4 text-center">
+<span class="bg-secondary-container/20 text-secondary px-2 py-1 rounded-full text-label-sm font-bold">07</span>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="bg-on-surface-variant/10 text-on-surface-variant px-2 py-1 rounded-full text-label-sm font-bold">00</span>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2 py-1 rounded-full bg-blue-100 text-blue-700 text-[12px] font-bold">
+<span class="material-symbols-outlined text-[14px] mr-1">fingerprint</span>
+                                        Aadhaar Linked
+                                    </span>
+</td>
+<td class="px-6 py-4">
+<button class="p-2 hover:bg-surface-container rounded-full text-on-surface-variant">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="px-6 py-4 bg-surface border-t border-outline-variant flex items-center justify-between">
+<p class="text-label-sm text-on-surface-variant">Showing 1 to 5 of 12,450 entries</p>
+<div class="flex items-center space-x-2">
+<button class="p-2 border border-outline-variant rounded-lg text-on-surface-variant disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-primary text-on-primary font-label-md">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface-container-low font-label-md">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface-container-low font-label-md">3</button>
+<span class="px-2">...</span>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface-container-low font-label-md">2490</button>
+<button class="p-2 border border-outline-variant rounded-lg text-on-surface-variant">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Dashboard Style Bento Insight (Extra) -->
+<div class="grid grid-cols-3 gap-lg">
+<div class="bg-primary text-on-primary p-lg rounded-xl flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined bg-on-primary/10 p-3 rounded-xl">how_to_reg</span>
+<span class="text-label-sm px-2 py-1 bg-white/20 rounded-full">+12% this month</span>
+</div>
+<div class="mt-4">
+<p class="text-headline-lg font-bold">1,24,502</p>
+<p class="text-label-md opacity-80">Total Verified Citizens</p>
+</div>
+</div>
+<div class="bg-surface border border-outline-variant p-lg rounded-xl flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary bg-primary-container p-3 rounded-xl">pending_actions</span>
+<span class="text-label-sm px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full">High Priority</span>
+</div>
+<div class="mt-4">
+<p class="text-headline-lg font-bold text-on-surface">3,892</p>
+<p class="text-label-md text-on-surface-variant">Verification Queue</p>
+</div>
+</div>
+<div class="bg-surface border border-outline-variant p-lg rounded-xl flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-secondary bg-secondary-fixed p-3 rounded-xl">map</span>
+<span class="text-label-sm px-2 py-1 bg-blue-100 text-blue-700 rounded-full">UP State</span>
+</div>
+<div class="mt-4">
+<p class="text-headline-lg font-bold text-on-surface">75 Districts</p>
+<p class="text-label-md text-on-surface-variant">Active Coverage</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Interactive FAB (Contextual for Registration) -->
+<button class="fixed bottom-lg right-lg w-14 h-14 bg-secondary text-on-secondary rounded-full shadow-lg flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-50 group">
+<span class="material-symbols-outlined text-3xl">add</span>
+<span class="absolute right-16 bg-on-surface text-surface px-3 py-1 rounded text-label-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">New Registration</span>
+</button>
+<script>
+        // Simple micro-interaction for filter button
+        document.querySelector('button[class*="bg-secondary"]').addEventListener('click', function() {
+            this.innerHTML = '<span class="material-symbols-outlined text-[20px] animate-spin">sync</span><span>Processing...</span>';
+            setTimeout(() => {
+                this.innerHTML = '<span class="material-symbols-outlined text-[20px]">filter_list</span><span>Apply Filters</span>';
+            }, 800);
+        });
+
+        // Hover effect for table rows
+        const rows = document.querySelectorAll('.table-row-hover');
+        rows.forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                row.style.cursor = 'pointer';
+            });
+        });
+    </script>
+</body></html>
