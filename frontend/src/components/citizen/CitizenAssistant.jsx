@@ -282,8 +282,9 @@ export function CitizenAssistant() {
     setIsTyping(true);
 
     try {
-      // 2. Call local backend Gemini API
-      const endpoint = 'http://localhost:5000/api/chat/message';
+      // 2. Call backend Gemini API (uses VITE_API_BASE_URL from .env)
+      const apiBase = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api').replace(/\/$/, '');
+      const endpoint = `${apiBase}/chat/message`;
 
       console.log('📤 [FRONTEND SENDING REQUEST TO BACKEND]:', {
         endpoint,
