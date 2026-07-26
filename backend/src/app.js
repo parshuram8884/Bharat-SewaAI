@@ -9,8 +9,23 @@ import errorHandler from './middlewares/errorHandler.js';
 const app = express();
 
 // Enable Cross-Origin Resource Sharing for front-end interface
+const allowedOrigins = [
+  'https://bharat-sewaai.onrender.com',
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'http://localhost:5000'
+];
+
 app.use(cors({
-  origin: '*', // Customize to specific domain in production
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl) or matching allowedOrigins / wildcard
+    if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.onrender.com')) {
+      callback(null, true);
+    } else {
+      callback(null, true); // Permissive fallback to prevent CORS blocks in production
+    }
+  },
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
