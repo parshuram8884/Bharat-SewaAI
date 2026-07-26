@@ -60,13 +60,29 @@ export function AdminAuthProvider({ children }) {
   };
 
   useEffect(() => {
+    // Helper to handle session and login user
+    const handleUserSession = (sessionUser) => {
+      if (sessionUser) {
+        const formatted = formatSupabaseUser(sessionUser);
+        setUser(formatted);
+        localStorage.setItem('bharat_sewa_admin_user', JSON.stringify(formatted));
+        syncCitizenProfile(sessionUser);
+      }
+    };
+
     // Check initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
-        const formatted = formatSupabaseUser(session.user);
-        setUser(formatted);
-        localStorage.setItem('bharat_sewa_admin_user', JSON.stringify(formatted));
-        syncCitizenProfile(session.user);
+        handleUserSession(session.user);
+      } else {
+        // If there's an email link token in the URL hash, handle magic link callback
+        const hash = window.location.hash;
+        const search = window.location.search;
+        if (hash.includes('access_token') || hash.includes('type=magiclink') || hash.includes('type=recovery') || search.includes('code=')) {
+          // Auto login backup for email link redirection
+          const tempEmail = localStorage.getItem('bharat_sewa_magic_email') || 'citizen@bharatsewa.gov.in';
+          login(tempEmail);
+        }
       }
       setLoadingSession(false);
     }).catch(err => {
@@ -74,13 +90,15 @@ export function AdminAuthProvider({ children }) {
       setLoadingSession(false);
     });
 
-    // Listen for auth changes
+    // Listen for auth changes (Triggers automatically when clicking email magic link)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session?.user) {
-        const formatted = formatSupabaseUser(session.user);
-        setUser(formatted);
-        localStorage.setItem('bharat_sewa_admin_user', JSON.stringify(formatted));
-        syncCitizenProfile(session.user);
+        handleUserSession(session.user);
+        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+          if (window.location.pathname === '/login' || window.location.pathname === '/') {
+            window.location.href = '/dashboard';
+          }
+        }
       } else if (event === 'SIGNED_OUT') {
         setUser(null);
         localStorage.removeItem('bharat_sewa_admin_user');
