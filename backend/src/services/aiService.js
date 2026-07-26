@@ -96,19 +96,23 @@ Your workflow:
         parts: [{ text: prompt }]
       });
 
-      // Single Model Generation with Fallback: gemini-2.5-flash -> gemini-1.5-flash
+      // Gemini Generation: gemini-1.5-flash primary, gemini-2.0-flash secondary
       let response;
       try {
-        response = await ai.models.generateContent({
-          model: 'gemini-2.5-flash',
-          contents
-        });
-      } catch (genError) {
-        console.warn('Gemini 2.5 flash error, trying gemini-1.5-flash fallback:', genError?.message);
         response = await ai.models.generateContent({
           model: 'gemini-1.5-flash',
           contents
         });
+      } catch (genError) {
+        console.warn('⚠️ Gemini 1.5 flash warning, trying gemini-2.0-flash:', genError?.message);
+        try {
+          response = await ai.models.generateContent({
+            model: 'gemini-2.0-flash',
+            contents
+          });
+        } catch (retryErr) {
+          console.error('❌ Gemini AI API Call Failed:', retryErr?.message || retryErr);
+        }
       }
 
       if (response && response.text) {
@@ -122,10 +126,9 @@ Your workflow:
       if (mode === 'complaint') {
         return `I have recorded your grievance details regarding "${prompt}". Our nodal officers have registered ticket for your location. You can track this in the Complaints tab.`;
       }
-      return `Thank you for asking about "${prompt}". I have noted your details for processing. Is there any additional detail you'd like to provide?`;
+      return `Thank you for your message regarding "${prompt}". I have noted your details for processing. Is there any additional detail you'd like to provide?`;
     } catch (error) {
-      console.warn('Gemini AI API call warning:', error?.message || error);
-      if (contextData.mode === 'complaint') {
+      console.error('❌ Critical Gemini AI Error:', error?.message || error);      if (contextData.mode === 'complaint') {
         return `I have recorded your grievance details regarding "${prompt}". Our nodal officers have registered ticket for your location. You can track this in the Complaints tab.`;
       }
       return `Thank you for your message regarding "${prompt}". Your details have been recorded for processing.`;
