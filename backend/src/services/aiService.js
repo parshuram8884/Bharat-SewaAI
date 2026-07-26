@@ -96,14 +96,23 @@ Your workflow:
         parts: [{ text: prompt }]
       });
 
-      // Single Model Generation: gemini-2.0-flash
-      const response = await ai.models.generateContent({
-        model: 'gemini-3.5-flash',
-        contents
-      });
+      // Single Model Generation with Fallback: gemini-2.5-flash -> gemini-1.5-flash
+      let response;
+      try {
+        response = await ai.models.generateContent({
+          model: 'gemini-2.5-flash',
+          contents
+        });
+      } catch (genError) {
+        console.warn('Gemini 2.5 flash error, trying gemini-1.5-flash fallback:', genError?.message);
+        response = await ai.models.generateContent({
+          model: 'gemini-1.5-flash',
+          contents
+        });
+      }
 
       if (response && response.text) {
-        console.log('🤖 [Google Gemini AI (gemini-2.0-flash)] Response generated:');
+        console.log('🤖 [Google Gemini AI] Response generated successfully:');
         console.log('--------------------------------------------------');
         console.log(response.text);
         console.log('--------------------------------------------------');
