@@ -1,188 +1,298 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CameraScanner from '../components/scanner/CameraScanner';
-import Button from '../components/common/Button';
-import { Shield, FolderOpen, FileText, CheckCircle, Clock, AlertCircle, ChevronRight, Activity } from 'lucide-react';
-import { applicationTrackingService } from '../services/applicationTrackingService';
-import { ApplicationStatusConfig } from '../data/applicationStatusModel';
-import { notificationService } from '../services/notificationService';
-import { CitizenOnboardingModal } from '../components/citizen/CitizenOnboardingModal';
+import { 
+  FileText, 
+  AlertCircle, 
+  ArrowRight, 
+  ExternalLink
+} from 'lucide-react';
+import { useAdminData } from '../context/AdminDataContext';
+import { useAdminAuth } from '../context/AdminAuthContext';
+import { Badge } from '../components/common/Badge';
 
 export function Dashboard() {
   const navigate = useNavigate();
-  
-  const [documents, setDocuments] = useState([
-    { id: '1', name: 'Aadhaar Card', status: 'verified', size: '1.2 MB', date: '2026-07-20' },
-    { id: '2', name: 'Ration Card', status: 'verified', size: '890 KB', date: '2026-07-21' },
-  ]);
+  const { applications, complaints } = useAdminData();
+  const { user } = useAdminAuth();
 
-  const [applications, setApplications] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [showScanner, setShowScanner] = useState(false);
-  const [unreadNotifs, setUnreadNotifs] = useState(0);
+  const [activeTab, setActiveTab] = useState('all'); // 'all', 'applications', 'complaints'
+  const [searchTerm, setSearchTerm] = useState('');
+  // Filter items belonging to logged in citizen using Gmail address foreign key
+  const isMine = (item) => {
+    if (!user || !user.email) return true;
+    const uEmail = (user.email || '').toLowerCase().trim();
+    const uName = (user.name || '').toLowerCase().trim();
+    const uPrefix = uEmail.split('@')[0];
 
-  useEffect(() => {
-    async function loadData() {
-      const res = await applicationTrackingService.getApplications();
-      if (res.success) {
-        setApplications(res.data);
-      }
-      setUnreadNotifs(notificationService.getUnreadCount());
-      setIsLoading(false);
-    }
-    loadData();
-  }, []);
+    const cEmail = (item.citizen_email || item.citizenEmail || '').toLowerCase().trim();
+    const cName = (item.citizen_name || item.citizenName || '').toLowerCase().trim();
 
-  const handleCapture = (file) => {
-    const newDoc = {
-      id: Date.now().toString(),
-      name: file.name,
-      status: 'verifying',
-      size: `${(file.size / 1024 / 1024).toFixed(2)} MB`,
-      date: new Date().toISOString().split('T')[0]
-    };
-    setDocuments((prev) => [newDoc, ...prev]);
-    setShowScanner(false);
+    return (cEmail && cEmail === uEmail) || (cName && cName === uName) || (cName && uPrefix && cName.includes(uPrefix));
   };
 
-  const totalApps = applications.length;
-  const inProgressApps = applications.filter(a => ApplicationStatusConfig[a.status]?.category === 'In Progress').length;
-  const needsAttentionApps = applications.filter(a => ApplicationStatusConfig[a.status]?.category === 'Needs Attention').length;
-  const approvedApps = applications.filter(a => ApplicationStatusConfig[a.status]?.category === 'Approved').length;
+  const userApplications = (applications || []).filter(isMine);
+  const userComplaints = (complaints || []).filter(isMine);
+
+  // Calculate summary metrics for user
+  const totalApplications = userApplications.length;
+  const pendingApplications = userApplications.filter(a => (a.status || '').toLowerCase().includes('progress') || (a.status || '').toLowerCase().includes('pending')).length;
+  const approvedApplications = userApplications.filter(a => a.status === 'Approved').length;
+
+  const totalComplaints = userComplaints.length;
+  const openComplaints = userComplaints.filter(c => (c.status || '').toLowerCase().includes('progress') || (c.status || '').toLowerCase().includes('open')).length;
+  const resolvedComplaints = userComplaints.filter(c => c.status === 'Resolved').length;
+
+  // Filtered lists for search
+  const filteredApplications = userApplications.filter(a =>
+    !searchTerm || (a.citizenName || '').toLowerCase().includes(searchTerm.toLowerCase()) || (a.schemeName || '').toLowerCase().includes(searchTerm.toLowerCase()) || (a.id || '').toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredComplaints = userComplaints.filter(c =>
+    !searchTerm || (c.citizen_name || c.citizenName || '').toLowerCase().includes(searchTerm.toLowerCase()) || (c.what_happend || '').toLowerCase().includes(searchTerm.toLowerCase()) || String(c.id).includes(searchTerm)
+  );
 
   return (
-    <div className="flex-1 p-6 md:p-8 bg-neutral-950 text-neutral-100 overflow-y-auto space-y-8 font-sans">
-      <CitizenOnboardingModal />
-      {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-emerald-50">Citizen Dashboard</h1>
-          <p className="text-sm text-neutral-400">Manage your documents securely and track active scheme applications.</p>
-        </div>
-        <div className="flex gap-3">
-          <Button variant="outline" onClick={() => navigate('/applications')} className="hidden md:flex">
-            View All Applications
-          </Button>
-          <Button variant="primary" onClick={() => setShowScanner(!showScanner)}>
-            {showScanner ? 'Close Scanner' : 'Scan New Document'}
-          </Button>
-        </div>
-      </div>
-
-      {showScanner && (
-        <div className="max-w-2xl mx-auto animate-in fade-in slide-in-from-top-4">
-          <CameraScanner onCapture={handleCapture} />
-        </div>
-      )}
-
-      {/* Summary Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="p-4 rounded-2xl bg-neutral-900 border border-neutral-800">
-          <span className="text-neutral-400 text-xs font-bold uppercase">Total Applications</span>
-          <p className="text-2xl font-bold text-emerald-50 mt-1">{totalApps}</p>
-        </div>
-        <div className="p-4 rounded-2xl bg-neutral-900 border border-neutral-800">
-          <span className="text-neutral-400 text-xs font-bold uppercase">In Progress</span>
-          <p className="text-2xl font-bold text-primary mt-1">{inProgressApps}</p>
-        </div>
-        <div 
-          onClick={() => navigate('/applications?status=Needs Attention')}
-          className="p-4 rounded-2xl bg-red-950/20 border border-red-900/50 cursor-pointer hover:bg-red-950/40 transition-colors"
-        >
-          <span className="text-red-400 text-xs font-bold uppercase">Needs Attention</span>
-          <p className="text-2xl font-bold text-red-50 mt-1">{needsAttentionApps}</p>
-        </div>
-        <div className="p-4 rounded-2xl bg-neutral-900 border border-neutral-800">
-          <span className="text-neutral-400 text-xs font-bold uppercase">Approved</span>
-          <p className="text-2xl font-bold text-emerald-400 mt-1">{approvedApps}</p>
-        </div>
-      </div>
-
-      {/* Grid Dashboard */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* Digital Locker */}
-        <div className="lg:col-span-2 space-y-4">
-          <div className="flex items-center justify-between pb-2 border-b border-neutral-800">
+    <div className="space-y-6 pb-12 animate-in fade-in duration-200">
+      
+      {/* Page Banner & Header */}
+      <div className="bg-gradient-to-r from-primary via-primary-container to-secondary-container rounded-2xl p-6 md:p-8 text-on-primary shadow-lg relative overflow-hidden">
+        <div className="absolute -right-10 -bottom-10 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
             <div className="flex items-center gap-2">
-              <FolderOpen className="w-5 h-5 text-emerald-400" />
-              <h2 className="text-lg font-semibold text-emerald-50">Your Encrypted Documents</h2>
+              <h1 className="font-heading text-2xl md:text-3xl font-extrabold tracking-tight">
+                Governance Dashboard
+              </h1>
+              <span className="px-3 py-1 rounded-full text-xs font-bold bg-white/20 text-white backdrop-blur-sm">
+                Citizen Portal
+              </span>
             </div>
+            <p className="text-on-primary/80 text-sm mt-1 max-w-2xl font-medium">
+              Manage scheme applications and public grievance complaints in one unified portal.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {documents.map((doc) => (
-              <div key={doc.id} className="p-4 rounded-xl bg-neutral-900 border border-neutral-800 hover:border-emerald-500/20 transition-all flex items-start gap-3">
-                <div className="p-2 rounded-lg bg-neutral-800 text-neutral-400">
+          <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md p-1.5 rounded-xl border border-white/20">
+            <button
+              onClick={() => setActiveTab('all')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                activeTab === 'all' 
+                  ? 'bg-white text-primary shadow-sm' 
+                  : 'text-white/90 hover:bg-white/10'
+              }`}
+            >
+              All Panels
+            </button>
+            <button
+              onClick={() => setActiveTab('applications')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                activeTab === 'applications' 
+                  ? 'bg-white text-primary shadow-sm' 
+                  : 'text-white/90 hover:bg-white/10'
+              }`}
+            >
+              <FileText className="w-3.5 h-3.5" /> Applications ({totalApplications})
+            </button>
+            <button
+              onClick={() => setActiveTab('complaints')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                activeTab === 'complaints' 
+                  ? 'bg-white text-primary shadow-sm' 
+                  : 'text-white/90 hover:bg-white/10'
+              }`}
+            >
+              <AlertCircle className="w-3.5 h-3.5" /> Complaints ({totalComplaints})
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* 2 Core Metric Cards (Color Panels) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        {/* Applications Card */}
+        <div 
+          onClick={() => setActiveTab(activeTab === 'applications' ? 'all' : 'applications')}
+          className={`p-6 rounded-2xl border transition-all cursor-pointer shadow-sm hover:shadow-md ${
+            activeTab === 'applications' 
+              ? 'bg-emerald-50/90 border-emerald-500 ring-2 ring-emerald-500/30' 
+              : 'bg-surface-container-lowest border-outline-variant/60 hover:border-emerald-500/40'
+          }`}
+        >
+          <div className="flex justify-between items-start">
+            <div className="p-3 rounded-xl bg-emerald-100 text-emerald-700">
+              <FileText className="w-6 h-6" />
+            </div>
+            <button 
+              onClick={(e) => { e.stopPropagation(); navigate('/applications'); }}
+              className="text-xs font-bold text-emerald-700 hover:underline flex items-center gap-1"
+            >
+              View Tab <ExternalLink className="w-3.5 h-3.5" />
+            </button>
+          </div>
+          <div className="mt-4">
+            <span className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Scheme Applications</span>
+            <div className="flex items-baseline justify-between mt-1">
+              <h2 className="text-3xl font-extrabold text-primary">{totalApplications}</h2>
+              <span className="text-xs font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">
+                {pendingApplications} In Progress
+              </span>
+            </div>
+            <p className="text-xs text-on-surface-variant mt-2">{approvedApplications} applications approved</p>
+          </div>
+        </div>
+
+        {/* Complaints Card */}
+        <div 
+          onClick={() => setActiveTab(activeTab === 'complaints' ? 'all' : 'complaints')}
+          className={`p-6 rounded-2xl border transition-all cursor-pointer shadow-sm hover:shadow-md ${
+            activeTab === 'complaints' 
+              ? 'bg-amber-50/90 border-amber-500 ring-2 ring-amber-500/30' 
+              : 'bg-surface-container-lowest border-outline-variant/60 hover:border-amber-500/40'
+          }`}
+        >
+          <div className="flex justify-between items-start">
+            <div className="p-3 rounded-xl bg-amber-100 text-amber-800">
+              <AlertCircle className="w-6 h-6" />
+            </div>
+            <button 
+              onClick={(e) => { e.stopPropagation(); navigate('/complaints'); }}
+              className="text-xs font-bold text-amber-800 hover:underline flex items-center gap-1"
+            >
+              View Tab <ExternalLink className="w-3.5 h-3.5" />
+            </button>
+          </div>
+          <div className="mt-4">
+            <span className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Citizen Complaints</span>
+            <div className="flex items-baseline justify-between mt-1">
+              <h2 className="text-3xl font-extrabold text-primary">{totalComplaints}</h2>
+              <span className="text-xs font-bold text-red-700 bg-red-100 px-2 py-0.5 rounded-full">
+                {openComplaints} Pending
+              </span>
+            </div>
+            <p className="text-xs text-on-surface-variant mt-2">{resolvedComplaints} grievances resolved</p>
+          </div>
+        </div>
+
+      </div>
+
+      {/* Main Content Panels Section (Applications & Complaints) */}
+      <div className="space-y-8">
+
+        {/* 1. APPLICATIONS TAB CONTENT PANEL */}
+        {(activeTab === 'all' || activeTab === 'applications') && (
+          <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/60 shadow-sm overflow-hidden">
+            <div className="p-5 bg-emerald-50/50 border-b border-outline-variant/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-emerald-600 text-white">
                   <FileText className="w-5 h-5" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate text-neutral-200">{doc.name}</p>
-                  <p className="text-xs text-neutral-500">{doc.size} • {doc.date}</p>
-                  
-                  <div className="mt-2 flex items-center gap-1.5">
-                    {doc.status === 'verified' ? (
-                      <>
-                        <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
-                        <span className="text-[11px] font-semibold text-emerald-400 tracking-wide uppercase">Verified</span>
-                      </>
-                    ) : (
-                      <>
-                        <Clock className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
-                        <span className="text-[11px] font-semibold text-amber-400 tracking-wide uppercase">Verifying (OCR)</span>
-                      </>
-                    )}
-                  </div>
+                <div>
+                  <h2 className="font-heading text-lg font-extrabold text-primary">Applications Tab Overview</h2>
+                  <p className="text-xs text-on-surface-variant font-medium">Submitted scheme applications and review status</p>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Scheme Status */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between pb-2 border-b border-neutral-800">
-            <div className="flex items-center gap-2">
-              <Activity className="w-5 h-5 text-emerald-400" />
-              <h2 className="text-lg font-semibold text-emerald-50">Recent Applications</h2>
+              <button 
+                onClick={() => navigate('/applications')}
+                className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 self-start sm:self-auto"
+              >
+                Go to Applications Tab <ArrowRight className="w-4 h-4" />
+              </button>
             </div>
-            <button onClick={() => navigate('/applications')} className="text-xs text-primary hover:underline">View All</button>
-          </div>
 
-          <div className="space-y-3">
-            {isLoading ? (
-              <div className="p-4 rounded-xl bg-neutral-900 animate-pulse h-24" />
-            ) : applications.slice(0, 3).map((app) => {
-              const config = ApplicationStatusConfig[app.status] || ApplicationStatusConfig.draft;
-              return (
-                <div 
-                  key={app.id} 
-                  onClick={() => navigate(`/applications/${app.id}`)}
-                  className="p-4 rounded-xl bg-neutral-900 border border-neutral-800 hover:border-primary/50 cursor-pointer transition-colors group space-y-3"
-                >
-                  <div className="flex justify-between items-start gap-2">
-                    <h3 className="text-sm font-bold text-neutral-200 line-clamp-1">{app.schemeName}</h3>
-                    <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider whitespace-nowrap ${
-                      config.category === 'Needs Attention' ? 'bg-red-950/50 text-red-400 border border-red-500/20' :
-                      config.category === 'Approved' ? 'bg-emerald-950/50 text-emerald-400 border border-emerald-500/20' :
-                      'bg-amber-950/50 text-amber-400 border border-amber-500/20'
-                    }`}>
-                      {config.label}
-                    </span>
+            <div className="p-6">
+              <div className="space-y-3">
+                {filteredApplications.slice(0, 5).map((app, idx) => (
+                  <div 
+                    key={app.id || idx}
+                    onClick={() => navigate('/applications')}
+                    className="p-4 rounded-xl bg-surface-container-low border border-outline-variant/50 hover:border-emerald-500/50 transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3 group"
+                  >
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-xs font-bold text-primary px-2 py-0.5 rounded bg-surface-container-high">
+                          {app.id}
+                        </span>
+                        <h4 className="font-bold text-sm text-on-surface group-hover:text-emerald-700 transition-colors">
+                          {app.schemeName || app.serviceName || 'Welfare Scheme'}
+                        </h4>
+                      </div>
+                      <p className="text-xs text-on-surface-variant line-clamp-1">
+                        Citizen: <span className="font-semibold text-on-surface">{app.citizenName || 'Citizen User'}</span> • {app.details || app.what_happend || 'Application submitted'}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
+                      <Badge>{app.status || 'In Progress'}</Badge>
+                      <span className="text-xs font-bold text-emerald-700 flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+                        Track <ArrowRight className="w-3.5 h-3.5" />
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between text-xs text-neutral-500">
-                    <span>{new Date(app.updatedAt).toLocaleDateString()}</span>
-                    <span className="text-primary group-hover:underline flex items-center">
-                      Track <ChevronRight className="w-3.5 h-3.5" />
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* 2. COMPLAINTS TAB CONTENT PANEL */}
+        {(activeTab === 'all' || activeTab === 'complaints') && (
+          <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/60 shadow-sm overflow-hidden">
+            <div className="p-5 bg-amber-50/50 border-b border-outline-variant/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-amber-600 text-white">
+                  <AlertCircle className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="font-heading text-lg font-extrabold text-primary">Complaints Tab Overview</h2>
+                  <p className="text-xs text-on-surface-variant font-medium">Public grievance reports and resolution tracking</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => navigate('/complaints')}
+                className="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 self-start sm:self-auto"
+              >
+                Go to Complaints Tab <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="p-6">
+              <div className="space-y-3">
+                {filteredComplaints.slice(0, 5).map((comp, idx) => (
+                  <div 
+                    key={comp.id || idx}
+                    onClick={() => navigate('/complaints')}
+                    className="p-4 rounded-xl bg-surface-container-low border border-outline-variant/50 hover:border-amber-500/50 transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3 group"
+                  >
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-xs font-bold text-amber-800 px-2 py-0.5 rounded bg-amber-100">
+                          CMP-{comp.id}
+                        </span>
+                        <h4 className="font-bold text-sm text-on-surface group-hover:text-amber-800 transition-colors">
+                          {comp.citizen_name || comp.citizenName || 'Citizen Grievance'}
+                        </h4>
+                      </div>
+                      <p className="text-xs text-on-surface-variant line-clamp-1">
+                        {comp.what_happend || comp.description || 'Public complaint registered'}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
+                      <Badge>{comp.status || 'In Progress'}</Badge>
+                      <span className="text-xs font-bold text-amber-800 flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+                        Resolve <ArrowRight className="w-3.5 h-3.5" />
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
       </div>
+
     </div>
   );
 }

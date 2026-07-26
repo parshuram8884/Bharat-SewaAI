@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Shield, Mail, Building2, CheckCircle2, Send, Check } from 'lucide-react';
+import { Shield, Mail, Building2, CheckCircle2, ArrowRight } from 'lucide-react';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useToast } from '../../context/ToastContext';
 
@@ -13,11 +13,8 @@ const loginSchema = z.object({
 
 export function AdminLogin() {
   const [isLoading, setIsLoading] = useState(false);
-  const [linkSent, setLinkSent] = useState(false);
-  const [sentEmail, setSentEmail] = useState('');
-  
   const navigate = useNavigate();
-  const { sendMagicLink, login } = useAdminAuth();
+  const { login } = useAdminAuth();
   const { showToast } = useToast();
 
   const {
@@ -29,35 +26,29 @@ export function AdminLogin() {
   } = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: 'citizen@bharatsewa.gov.in',
+      email: 'citizen@gmail.com',
     },
   });
 
-  const handleSendVerificationLink = async (e) => {
-    if (e && e.preventDefault) e.preventDefault();
-    const email = getValues('email');
-    if (!email || !email.includes('@')) {
-      showToast('Please enter a valid email address first.', 'error');
-      return;
-    }
-
+  // Direct Sign In with Gmail (Opens Dashboard Tab Directly)
+  const handleDirectSignIn = async (data) => {
+    const email = data.email || getValues('email') || 'citizen@gmail.com';
     setIsLoading(true);
     try {
-      await sendMagicLink(email);
-      setSentEmail(email);
-      setLinkSent(true);
-      showToast(`Verification link sent to ${email}! Open your email inbox and click the Sign In link.`, 'success');
+      login(email);
+      showToast(`Welcome! Signed in successfully with ${email}`, 'success');
+      navigate('/dashboard', { replace: true });
     } catch (err) {
-      console.error("Supabase magic link error:", err);
-      showToast(err.message || 'Failed to send verification link. Check email address.', 'error');
+      console.error("Sign in error:", err);
+      showToast('Login failed. Please try again.', 'error');
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleDemoFill = () => {
-    setValue('email', 'citizen@bharatsewa.gov.in');
-    showToast('Demo citizen email inserted automatically.', 'info');
+    setValue('email', 'citizen@gmail.com');
+    showToast('Gmail address filled. Click Sign In to open Dashboard.', 'info');
   };
 
   return (
@@ -83,90 +74,66 @@ export function AdminLogin() {
         </div>
 
         {/* Login Card */}
-        <section className="bg-surface-container-lowest border border-outline-variant/60 rounded-2xl p-6 sm:p-10 shadow-xl">
-          <header className="mb-6">
-            <h2 className="text-2xl font-heading font-bold text-on-surface mb-1">Citizen Access</h2>
+        <section className="bg-surface-container-lowest border border-outline-variant/60 rounded-2xl p-6 sm:p-10 shadow-xl space-y-6">
+          <header className="text-center sm:text-left">
+            <h2 className="text-2xl font-heading font-bold text-on-surface mb-1">Citizen Sign In</h2>
             <p className="text-sm font-medium text-on-surface-variant">
-              Enter your email address to receive a secure login verification link.
+              Enter your email address to access your applications, complaints, and dashboard.
             </p>
           </header>
 
-          {linkSent ? (
-            <div className="space-y-6 text-center py-4">
-              <div className="w-16 h-16 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center mx-auto border border-emerald-500/20">
-                <Check className="w-8 h-8" />
+          <form onSubmit={handleSubmit(handleDirectSignIn)} className="space-y-5">
+            {/* Email Input */}
+            <div className="space-y-1.5">
+              <label htmlFor="email" className="block text-sm font-semibold text-on-surface">
+                Email Address
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant/70" />
+                <input
+                  id="email"
+                  type="email"
+                  placeholder="e.g. citizen@gmail.com"
+                  className={`w-full pl-11 pr-4 py-3 rounded-xl border bg-surface-container-lowest text-base text-on-surface placeholder:text-on-surface-variant/50 transition-all focus:outline-none focus:ring-2 focus:ring-primary/30 ${
+                    errors.email ? 'border-error focus:border-error' : 'border-outline-variant focus:border-primary'
+                  }`}
+                  {...register('email')}
+                />
               </div>
-              <div>
-                <h3 className="text-lg font-bold text-on-surface">Verification Link Sent!</h3>
-                <p className="text-sm text-on-surface-variant mt-1">
-                  We've sent a magic verification link to <span className="font-semibold text-primary">{sentEmail}</span>.
-                </p>
-                <p className="text-xs text-on-surface-variant/80 mt-2">
-                  Click the link in your email to automatically verify your citizen access and open your dashboard.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setLinkSent(false)}
-                className="text-xs font-semibold text-primary hover:underline cursor-pointer"
-              >
-                Use a different email address
-              </button>
+              {errors.email && <p className="text-xs font-semibold text-error mt-1">{errors.email.message}</p>}
             </div>
-          ) : (
-            <form onSubmit={handleSubmit(handleSendVerificationLink)} className="space-y-6">
-              {/* Email */}
-              <div className="space-y-1.5">
-                <label htmlFor="email" className="block text-sm font-semibold text-on-surface">
-                  Email Address
-                </label>
-                <div className="relative">
-                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant/70" />
-                  <input
-                    id="email"
-                    type="email"
-                    placeholder="e.g. citizen@bharatsewa.gov.in"
-                    className={`w-full pl-11 pr-4 py-3 rounded-xl border bg-surface-container-lowest text-base text-on-surface placeholder:text-on-surface-variant/50 transition-all focus:outline-none focus:ring-2 focus:ring-primary/30 ${
-                      errors.email ? 'border-error focus:border-error' : 'border-outline-variant focus:border-primary'
-                    }`}
-                    {...register('email')}
-                  />
-                </div>
-                {errors.email && <p className="text-xs font-semibold text-error mt-1">{errors.email.message}</p>}
-              </div>
 
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full py-3.5 px-6 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-heading font-bold text-base shadow-lg shadow-primary/25 hover:shadow-xl transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2 cursor-pointer"
-              >
-                {isLoading ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    <span>Sending Verification Link...</span>
-                  </>
-                ) : (
-                  <>
-                    <Send className="w-5 h-5" />
-                    <span>Send Verification Link</span>
-                  </>
-                )}
-              </button>
-            </form>
-          )}
+            {/* Direct Sign In & Open Dashboard Button */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-3.5 px-6 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-heading font-bold text-base shadow-lg shadow-primary/25 hover:shadow-xl transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2 cursor-pointer"
+            >
+              {isLoading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span>Opening Dashboard...</span>
+                </>
+              ) : (
+                <>
+                  <span>Sign In & Open Dashboard</span>
+                  <ArrowRight className="w-5 h-5" />
+                </>
+              )}
+            </button>
+          </form>
 
-          {/* Quick Demo Help Banner */}
-          <div className="mt-6 p-3 rounded-xl bg-primary-fixed/20 border border-primary-container/40 flex items-center justify-between text-xs text-primary">
+          {/* Quick Demo Fill */}
+          <div className="p-3 rounded-xl bg-primary-fixed/20 border border-primary-container/40 flex items-center justify-between text-xs text-primary">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 shrink-0" />
-              <span>Citizen Supabase Verification Link active</span>
+              <span>Direct Citizen Dashboard access active</span>
             </div>
             <button
               onClick={handleDemoFill}
               className="font-bold underline cursor-pointer hover:opacity-80"
             >
-              Auto-fill Citizen Email
+              Auto-fill Email
             </button>
           </div>
         </section>
@@ -184,4 +151,3 @@ export function AdminLogin() {
 }
 
 export default AdminLogin;
-

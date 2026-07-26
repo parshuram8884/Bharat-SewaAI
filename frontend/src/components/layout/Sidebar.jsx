@@ -4,15 +4,9 @@ import {
   LayoutDashboard,
   Users,
   FileText,
-  FolderOpen,
-  Layers,
   AlertCircle,
-  BarChart3,
-  Bell,
-  Settings,
-  Mic,
+  User,
   HelpCircle,
-  LogOut,
   X
 } from 'lucide-react';
 import { useAdminAuth } from '../../context/AdminAuthContext';
@@ -24,21 +18,12 @@ export function Sidebar({ isOpen, onClose }) {
   const navigate = useNavigate();
 
   const links = [
-    
+    { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { to: '/citizens', label: 'Citizens', icon: Users },
     { to: '/applications', label: 'Applications', icon: FileText },
     { to: '/complaints', label: 'Complaints', icon: AlertCircle },
+    { to: '/profile', label: 'Profile', icon: User },
   ];
-
-  const handleVoiceAssistant = () => {
-    showToast('AI Voice Assistant activated. Listening for Hindi/English administrative commands...', 'info');
-  };
-
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-    showToast('You have been logged out successfully.', 'info');
-  };
 
   const sidebarContent = (
     <div className="flex flex-col h-full bg-primary text-on-primary p-4 shadow-xl select-none">
@@ -84,29 +69,7 @@ export function Sidebar({ isOpen, onClose }) {
       </div>
 
       {/* Bottom Actions */}
-      <div className="mt-auto border-t border-on-primary/15 pt-4 flex flex-col gap-1.5">
-        <button
-          onClick={handleVoiceAssistant}
-          className="flex items-center justify-center gap-2 px-3 py-2.5 mb-2 bg-tertiary-container text-on-tertiary-container hover:bg-tertiary-container/90 rounded-full font-bold text-xs shadow-lg active:scale-95 transition-all cursor-pointer"
-        >
-          <Mic className="w-4 h-4 animate-pulse" />
-          <span>Voice Assistant</span>
-        </button>
-
-        <a
-          href="#help"
-          onClick={(e) => {
-            e.preventDefault();
-            showToast('Opening Government Help & Training manual...', 'info');
-          }}
-          className="flex items-center gap-3 px-3.5 py-2 text-xs font-medium text-on-primary/75 hover:bg-primary-fixed-dim/20 hover:text-on-primary rounded-lg transition-colors"
-        >
-          <HelpCircle className="w-4 h-4 shrink-0" />
-          <span>Help Center</span>
-        </a>
-
-       
-      </div>
+     
     </div>
   );
 

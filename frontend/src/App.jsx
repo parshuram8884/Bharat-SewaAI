@@ -22,6 +22,7 @@ import { ReportsExport } from './pages/admin/ReportsExport';
 import { NotificationsBroadcast } from './pages/admin/NotificationsBroadcast';
 import { Settings } from './pages/admin/Settings';
 import { AuditLogs } from './pages/admin/AuditLogs';
+import { Profile } from './pages/admin/Profile';
 
 // Existing Citizen Pages
 import { Home as CitizenHome } from './pages/Home';
@@ -78,6 +79,7 @@ function App() {
                 <Route path="/reports" element={<ReportsExport />} />
                 <Route path="/notifications" element={<NotificationsBroadcast />} />
                 <Route path="/settings" element={<Settings />} />
+                <Route path="/profile" element={<Profile />} />
                 <Route path="/audit-logs" element={<AuditLogs />} />
               </Route>
 
