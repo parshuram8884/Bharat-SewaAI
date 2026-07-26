@@ -111,7 +111,8 @@ export function AdminAuthProvider({ children }) {
   }, []);
 
   const sendMagicLink = async (email) => {
-    const siteUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
+    const rawSiteUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
+    const siteUrl = rawSiteUrl.endsWith('/') ? rawSiteUrl.slice(0, -1) : rawSiteUrl;
     const redirectTo = `${siteUrl}/dashboard`;
     const { data, error } = await supabase.auth.signInWithOtp({
       email,

@@ -283,7 +283,11 @@ export function CitizenAssistant() {
 
     try {
       // 2. Call backend Gemini API
-      const res = await axios.post('http://localhost:5000/api/chat/message', {
+      const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+      const cleanBase = apiBase.endsWith('/') ? apiBase.slice(0, -1) : apiBase;
+      const endpoint = cleanBase.endsWith('/api') ? `${cleanBase}/chat/message` : `${cleanBase}/api/chat/message`;
+
+      const res = await axios.post(endpoint, {
         message: messageText,
         history: updatedHistory,
         contextData: {
