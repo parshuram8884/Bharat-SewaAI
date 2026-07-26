@@ -13,15 +13,57 @@ import {
 
 const AdminDataContext = createContext(null);
 
+const APPS_STORAGE_KEY = 'bharat_sewa_user_applications_v2';
+const COMPS_STORAGE_KEY = 'bharat_sewa_user_complaints_v2';
+
+function getStoredApps() {
+  try {
+    const raw = localStorage.getItem(APPS_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function setStoredApps(apps) {
+  try {
+    localStorage.setItem(APPS_STORAGE_KEY, JSON.stringify(apps));
+  } catch (e) {}
+}
+
+function getStoredComps() {
+  try {
+    const raw = localStorage.getItem(COMPS_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function setStoredComps(comps) {
+  try {
+    localStorage.setItem(COMPS_STORAGE_KEY, JSON.stringify(comps));
+  } catch (e) {}
+}
+
 export function AdminDataProvider({ children }) {
   const [stats, setStats] = useState(initialStats);
   const [citizens, setCitizens] = useState(initialCitizens);
-  const [applications, setApplications] = useState([]);
+  const [applications, setApplications] = useState(() => getStoredApps());
   const [schemes, setSchemes] = useState(initialSchemes);
-  const [complaints, setComplaints] = useState([]);
+  const [complaints, setComplaints] = useState(() => getStoredComps());
   const [notifications, setNotifications] = useState(initialNotifications);
   const [auditLogs, setAuditLogs] = useState(initialAuditLogs);
   const [roles, setRoles] = useState(adminRolesList);
+
+  // Sync state changes with localStorage backup for reliable rejoin matching by Gmail
+  useEffect(() => {
+    setStoredApps(applications);
+  }, [applications]);
+
+  useEffect(() => {
+    setStoredComps(complaints);
+  }, [complaints]);
 
   // Fetch complaints & applications directly from Supabase database tables
   useEffect(() => {
@@ -32,8 +74,27 @@ export function AdminDataProvider({ children }) {
           .select('*')
           .order('id', { ascending: false });
 
-        if (compData) {
-          setComplaints(compData);
+        if (compData && compData.length > 0) {
+          setComplaints((prevLocal) => {
+            const map = new Map();
+            // Add local first
+            prevLocal.forEach((item) => map.set(String(item.id), item));
+            // Add Supabase items
+            compData.forEach((item) => {
+              const formatted = {
+                id: item.id,
+                citizen_name: item.citizen_name || 'Citizen User',
+                citizenName: item.citizen_name || 'Citizen User',
+                citizen_email: item.citizen_email || item.citizenEmail || '',
+                citizenEmail: item.citizen_email || item.citizenEmail || '',
+                what_happend: item.what_happend || 'Public Grievance Report',
+                where_happend: item.where_happend || 'Local Ward',
+                status: item.status || 'In Progress'
+              };
+              map.set(String(item.id), formatted);
+            });
+            return Array.from(map.values());
+          });
         }
 
         const { data: appData } = await supabase
@@ -42,16 +103,23 @@ export function AdminDataProvider({ children }) {
           .order('id', { ascending: false });
 
         if (appData && appData.length > 0) {
-          const formattedApps = appData.map((item) => ({
-            id: item.id || `APP-${item.id}`,
-            citizenName: item.citizen_name || 'Citizen User',
-            citizenEmail: item.citizen_email || '',
-            schemeName: item.service_name || 'Government Scheme',
-            details: item.what_happend || 'Application Details',
-            status: item.status || 'In Progress',
-            submissionDate: item.created_at ? new Date(item.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Today'
-          }));
-          setApplications(formattedApps);
+          setApplications((prevLocal) => {
+            const map = new Map();
+            prevLocal.forEach((item) => map.set(String(item.id), item));
+            appData.forEach((item) => {
+              const formatted = {
+                id: item.id || `APP-${item.id}`,
+                citizenName: item.citizen_name || 'Citizen User',
+                citizenEmail: item.citizen_email || item.citizenEmail || '',
+                schemeName: item.service_name || 'Government Scheme',
+                details: item.what_happend || 'Application Details',
+                status: item.status || 'In Progress',
+                submissionDate: item.created_at ? new Date(item.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Today'
+              };
+              map.set(String(formatted.id), formatted);
+            });
+            return Array.from(map.values());
+          });
         }
       } catch (err) {
         console.warn('Supabase fetch data notice:', err?.message);
@@ -79,10 +147,10 @@ export function AdminDataProvider({ children }) {
       prev.map((app) => {
         if (app.id !== appId) return app;
         const newNotes = noteText
-          ? [...app.notes, { id: `N-${Date.now()}`, author: reviewerName, date: 'Just now', text: noteText }]
-          : app.notes;
+          ? [...(app.notes || []), { id: `N-${Date.now()}`, author: reviewerName, date: 'Just now', text: noteText }]
+          : (app.notes || []);
         const newTimeline = [
-          ...app.timeline,
+          ...(app.timeline || []),
           { date: 'Just now', action: `Application Approved by ${reviewerName}`, author: reviewerName }
         ];
         return {
@@ -106,10 +174,10 @@ export function AdminDataProvider({ children }) {
       prev.map((app) => {
         if (app.id !== appId) return app;
         const newNotes = noteText
-          ? [...app.notes, { id: `N-${Date.now()}`, author: reviewerName, date: 'Just now', text: noteText }]
-          : app.notes;
+          ? [...(app.notes || []), { id: `N-${Date.now()}`, author: reviewerName, date: 'Just now', text: noteText }]
+          : (app.notes || []);
         const newTimeline = [
-          ...app.timeline,
+          ...(app.timeline || []),
           { date: 'Just now', action: `Application Rejected by ${reviewerName}`, author: reviewerName }
         ];
         return {
@@ -133,10 +201,10 @@ export function AdminDataProvider({ children }) {
       prev.map((app) => {
         if (app.id !== appId) return app;
         const newNotes = noteText
-          ? [...app.notes, { id: `N-${Date.now()}`, author: reviewerName, date: 'Just now', text: noteText }]
-          : app.notes;
+          ? [...(app.notes || []), { id: `N-${Date.now()}`, author: reviewerName, date: 'Just now', text: noteText }]
+          : (app.notes || []);
         const newTimeline = [
-          ...app.timeline,
+          ...(app.timeline || []),
           { date: 'Just now', action: `Requested additional documents from citizen`, author: reviewerName }
         ];
         return {
@@ -197,12 +265,14 @@ export function AdminDataProvider({ children }) {
     addAuditLog('DELETED_SCHEME', schemeId, `Removed government scheme from active catalog`);
   };
 
-  // Complaint Actions - Insert into Supabase table 'complain'
+  // Complaint Actions - Insert into Supabase table 'complain' with foreign key (citizen_email)
   const addComplaint = (newComplaintData) => {
     const tempItem = {
       id: Date.now(),
       citizen_name: newComplaintData.citizenName || 'Citizen User',
+      citizenName: newComplaintData.citizenName || 'Citizen User',
       citizen_email: newComplaintData.citizenEmail || '',
+      citizenEmail: newComplaintData.citizenEmail || '',
       what_happend: newComplaintData.whatHappened || 'Public Grievance Report',
       where_happend: newComplaintData.whereHappened || 'Local Ward',
       status: 'In Progress'
@@ -227,26 +297,10 @@ export function AdminDataProvider({ children }) {
         if (!error && data && data.length > 0) {
           console.log('✅ Complaint ticket stored in Supabase database table "complain":', data[0]);
           setComplaints((prev) =>
-            prev.map((c) => (c.id === tempItem.id ? data[0] : c))
+            prev.map((c) => (c.id === tempItem.id ? { ...data[0], citizenEmail: data[0].citizen_email } : c))
           );
         } else if (error) {
-          console.warn('Supabase insert notice (retrying without citizen_email if missing):', error.message);
-          supabase
-            .from('complain')
-            .insert([
-              {
-                citizen_name: tempItem.citizen_name,
-                what_happend: tempItem.what_happend,
-                where_happend: tempItem.where_happend,
-                status: tempItem.status
-              }
-            ])
-            .select()
-            .then(({ data: d2 }) => {
-              if (d2 && d2.length > 0) {
-                setComplaints((prev) => prev.map((c) => (c.id === tempItem.id ? d2[0] : c)));
-              }
-            });
+          console.warn('Supabase insert notice:', error.message);
         }
       })
       .catch((err) => console.warn('Supabase insert exception:', err?.message));
@@ -259,8 +313,8 @@ export function AdminDataProvider({ children }) {
       prev.map((c) => {
         if (c.id !== complaintId) return c;
         const newComment = { id: `C-${Date.now()}`, author, date: 'Just now', text };
-        const newTimeline = [...c.timeline, { date: 'Just now', event: `New note added by ${author}` }];
-        return { ...c, comments: [...c.comments, newComment], timeline: newTimeline };
+        const newTimeline = [...(c.timeline || []), { date: 'Just now', event: `New note added by ${author}` }];
+        return { ...c, comments: [...(c.comments || []), newComment], timeline: newTimeline };
       })
     );
   };
@@ -269,7 +323,7 @@ export function AdminDataProvider({ children }) {
     setComplaints((prev) =>
       prev.map((c) => {
         if (c.id !== complaintId) return c;
-        const newTimeline = [...c.timeline, { date: 'Just now', event: `Status updated to ${newStatus}` }];
+        const newTimeline = [...(c.timeline || []), { date: 'Just now', event: `Status updated to ${newStatus}` }];
         return { ...c, status: newStatus, timeline: newTimeline };
       })
     );

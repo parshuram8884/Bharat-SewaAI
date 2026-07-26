@@ -36,14 +36,19 @@ export function ApplicationsList() {
 
   const filteredApps = useMemo(() => {
     return (applications || []).filter((app) => {
-      // Strictly filter by logged-in citizen email / name
+      // Strictly filter by logged-in citizen email / name foreign key
       if (user && user.email) {
-        const cName = (app?.citizenName || '').toLowerCase();
-        const uEmail = (user.email || '').toLowerCase();
-        const uName = (user.name || '').toLowerCase();
+        const cEmail = (app?.citizenEmail || app?.citizen_email || '').toLowerCase().trim();
+        const cName = (app?.citizenName || app?.citizen_name || '').toLowerCase().trim();
+        const uEmail = (user.email || '').toLowerCase().trim();
+        const uName = (user.name || '').toLowerCase().trim();
         const uPrefix = uEmail.split('@')[0];
 
-        const isMine = (cName && cName === uName) || (cName && cName.includes(uPrefix));
+        const isMine = 
+          (cEmail && cEmail === uEmail) || 
+          (cName && cName === uName) || 
+          (cName && uPrefix && cName.includes(uPrefix));
+
         if (!isMine) {
           return false;
         }
