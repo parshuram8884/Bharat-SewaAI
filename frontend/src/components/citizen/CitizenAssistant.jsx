@@ -18,18 +18,21 @@ import {
   Mic,
   MicOff,
   Volume2,
-  VolumeX
+  VolumeX,
+  ArrowLeft
 } from 'lucide-react';
 import axios from 'axios';
 import { useAdminData } from '../../context/AdminDataContext';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useToast } from '../../context/ToastContext';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export function CitizenAssistant() {
   const { showToast } = useToast();
   const { addComplaint, addApplication } = useAdminData();
   const { user } = useAdminAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   
   // Voice AI Engine State (STT & TTS)
   const [isVoiceActive, setIsVoiceActive] = useState(true); // Hands-Free Voice Mode ON by default
@@ -181,14 +184,23 @@ export function CitizenAssistant() {
     setModalStep(1);
 
     let greetingText = "";
+    const isHindi = (user?.language || '').toLowerCase().includes('hindi');
     if (selectedService === 'farmer_disaster') {
-      greetingText = "Namaste! 🙏 I am your AI Assistant for the **Farmer Disaster Relief Scheme (किसान आपदा राहत योजना)**.\n\nTo process your crop compensation withdrawal, please tell me: **What caused your crop damage (heavy rains, flood, drought), how much land was damaged, and your village/location?**";
+      greetingText = isHindi 
+        ? "नमस्ते! 🙏 मैं **किसान आपदा राहत योजना** के लिए आपका एआई सहायक हूँ।\n\nमुआवजा प्राप्त करने के लिए कृपया मुझे बताएं: **आपकी फसल को किस कारण नुकसान हुआ (भारी बारिश, बाढ़, सूखा), कितनी जमीन प्रभावित हुई, और आपका गाँव/जिला कौन सा है?**"
+        : "Namaste! 🙏 I am your AI Assistant for the **Farmer Disaster Relief Scheme (किसान आपदा राहत योजना)**.\n\nTo process your crop compensation withdrawal, please tell me: **What caused your crop damage (heavy rains, flood, drought), how much land was damaged, and your village/location?**";
     } else if (selectedService === 'income_certificate') {
-      greetingText = "Namaste! 🙏 I am your AI Assistant for **Income Certificate Application (आय प्रमाण पत्र)**.\n\nTo issue your official certificate, please tell me: **What is your total annual family income, primary occupation, and address?**";
+      greetingText = isHindi
+        ? "नमस्ते! 🙏 मैं **आय प्रमाण पत्र आवेदन** के लिए आपका एआई सहायक हूँ।\n\nप्रमाण पत्र जारी करने के लिए कृपया मुझे बताएं: **आपकी कुल वार्षिक पारिवारिक आय कितनी है, मुख्य व्यवसाय क्या है, और आपका पता क्या है?**"
+        : "Namaste! 🙏 I am your AI Assistant for **Income Certificate Application (आय प्रमाण पत्र)**.\n\nTo issue your official certificate, please tell me: **What is your total annual family income, primary occupation, and address?**";
     } else if (selectedMode === 'service') {
-      greetingText = "Namaste! 🙏 I am your Bharat Sewa AI Assistant. How can I help you apply for a government welfare scheme or service today?";
+      greetingText = isHindi
+        ? "नमस्ते! 🙏 मैं आपका भारत सेवा एआई सहायक हूँ। आज मैं किसी सरकारी योजना या सेवा में आवेदन करने में आपकी कैसे मदद कर सकता हूँ?"
+        : "Namaste! 🙏 I am your Bharat Sewa AI Assistant. How can I help you apply for a government welfare scheme or service today?";
     } else {
-      greetingText = "Namaste! 🙏 I am your Bharat Sewa AI Assistant. Please tell me **what happened** and **where did it happen** to register your complaint.";
+      greetingText = isHindi
+        ? "नमस्ते! 🙏 मैं आपका भारत सेवा एआई सहायक हूँ। कृपया मुझे बताएं कि **क्या हुआ** और **कहाँ हुआ** ताकि आपकी शिकायत दर्ज की जा सके।"
+        : "Namaste! 🙏 I am your Bharat Sewa AI Assistant. Please tell me **what happened** and **where did it happen** to register your complaint.";
     }
 
     setMessages([
@@ -383,7 +395,21 @@ export function CitizenAssistant() {
       {/* 2-Step Initial Choice Modal */}
       {showModeModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-surface-container-lowest border border-outline-variant/80 rounded-2xl p-6 sm:p-8 max-w-lg w-full shadow-2xl space-y-6 animate-in zoom-in-95">
+          <div className="relative bg-surface-container-lowest border border-outline-variant/80 rounded-2xl p-6 sm:p-8 max-w-lg w-full shadow-2xl space-y-6 animate-in zoom-in-95">
+            <button
+              type="button"
+              onClick={() => {
+                if (messages.length > 0) {
+                  setShowModeModal(false);
+                } else {
+                  navigate(-1);
+                }
+              }}
+              className="absolute top-4 right-4 p-2 rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors cursor-pointer"
+              title="Close / Go Back"
+            >
+              <X className="w-5 h-5" />
+            </button>
             {modalStep === 1 ? (
               <>
                 <div className="text-center space-y-2">
@@ -391,10 +417,10 @@ export function CitizenAssistant() {
                     <Sparkles className="w-8 h-8" />
                   </div>
                   <h2 className="text-2xl font-heading font-extrabold text-on-surface">
-                    Bharat Sewa AI Assistant
+                    {t('Bharat Sewa AI Assistant')}
                   </h2>
                   <p className="text-sm font-medium text-on-surface-variant">
-                    Step 1: Select what service you need assistance with:
+                    {t('Step 1: Select what service you need assistance with:')}
                   </p>
                 </div>
 
@@ -409,11 +435,11 @@ export function CitizenAssistant() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-bold text-base text-on-surface group-hover:text-emerald-600 transition-colors flex items-center justify-between">
-                        <span>🌾 Farmer Disaster Relief Scheme</span>
+                        <span>🌾 {t('Farmer Disaster Relief Scheme')}</span>
                         <span className="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-extrabold">किसान आपदा राहत</span>
                       </h3>
                       <p className="text-xs text-on-surface-variant mt-0.5">
-                        Apply for crop damage compensation withdrawal & financial assistance.
+                        {t('Apply for crop damage compensation withdrawal & financial assistance.')}
                       </p>
                     </div>
                     <ChevronRight className="w-5 h-5 text-emerald-600 group-hover:translate-x-1 transition-transform shrink-0" />
@@ -429,11 +455,11 @@ export function CitizenAssistant() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-bold text-base text-on-surface group-hover:text-blue-600 transition-colors flex items-center justify-between">
-                        <span>📜 Income Certificate Application</span>
+                        <span>📜 {t('Income Certificate Application')}</span>
                         <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-extrabold">आय प्रमाण पत्र</span>
                       </h3>
                       <p className="text-xs text-on-surface-variant mt-0.5">
-                        Apply for official family income certificate issuance online.
+                        {t('Apply for official family income certificate issuance online.')}
                       </p>
                     </div>
                     <ChevronRight className="w-5 h-5 text-blue-600 group-hover:translate-x-1 transition-transform shrink-0" />
@@ -449,14 +475,31 @@ export function CitizenAssistant() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-bold text-base text-on-surface group-hover:text-amber-600 transition-colors flex items-center justify-between">
-                        <span>⚠️ Register Grievance / Complaint</span>
+                        <span>⚠️ {t('Register Grievance / Complaint')}</span>
                         <span className="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-extrabold">शिकायत दर्ज करें</span>
                       </h3>
                       <p className="text-xs text-on-surface-variant mt-0.5">
-                        Report what happened & where it happened directly to officials.
+                        {t('Report what happened & where it happened directly to officials.')}
                       </p>
                     </div>
                     <ChevronRight className="w-5 h-5 text-amber-600 group-hover:translate-x-1 transition-transform shrink-0" />
+                  </button>
+                </div>
+
+                <div className="pt-3 text-center border-t border-outline-variant/40">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (messages.length > 0) {
+                        setShowModeModal(false);
+                      } else {
+                        navigate(-1);
+                      }
+                    }}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-outline-variant/60 hover:bg-surface-container text-xs font-bold text-on-surface-variant transition-colors cursor-pointer"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                    <span>{t('Go Back')}</span>
                   </button>
                 </div>
               </>
@@ -468,10 +511,10 @@ export function CitizenAssistant() {
                     <Mic className="w-8 h-8" />
                   </div>
                   <h2 className="text-2xl font-heading font-extrabold text-on-surface">
-                    Choose Interaction Mode
+                    {t('Choose Interaction Mode')}
                   </h2>
                   <p className="text-sm font-medium text-on-surface-variant">
-                    Step 2: How would you like to communicate with AI Assistant?
+                    {t('Step 2: How would you like to communicate with AI Assistant?')}
                   </p>
                 </div>
 
@@ -486,10 +529,10 @@ export function CitizenAssistant() {
                     </div>
                     <div>
                       <h3 className="font-bold text-base text-on-surface group-hover:text-primary transition-colors">
-                        💬 Text Chat Mode
+                        💬 {t('Text Chat Mode')}
                       </h3>
                       <p className="text-xs text-on-surface-variant mt-1 leading-relaxed">
-                        Type messages, describe issues, and attach documents/PDFs manually.
+                        {t('Type messages, describe issues, and attach documents/PDFs manually.')}
                       </p>
                     </div>
                   </button>
@@ -504,10 +547,10 @@ export function CitizenAssistant() {
                     </div>
                     <div>
                       <h3 className="font-bold text-base text-on-surface group-hover:text-emerald-600 transition-colors">
-                        🎙️ Voice / Audio Mode
+                        🎙️ {t('Voice / Audio Mode')}
                       </h3>
                       <p className="text-xs text-on-surface-variant mt-1 leading-relaxed">
-                        Automated hands-free speech & audio responses in your native language!
+                        {t('Automated hands-free speech & audio responses in your native language!')}
                       </p>
                     </div>
                   </button>
@@ -540,7 +583,7 @@ export function CitizenAssistant() {
                 <h3 className="font-heading font-bold text-base text-on-surface truncate">Bharat Sewa AI</h3>
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 text-[10px] font-extrabold uppercase shrink-0">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  Online
+                  {t('Online')}
                 </span>
               </div>
               <p className="text-xs text-on-surface-variant font-medium truncate">
@@ -551,6 +594,16 @@ export function CitizenAssistant() {
 
           {/* Mode Switcher & Controls */}
           <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-outline-variant/60 hover:bg-surface-container text-xs font-bold text-on-surface-variant transition-colors cursor-pointer shrink-0"
+              title="Go Back"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Back</span>
+            </button>
+
             <button
               type="button"
               onClick={() => {

@@ -16,6 +16,7 @@ import {
 import { useAdminData } from '../../context/AdminDataContext';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useToast } from '../../context/ToastContext';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Table } from '../../components/common/Table';
 import { Badge } from '../../components/common/Badge';
 import { Button } from '../../components/common/Button';
@@ -27,6 +28,7 @@ export function ApplicationsList() {
   const { user } = useAdminAuth();
   const { showToast } = useToast();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [statusFilter, setStatusFilter] = useState('All');
   const [schemeFilter, setSchemeFilter] = useState('All');
@@ -124,7 +126,7 @@ export function ApplicationsList() {
       },
       {
         accessorKey: 'id',
-        header: 'Application ID',
+        header: t('Application ID'),
         cell: ({ row }) => (
           <span className="font-mono font-bold text-primary">
             {row.original.id}
@@ -133,14 +135,14 @@ export function ApplicationsList() {
       },
       {
         accessorKey: 'citizenName',
-        header: 'Citizen Name',
+        header: t('Citizen Name'),
         cell: ({ row }) => (
           <span className="font-bold text-on-surface block">{row.original.citizenName || 'Citizen User'}</span>
         )
       },
       {
         accessorKey: 'schemeName',
-        header: 'Service / Scheme',
+        header: t('Service / Scheme'),
         cell: ({ row }) => (
           <span className="font-semibold text-emerald-600 dark:text-emerald-400 block font-heading">
             {row.original.schemeName || row.original.serviceName || 'Government Scheme'}
@@ -149,7 +151,7 @@ export function ApplicationsList() {
       },
       {
         accessorKey: 'details',
-        header: 'What Happened / Application Details',
+        header: t('What Happened / Application Details'),
         cell: ({ row }) => (
           <span className="text-xs text-on-surface-variant line-clamp-2 max-w-md block" title={row.original.details || row.original.what_happend}>
             {row.original.details || row.original.what_happend || 'Application submitted via AI Assistant.'}
@@ -158,12 +160,12 @@ export function ApplicationsList() {
       },
       {
         accessorKey: 'status',
-        header: 'Status',
-        cell: ({ row }) => <Badge>{row.original.status || 'In Progress'}</Badge>
+        header: t('Status'),
+        cell: ({ row }) => <Badge>{t(row.original.status || 'In Progress')}</Badge>
       },
       {
         id: 'actions',
-        header: () => <div className="text-right">Action</div>,
+        header: () => <div className="text-right">{t('Action')}</div>,
         cell: ({ row }) => {
           const app = row.original;
           const isPending = app.status.includes('Pending') || app.status.includes('Investigation');
@@ -205,7 +207,7 @@ export function ApplicationsList() {
         }
       }
     ],
-    [selectedApps, filteredApps, navigate]
+    [selectedApps, filteredApps, navigate, t]
   );
 
   const pendingCount = applications.filter((a) => a.status.includes('Pending') || a.status.includes('Investigation')).length;
@@ -216,9 +218,9 @@ export function ApplicationsList() {
     <div className="space-y-6 pb-12 animate-in fade-in duration-200 relative">
       {/* Clean Page Header */}
       <div className="border-b border-outline-variant/30 pb-5">
-        <h2 className="font-heading text-3xl font-extrabold text-primary tracking-tight">Applications</h2>
+        <h2 className="font-heading text-3xl font-extrabold text-primary tracking-tight">{t('Applications')}</h2>
         <p className="text-on-surface-variant font-medium mt-1 text-sm">
-          Track and review your submitted scheme applications and government welfare services.
+          {t('Track and review your submitted scheme applications and government welfare services.')}
         </p>
       </div>
 
@@ -226,7 +228,7 @@ export function ApplicationsList() {
       <Table
         data={filteredApps}
         columns={columns}
-        searchPlaceholder="Search Application ID, citizen name, service title..."
+        searchPlaceholder={t('Search Application ID, citizen name, service title...')}
         pageSize={10}
       />
     </div>

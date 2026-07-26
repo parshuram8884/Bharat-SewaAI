@@ -14,6 +14,7 @@ import {
 import { useAdminData } from '../../context/AdminDataContext';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useToast } from '../../context/ToastContext';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Table } from '../../components/common/Table';
 import { Badge } from '../../components/common/Badge';
 import { Button } from '../../components/common/Button';
@@ -24,6 +25,7 @@ export function ComplaintsManagement() {
   const { complaints, updateComplaintStatus, addComplaintComment } = useAdminData();
   const { user } = useAdminAuth();
   const { showToast } = useToast();
+  const { t } = useTranslation();
 
   const [statusFilter, setStatusFilter] = useState('All');
   const [priorityFilter, setPriorityFilter] = useState('All');
@@ -82,7 +84,7 @@ export function ComplaintsManagement() {
     () => [
       {
         accessorKey: 'id',
-        header: 'Complaint ID',
+        header: t('Complaint ID'),
         cell: ({ row }) => (
           <span
             onClick={() => setActiveTicket(row.original)}
@@ -94,14 +96,14 @@ export function ComplaintsManagement() {
       },
       {
         accessorKey: 'citizen_name',
-        header: 'Who Complained',
+        header: t('Who Complained'),
         cell: ({ row }) => (
           <span className="font-bold text-on-surface">{row.original.citizen_name || 'Citizen User'}</span>
         )
       },
       {
         accessorKey: 'what_happend',
-        header: 'What Happened',
+        header: t('What Happened'),
         cell: ({ row }) => (
           <span className="font-medium text-on-surface max-w-md block" title={row.original.what_happend}>
             {row.original.what_happend}
@@ -110,20 +112,20 @@ export function ComplaintsManagement() {
       },
       {
         accessorKey: 'status',
-        header: 'Status',
-        cell: ({ row }) => <Badge>{row.original.status || 'In Progress'}</Badge>
+        header: t('Status'),
+        cell: ({ row }) => <Badge>{t(row.original.status || 'In Progress')}</Badge>
       }
     ],
-    []
+    [t]
   );
 
   return (
     <div className="space-y-6 pb-12 animate-in fade-in duration-200">
       {/* Page Header */}
       <div className="border-b border-outline-variant/30 pb-4">
-        <h2 className="font-heading text-3xl font-extrabold text-primary tracking-tight">Citizen Complaints</h2>
+        <h2 className="font-heading text-3xl font-extrabold text-primary tracking-tight">{t('Citizen Complaints')}</h2>
         <p className="text-on-surface-variant text-sm font-medium mt-1">
-          Registered grievance complaints submitted by citizens.
+          {t('Registered grievance complaints submitted by citizens.')}
         </p>
       </div>
 
@@ -131,7 +133,7 @@ export function ComplaintsManagement() {
       <Table
         data={filteredComplaints}
         columns={columns}
-        searchPlaceholder="Search complaint name, citizen, or what happened..."
+        searchPlaceholder={t('Search complaint name, citizen, or what happened...')}
         pageSize={10}
       />
 

@@ -11,15 +11,17 @@ import {
 } from 'lucide-react';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useToast } from '../../context/ToastContext';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export function Sidebar({ isOpen, onClose }) {
   const { logout } = useAdminAuth();
   const { showToast } = useToast();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const links = [
     { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { to: '/citizens', label: 'Citizens', icon: Users },
+    { to: '/citizens', label: 'Schemes & Services', icon: Users },
     { to: '/applications', label: 'Applications', icon: FileText },
     { to: '/complaints', label: 'Complaints', icon: AlertCircle },
     { to: '/profile', label: 'Profile', icon: User },
@@ -31,7 +33,7 @@ export function Sidebar({ isOpen, onClose }) {
       <div className="mb-6 px-3 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-heading font-extrabold tracking-tight text-on-primary">Bharat Sewa AI</h1>
-          <p className="text-xs text-on-primary/60 font-medium">Citizen Portal</p>
+          <p className="text-xs text-on-primary/60 font-medium">{t('Citizen Portal')}</p>
         </div>
         {onClose && (
           <button
@@ -62,7 +64,7 @@ export function Sidebar({ isOpen, onClose }) {
               }
             >
               <Icon className="w-4 h-4 shrink-0" />
-              <span className="truncate">{link.label}</span>
+              <span className="truncate">{t(link.label)}</span>
             </NavLink>
           );
         })}

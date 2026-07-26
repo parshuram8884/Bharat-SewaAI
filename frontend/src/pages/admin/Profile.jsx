@@ -13,6 +13,7 @@ import {
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useAdminData } from '../../context/AdminDataContext';
 import { useToast } from '../../context/ToastContext';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Button } from '../../components/common/Button';
 import { Card } from '../../components/common/Card';
 
@@ -20,6 +21,7 @@ export function Profile() {
   const { user, updateUserProfile } = useAdminAuth();
   const { applications, complaints } = useAdminData();
   const { showToast } = useToast();
+  const { t } = useTranslation();
 
   const [name, setName] = useState(user?.name || 'Citizen User');
   const [language, setLanguage] = useState(user?.language || 'English');
@@ -108,13 +110,13 @@ export function Profile() {
         
         {/* Left Column: Edit Profile & Language Selection */}
         <div className="lg:col-span-7 space-y-6">
-          <Card title="Citizen Profile & Language Preferences">
+          <Card title={t('Citizen Profile & Language Preferences')}>
             <form onSubmit={handleSaveProfile} className="space-y-5">
               
               {/* Gmail Address */}
               <div className="space-y-1.5">
                 <label className="block text-xs font-bold text-on-surface-variant uppercase">
-                  Signed-In Gmail Address
+                  {t('Signed-In Gmail Address')}
                 </label>
                 <div className="relative">
                   <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant/70" />
@@ -126,14 +128,14 @@ export function Profile() {
                   />
                 </div>
                 <p className="text-xs text-on-surface-variant mt-1">
-                  Your applications and grievance tickets are tied to this Gmail address.
+                  {t('Your applications and grievance tickets are tied to this Gmail address.')}
                 </p>
               </div>
 
               {/* Citizen Name */}
               <div className="space-y-1.5">
                 <label htmlFor="name" className="block text-xs font-bold text-on-surface-variant uppercase">
-                  Full Name
+                  {t('Full Name')}
                 </label>
                 <div className="relative">
                   <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant/70" />
@@ -151,7 +153,7 @@ export function Profile() {
               {/* Working Language Selection */}
               <div className="space-y-1.5">
                 <label htmlFor="language" className="block text-xs font-bold text-on-surface-variant uppercase">
-                  Working Language (Voice & AI Assistant)
+                  {t('Working Language (Voice & AI Assistant)')}
                 </label>
                 <div className="relative">
                   <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant/70" />
@@ -169,7 +171,7 @@ export function Profile() {
                   </select>
                 </div>
                 <p className="text-xs text-on-surface-variant mt-1">
-                  The Sewa AI voice assistant will speak and process requests in your selected working language.
+                  {t('The Sewa AI voice assistant will speak and process requests in your selected working language.')}
                 </p>
               </div>
 
@@ -182,7 +184,7 @@ export function Profile() {
                   className="font-bold flex items-center gap-2"
                 >
                   <Save className="w-4 h-4" />
-                  <span>{isSaving ? 'Saving Updates...' : 'Save Profile Changes'}</span>
+                  <span>{isSaving ? t('Saving Updates...') : t('Save Profile Changes')}</span>
                 </Button>
               </div>
 
@@ -192,7 +194,7 @@ export function Profile() {
 
         {/* Right Column: Account Stats & Security Info */}
         <div className="lg:col-span-5 space-y-6">
-          <Card title="Activity & Linked Account Records">
+          <Card title={t('Activity & Linked Account Records')}>
             <div className="space-y-4">
               
               <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between">
@@ -201,8 +203,8 @@ export function Profile() {
                     <FileText className="w-5 h-5" />
                   </div>
                   <div>
-                    <h5 className="font-bold text-sm text-emerald-950">Submitted Applications</h5>
-                    <p className="text-xs text-emerald-700 font-medium">Bound to your Gmail key</p>
+                    <h5 className="font-bold text-sm text-emerald-950">{t('Submitted Applications')}</h5>
+                    <p className="text-xs text-emerald-700 font-medium">{t('Bound to your Gmail key')}</p>
                   </div>
                 </div>
                 <span className="text-2xl font-extrabold text-emerald-800">{myApps.length}</span>
@@ -214,8 +216,8 @@ export function Profile() {
                     <AlertCircle className="w-5 h-5" />
                   </div>
                   <div>
-                    <h5 className="font-bold text-sm text-amber-950">Registered Complaints</h5>
-                    <p className="text-xs text-amber-700 font-medium">Public grievance reports</p>
+                    <h5 className="font-bold text-sm text-amber-950">{t('Registered Complaints')}</h5>
+                    <p className="text-xs text-amber-700 font-medium">{t('Public grievance reports')}</p>
                   </div>
                 </div>
                 <span className="text-2xl font-extrabold text-amber-800">{myComps.length}</span>
@@ -224,10 +226,10 @@ export function Profile() {
               <div className="p-4 rounded-xl bg-surface-container-low border border-outline-variant/60 space-y-2">
                 <div className="flex items-center gap-2 text-xs font-bold text-primary">
                   <Shield className="w-4 h-4 text-emerald-600" />
-                  <span>Aadhaar & e-KYC Verification</span>
+                  <span>{t('Aadhaar & e-KYC Verification')}</span>
                 </div>
                 <p className="text-xs text-on-surface-variant">
-                  Your profile is verified and linked to DigiLocker for automated OCR document verification.
+                  {t('Your profile is verified and linked to DigiLocker for automated OCR document verification.')}
                 </p>
               </div>
 

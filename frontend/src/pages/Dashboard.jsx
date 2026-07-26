@@ -8,12 +8,14 @@ import {
 } from 'lucide-react';
 import { useAdminData } from '../context/AdminDataContext';
 import { useAdminAuth } from '../context/AdminAuthContext';
+import { useTranslation } from '../hooks/useTranslation';
 import { Badge } from '../components/common/Badge';
 
 export function Dashboard() {
   const navigate = useNavigate();
   const { applications, complaints } = useAdminData();
   const { user } = useAdminAuth();
+  const { t } = useTranslation();
 
   const [activeTab, setActiveTab] = useState('all'); // 'all', 'applications', 'complaints'
   const [searchTerm, setSearchTerm] = useState('');
@@ -61,14 +63,14 @@ export function Dashboard() {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="font-heading text-2xl md:text-3xl font-extrabold tracking-tight">
-                Governance Dashboard
+                {t('Governance Dashboard')}
               </h1>
               <span className="px-3 py-1 rounded-full text-xs font-bold bg-white/20 text-white backdrop-blur-sm">
-                Citizen Portal
+                {t('Citizen Portal')}
               </span>
             </div>
             <p className="text-on-primary/80 text-sm mt-1 max-w-2xl font-medium">
-              Manage scheme applications and public grievance complaints in one unified portal.
+              {t('Manage scheme applications and public grievance complaints in one unified portal.')}
             </p>
           </div>
 
@@ -81,7 +83,7 @@ export function Dashboard() {
                   : 'text-white/90 hover:bg-white/10'
               }`}
             >
-              All Panels
+              {t('All Panels')}
             </button>
             <button
               onClick={() => setActiveTab('applications')}
@@ -91,7 +93,7 @@ export function Dashboard() {
                   : 'text-white/90 hover:bg-white/10'
               }`}
             >
-              <FileText className="w-3.5 h-3.5" /> Applications ({totalApplications})
+              <FileText className="w-3.5 h-3.5" /> {t('Applications')} ({totalApplications})
             </button>
             <button
               onClick={() => setActiveTab('complaints')}
@@ -101,7 +103,7 @@ export function Dashboard() {
                   : 'text-white/90 hover:bg-white/10'
               }`}
             >
-              <AlertCircle className="w-3.5 h-3.5" /> Complaints ({totalComplaints})
+              <AlertCircle className="w-3.5 h-3.5" /> {t('Complaints')} ({totalComplaints})
             </button>
           </div>
         </div>
@@ -127,18 +129,18 @@ export function Dashboard() {
               onClick={(e) => { e.stopPropagation(); navigate('/applications'); }}
               className="text-xs font-bold text-emerald-700 hover:underline flex items-center gap-1"
             >
-              View Tab <ExternalLink className="w-3.5 h-3.5" />
+              {t('View Tab')} <ExternalLink className="w-3.5 h-3.5" />
             </button>
           </div>
           <div className="mt-4">
-            <span className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Scheme Applications</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">{t('Scheme Applications')}</span>
             <div className="flex items-baseline justify-between mt-1">
               <h2 className="text-3xl font-extrabold text-primary">{totalApplications}</h2>
               <span className="text-xs font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">
-                {pendingApplications} In Progress
+                {pendingApplications} {t('In Progress')}
               </span>
             </div>
-            <p className="text-xs text-on-surface-variant mt-2">{approvedApplications} applications approved</p>
+            <p className="text-xs text-on-surface-variant mt-2">{approvedApplications} {t('applications approved')}</p>
           </div>
         </div>
 
@@ -159,18 +161,18 @@ export function Dashboard() {
               onClick={(e) => { e.stopPropagation(); navigate('/complaints'); }}
               className="text-xs font-bold text-amber-800 hover:underline flex items-center gap-1"
             >
-              View Tab <ExternalLink className="w-3.5 h-3.5" />
+              {t('View Tab')} <ExternalLink className="w-3.5 h-3.5" />
             </button>
           </div>
           <div className="mt-4">
-            <span className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Citizen Complaints</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">{t('Citizen Complaints')}</span>
             <div className="flex items-baseline justify-between mt-1">
               <h2 className="text-3xl font-extrabold text-primary">{totalComplaints}</h2>
               <span className="text-xs font-bold text-red-700 bg-red-100 px-2 py-0.5 rounded-full">
-                {openComplaints} Pending
+                {openComplaints} {t('Pending')}
               </span>
             </div>
-            <p className="text-xs text-on-surface-variant mt-2">{resolvedComplaints} grievances resolved</p>
+            <p className="text-xs text-on-surface-variant mt-2">{resolvedComplaints} {t('grievances resolved')}</p>
           </div>
         </div>
 
@@ -188,15 +190,15 @@ export function Dashboard() {
                   <FileText className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="font-heading text-lg font-extrabold text-primary">Applications Tab Overview</h2>
-                  <p className="text-xs text-on-surface-variant font-medium">Submitted scheme applications and review status</p>
+                  <h2 className="font-heading text-lg font-extrabold text-primary">{t('Applications Tab Overview')}</h2>
+                  <p className="text-xs text-on-surface-variant font-medium">{t('Submitted scheme applications and review status')}</p>
                 </div>
               </div>
               <button 
                 onClick={() => navigate('/applications')}
                 className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 self-start sm:self-auto"
               >
-                Go to Applications Tab <ArrowRight className="w-4 h-4" />
+                {t('Go to Applications Tab')} <ArrowRight className="w-4 h-4" />
               </button>
             </div>
 
@@ -218,14 +220,14 @@ export function Dashboard() {
                         </h4>
                       </div>
                       <p className="text-xs text-on-surface-variant line-clamp-1">
-                        Citizen: <span className="font-semibold text-on-surface">{app.citizenName || 'Citizen User'}</span> • {app.details || app.what_happend || 'Application submitted'}
+                        {t('Citizen')}: <span className="font-semibold text-on-surface">{app.citizenName || 'Citizen User'}</span> • {app.details || app.what_happend || 'Application submitted'}
                       </p>
                     </div>
 
                     <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
-                      <Badge>{app.status || 'In Progress'}</Badge>
+                      <Badge>{t(app.status || 'In Progress')}</Badge>
                       <span className="text-xs font-bold text-emerald-700 flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-                        Track <ArrowRight className="w-3.5 h-3.5" />
+                        {t('Track')} <ArrowRight className="w-3.5 h-3.5" />
                       </span>
                     </div>
                   </div>
@@ -244,15 +246,15 @@ export function Dashboard() {
                   <AlertCircle className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="font-heading text-lg font-extrabold text-primary">Complaints Tab Overview</h2>
-                  <p className="text-xs text-on-surface-variant font-medium">Public grievance reports and resolution tracking</p>
+                  <h2 className="font-heading text-lg font-extrabold text-primary">{t('Complaints Tab Overview')}</h2>
+                  <p className="text-xs text-on-surface-variant font-medium">{t('Public grievance reports and resolution tracking')}</p>
                 </div>
               </div>
               <button 
                 onClick={() => navigate('/complaints')}
                 className="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 self-start sm:self-auto"
               >
-                Go to Complaints Tab <ArrowRight className="w-4 h-4" />
+                {t('Go to Complaints Tab')} <ArrowRight className="w-4 h-4" />
               </button>
             </div>
 
@@ -279,9 +281,9 @@ export function Dashboard() {
                     </div>
 
                     <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
-                      <Badge>{comp.status || 'In Progress'}</Badge>
+                      <Badge>{t(comp.status || 'In Progress')}</Badge>
                       <span className="text-xs font-bold text-amber-800 flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-                        Resolve <ArrowRight className="w-3.5 h-3.5" />
+                        {t('Resolve')} <ArrowRight className="w-3.5 h-3.5" />
                       </span>
                     </div>
                   </div>
