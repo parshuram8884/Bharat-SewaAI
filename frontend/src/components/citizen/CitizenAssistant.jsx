@@ -287,6 +287,13 @@ export function CitizenAssistant() {
       const cleanBase = apiBase.endsWith('/') ? apiBase.slice(0, -1) : apiBase;
       const endpoint = cleanBase.endsWith('/api') ? `${cleanBase}/chat/message` : `${cleanBase}/api/chat/message`;
 
+      console.log('📤 [FRONTEND SENDING REQUEST TO BACKEND]:', {
+        endpoint,
+        message: messageText,
+        mode,
+        serviceType
+      });
+
       const res = await axios.post(endpoint, {
         message: messageText,
         history: updatedHistory,
@@ -301,8 +308,10 @@ export function CitizenAssistant() {
       const replyText = res.data?.reply || `Thank you for providing that information. How else can I assist you?`;
       setIsTyping(false);
 
-      console.log('🤖 [Google Gemini AI] Received response from backend API:');
-      console.log(replyText);
+      console.log('📥 [FRONTEND RECEIVED RESPONSE FROM BACKEND]:', {
+        endpoint,
+        reply: replyText
+      });
 
       // 3. Display Gemini AI response in chat
       setMessages((prev) => [
