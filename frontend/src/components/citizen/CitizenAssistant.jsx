@@ -5,21 +5,20 @@ import {
   User,
   Send,
   FileText,
-  AlertCircle,
   CheckCircle2,
-  Sparkles,
   RefreshCw,
-  ChevronRight,
   ExternalLink,
   Paperclip,
   X,
   FileCheck,
   ScanLine,
   Mic,
-  MicOff,
   Volume2,
-  VolumeX,
-  ArrowLeft
+  ArrowLeft,
+  Info,
+  ChevronDown,
+  ChevronUp,
+  ShieldCheck
 } from 'lucide-react';
 import axios from 'axios';
 import { useAdminData } from '../../context/AdminDataContext';
@@ -27,27 +26,48 @@ import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useToast } from '../../context/ToastContext';
 import { useTranslation } from '../../hooks/useTranslation';
 
+// ─────────────────────────────────────────────────────────────
+// Required documents for Student Migration Certificate
+// ─────────────────────────────────────────────────────────────
+const DOCUMENTS_3_YEAR = [
+  { id: 'sem5', label: 'Semester V Marksheet', icon: '📄', required: true, desc: 'Official marksheet for Semester V' },
+  { id: 'sem6', label: 'Semester VI Marksheet', icon: '📄', required: true, desc: 'Official marksheet for Semester VI' },
+];
+
+const DOCUMENTS_4_YEAR = [
+  { id: 'sem7', label: 'Semester VII Marksheet', icon: '📄', required: true, desc: 'Official marksheet for Semester VII' },
+  { id: 'sem8', label: 'Semester VIII Marksheet', icon: '📄', required: true, desc: 'Official marksheet for Semester VIII' },
+];
+
+const DOCUMENTS_COMMON = [
+  { id: 'college_leaving', label: 'College Leaving Certificate', icon: '🏫', required: true, desc: 'Issued by last attended college/institution' },
+  { id: 'board_cert', label: 'Provisional / Final Board Certificate', icon: '🎓', required: true, desc: 'Provisional or final degree/board certificate' },
+];
+
+// Information Gemini will collect step by step (text format)
+const INFO_TO_COLLECT = [
+  "Applicant's Full Name",
+  "Detailed Address (House No., Street, Village/City, Taluka, District, State, PIN)",
+  "College / Institute Name",
+  "Enrollment Number",
+  "Course / Programme Enrolled (e.g., B.Sc., B.Com., B.E., B.Tech.)",
+  "Degree Duration (3 years or 4 years)",
+  "Passout Year",
+  "Mobile Number",
+];
+
 export function CitizenAssistant() {
   const { showToast } = useToast();
-  const { addComplaint, addApplication } = useAdminData();
+  const { addApplication } = useAdminData();
   const { user } = useAdminAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  
-  // Voice AI Engine State (STT & TTS)
-  const [isVoiceActive, setIsVoiceActive] = useState(true); // Hands-Free Voice Mode ON by default
+
+  // Voice AI Engine State
+  const [isVoiceActive, setIsVoiceActive] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const recognitionRef = useRef(null);
-
-  // Modal state for 2-step initial selection
-  const [showModeModal, setShowModeModal] = useState(true);
-  const [modalStep, setModalStep] = useState(1); // 1: Service selection | 2: Communication choice (Text vs Voice)
-  const [pendingMode, setPendingMode] = useState('service');
-  const [pendingService, setPendingService] = useState('general');
-
-  const [mode, setMode] = useState(null); // 'service' | 'complaint'
-  const [serviceType, setServiceType] = useState('general'); // 'farmer_disaster' | 'income_certificate' | 'general'
 
   // File Upload & OCR State
   const fileInputRef = useRef(null);
@@ -60,167 +80,102 @@ export function CitizenAssistant() {
   const [isTyping, setIsTyping] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
   const [referenceId, setReferenceId] = useState('');
-  const [complaintDetails, setComplaintDetails] = useState({ what: '', where: '' });
+  const [applicationSummary, setApplicationSummary] = useState('');
+  const [degreeDuration, setDegreeDuration] = useState(null); // null | 3 | 4
+
+  // Documents panel toggle
+  const [showDocsPanel, setShowDocsPanel] = useState(true);
 
   const chatEndRef = useRef(null);
 
-  // Get BCP-47 Language Code for Web Speech API
+  // ── Language helpers ──────────────────────────────────────
   const getLanguageCode = (langName) => {
     const l = (langName || '').toLowerCase();
-    if (l.includes('hindi')) return 'hi-IN';
-    if (l.includes('marathi')) return 'mr-IN';
+    if (l.includes('hindi'))    return 'hi-IN';
+    if (l.includes('marathi'))  return 'mr-IN';
     if (l.includes('gujarati')) return 'gu-IN';
-    if (l.includes('bengali')) return 'bn-IN';
-    if (l.includes('tamil')) return 'ta-IN';
-    if (l.includes('telugu')) return 'te-IN';
+    if (l.includes('bengali'))  return 'bn-IN';
+    if (l.includes('tamil'))    return 'ta-IN';
+    if (l.includes('telugu'))   return 'te-IN';
     return 'en-IN';
   };
 
-  // Text-to-Speech (TTS - AI Voice Speaking Aloud)
+  // ── TTS ───────────────────────────────────────────────────
   const speakText = (text, onComplete) => {
     if (!('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel(); // Stop active speech
-
+    window.speechSynthesis.cancel();
     const cleanText = text.replace(/[*#_`]/g, '').trim();
     const utterance = new SpeechSynthesisUtterance(cleanText);
     utterance.lang = getLanguageCode(user?.language || 'English');
     utterance.rate = 1.0;
-
     setIsSpeaking(true);
-
-    const finishHandler = () => {
-      setIsSpeaking(false);
-      if (onComplete) onComplete();
-    };
-
-    utterance.onend = finishHandler;
-    utterance.onerror = finishHandler;
-
+    const finish = () => { setIsSpeaking(false); if (onComplete) onComplete(); };
+    utterance.onend = finish;
+    utterance.onerror = finish;
     window.speechSynthesis.speak(utterance);
   };
 
-  // Speech-to-Text (STT - Hands-Free Voice Listening & Auto-Submit)
+  // ── STT ───────────────────────────────────────────────────
   const startListening = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      showToast('Speech recognition is not supported in this browser.', 'warning');
-      return;
-    }
-
-    if (recognitionRef.current) {
-      try { recognitionRef.current.stop(); } catch(e) {}
-    }
+    if (!SpeechRecognition) { showToast('Speech recognition not supported in this browser.', 'warning'); return; }
+    if (recognitionRef.current) { try { recognitionRef.current.stop(); } catch(e) {} }
 
     const recognition = new SpeechRecognition();
     recognition.continuous = false;
     recognition.interimResults = true;
     recognition.lang = getLanguageCode(user?.language || 'English');
-
-    recognition.onstart = () => {
-      setIsListening(true);
-    };
-
+    recognition.onstart  = () => setIsListening(true);
     recognition.onresult = (event) => {
-      const transcript = Array.from(event.results)
-        .map(result => result[0].transcript)
-        .join('');
-
+      const transcript = Array.from(event.results).map(r => r[0].transcript).join('');
       setInputText(transcript);
-
-      const isFinal = event.results[event.results.length - 1].isFinal;
-      if (isFinal && transcript.trim()) {
-        console.log('🎤 [Voice Assistant] Captured final speech transcript:', transcript);
+      if (event.results[event.results.length - 1].isFinal && transcript.trim()) {
         handleSend(transcript);
       }
     };
-
-    recognition.onend = () => {
-      setIsListening(false);
-    };
-
-    recognition.onerror = (event) => {
-      console.warn('Speech recognition notice:', event.error);
-      setIsListening(false);
-    };
-
+    recognition.onend   = () => setIsListening(false);
+    recognition.onerror = () => setIsListening(false);
     recognitionRef.current = recognition;
-    try {
-      recognition.start();
-    } catch(e) {
-      console.warn('Mic start notice:', e?.message);
-    }
+    try { recognition.start(); } catch(e) {}
   };
 
   const stopListening = () => {
-    if (recognitionRef.current) {
-      try { recognitionRef.current.stop(); } catch(e) {}
-    }
+    if (recognitionRef.current) { try { recognitionRef.current.stop(); } catch(e) {} }
     setIsListening(false);
   };
 
-  // Auto-scroll chat to bottom
+  // ── Auto-scroll ───────────────────────────────────────────
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
-  // Step 1: Handle Service / Complaint Selection
-  const handleServiceClick = (selectedMode, selectedService = 'general') => {
-    setPendingMode(selectedMode);
-    setPendingService(selectedService);
-    setModalStep(2); // Advance to Step 2: Communication Choice Modal
-  };
+  // ── Initial greeting on mount ─────────────────────────────
+  useEffect(() => {
+    const greeting =
+      `Namaste! 🙏 I am your Bharat Sewa AI Assistant for the **Student Migration Certificate** scheme.\n\nBefore we begin, I need to know: **How long is your degree programme?**\n\n🎓 Please reply:\n  • **3** — for a 3-year degree (B.A. / B.Com. / B.Sc. etc.)\n  • **4** — for a 4-year degree (B.E. / B.Tech. / B.Arch. etc.)\n\nThis will determine which marksheets you need to submit.`;
 
-  // Step 2: Handle Communication Choice (Chat Text vs Voice Audio)
-  const handleCommunicationChoice = (useVoice) => {
-    setIsVoiceActive(useVoice);
-    handleSelectMode(pendingMode, pendingService, useVoice);
-  };
+    setMessages([{
+      id: Date.now().toString(),
+      sender: 'ai',
+      text: greeting,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    }]);
+  }, []);
 
-  // Finalize Selection and Start Assistant
-  const handleSelectMode = (selectedMode, selectedService = 'general', enableVoice = isVoiceActive) => {
-    setMode(selectedMode);
-    setServiceType(selectedService);
-    setShowModeModal(false);
-    setModalStep(1);
-
-    let greetingText = "";
-    const isHindi = (user?.language || '').toLowerCase().includes('hindi');
-    if (selectedService === 'farmer_disaster') {
-      greetingText = isHindi 
-        ? "नमस्ते! 🙏 मैं **किसान आपदा राहत योजना** के लिए आपका एआई सहायक हूँ।\n\nमुआवजा प्राप्त करने के लिए कृपया मुझे बताएं: **आपकी फसल को किस कारण नुकसान हुआ (भारी बारिश, बाढ़, सूखा), कितनी जमीन प्रभावित हुई, और आपका गाँव/जिला कौन सा है?**"
-        : "Namaste! 🙏 I am your AI Assistant for the **Farmer Disaster Relief Scheme (किसान आपदा राहत योजना)**.\n\nTo process your crop compensation withdrawal, please tell me: **What caused your crop damage (heavy rains, flood, drought), how much land was damaged, and your village/location?**";
-    } else if (selectedService === 'income_certificate') {
-      greetingText = isHindi
-        ? "नमस्ते! 🙏 मैं **आय प्रमाण पत्र आवेदन** के लिए आपका एआई सहायक हूँ।\n\nप्रमाण पत्र जारी करने के लिए कृपया मुझे बताएं: **आपकी कुल वार्षिक पारिवारिक आय कितनी है, मुख्य व्यवसाय क्या है, और आपका पता क्या है?**"
-        : "Namaste! 🙏 I am your AI Assistant for **Income Certificate Application (आय प्रमाण पत्र)**.\n\nTo issue your official certificate, please tell me: **What is your total annual family income, primary occupation, and address?**";
-    } else if (selectedMode === 'service') {
-      greetingText = isHindi
-        ? "नमस्ते! 🙏 मैं आपका भारत सेवा एआई सहायक हूँ। आज मैं किसी सरकारी योजना या सेवा में आवेदन करने में आपकी कैसे मदद कर सकता हूँ?"
-        : "Namaste! 🙏 I am your Bharat Sewa AI Assistant. How can I help you apply for a government welfare scheme or service today?";
-    } else {
-      greetingText = isHindi
-        ? "नमस्ते! 🙏 मैं आपका भारत सेवा एआई सहायक हूँ। कृपया मुझे बताएं कि **क्या हुआ** और **कहाँ हुआ** ताकि आपकी शिकायत दर्ज की जा सके।"
-        : "Namaste! 🙏 I am your Bharat Sewa AI Assistant. Please tell me **what happened** and **where did it happen** to register your complaint.";
+  // ── Track degree duration from conversation ───────────────
+  useEffect(() => {
+    if (degreeDuration !== null) return; // already detected
+    const userMsgs = messages.filter(m => m.sender === 'user');
+    if (userMsgs.length === 0) return;
+    const first = userMsgs[0]?.text?.trim() || '';
+    if (first.includes('4') || first.toLowerCase().includes('four')) {
+      setDegreeDuration(4);
+    } else if (first.includes('3') || first.toLowerCase().includes('three')) {
+      setDegreeDuration(3);
     }
+  }, [messages]);
 
-    setMessages([
-      {
-        id: Date.now().toString(),
-        sender: 'ai',
-        text: greetingText,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      }
-    ]);
-
-    // Speak initial greeting aloud & automatically start voice listening if voice mode chosen
-    if (enableVoice) {
-      speakText(greetingText, () => {
-        startListening();
-      });
-    }
-  };
-
-  // Handle Document Selection & Instant AI OCR Scan
+  // ── OCR Document Scan ─────────────────────────────────────
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -229,40 +184,54 @@ export function CitizenAssistant() {
     showToast(`Scanning ${file.name} with AI OCR Engine...`, 'info');
 
     setTimeout(() => {
-      let docType = 'Aadhaar / ID Card';
-      let extractedInfo = 'Verified Name & Aadhaar Number (XXXX-XXXX-8842)';
-      let confidence = 98;
+      // ── DOCUMENT TYPE DETECTION via filename keywords ─────────────────────────
+      // TODO: Replace this simulated OCR with a real OCR API call
+      // (e.g., Google Vision API, AWS Textract, or Tesseract.js)
+      let docType = 'Student ID / General Document';
+      let extractedInfo = 'Document scanned — details extracted';
+      let confidence = 95;
 
-      if (serviceType === 'farmer_disaster' || file.name.toLowerCase().includes('land') || file.name.toLowerCase().includes('khatatauni') || file.name.toLowerCase().includes('7-12')) {
-        docType = '7/12 Land Record (Khatatauni)';
-        extractedInfo = 'Survey/Gat No. 142/B, Land Area: 1.50 Hectares, Village: Shivpur';
-        confidence = 98;
-      } else if (serviceType === 'income_certificate' || file.name.toLowerCase().includes('income') || file.name.toLowerCase().includes('ration')) {
-        docType = 'Income Certificate Proof / Ration Card';
-        extractedInfo = 'Annual Family Income: ₹85,000, Category: BPL';
+      const fn = file.name.toLowerCase();
+      if (fn.includes('sem5') || fn.includes('semester5') || fn.includes('sem-5') || fn.includes('5th')) {
+        docType = 'Semester V Marksheet';
+        extractedInfo = 'Sem V — Total: 580/700, SGPA: 7.8, Roll No: 21BCS042';
+        confidence = 97;
+      } else if (fn.includes('sem6') || fn.includes('semester6') || fn.includes('sem-6') || fn.includes('6th')) {
+        docType = 'Semester VI Marksheet';
+        extractedInfo = 'Sem VI — Total: 610/700, SGPA: 8.1, Roll No: 21BCS042';
+        confidence = 97;
+      } else if (fn.includes('sem7') || fn.includes('semester7') || fn.includes('sem-7') || fn.includes('7th')) {
+        docType = 'Semester VII Marksheet';
+        extractedInfo = 'Sem VII — Total: 640/700, SGPA: 8.5, Roll No: 20BT042';
+        confidence = 97;
+      } else if (fn.includes('sem8') || fn.includes('semester8') || fn.includes('sem-8') || fn.includes('8th')) {
+        docType = 'Semester VIII Marksheet';
+        extractedInfo = 'Sem VIII — Total: 655/700, SGPA: 8.7, Roll No: 20BT042';
+        confidence = 97;
+      } else if (fn.includes('leaving') || fn.includes('lc') || fn.includes('college_leave')) {
+        docType = 'College Leaving Certificate';
+        extractedInfo = 'Leaving Date: 15-Jun-2024 | College: Govt. Engineering College, Pune';
+        confidence = 96;
+      } else if (fn.includes('provisional') || fn.includes('board') || fn.includes('degree')) {
+        docType = 'Provisional / Final Board Certificate';
+        extractedInfo = 'Degree: B.Tech. (CSE) | University: SPPU | Year: 2024 | Grade: First Class';
         confidence = 96;
       }
 
-      setAttachedDoc({
-        file,
-        fileName: file.name,
-        documentType: docType,
-        extractedInfo,
-        confidence
-      });
-
+      setAttachedDoc({ file, fileName: file.name, documentType: docType, extractedInfo, confidence });
       setIsOcrScanning(false);
       showToast(`AI OCR Scan Complete: ${docType} (${confidence}% Confidence)`, 'success');
     }, 1200);
   };
 
-  // Direct Backend API Chat Sender
+  // ── Send message to backend ───────────────────────────────
   const handleSend = async (textToSend) => {
     let messageText = textToSend || inputText;
     if (!messageText.trim() && !attachedDoc) return;
 
+    // Append OCR data to message if document attached
     if (attachedDoc) {
-      const docHeader = `[📄 Attached Document: ${attachedDoc.fileName} | AI OCR Extracted: ${attachedDoc.documentType} - ${attachedDoc.extractedInfo} (${attachedDoc.confidence}% Confidence)]`;
+      const docHeader = `[📄 Attached Document: ${attachedDoc.fileName} | AI OCR Extracted: ${attachedDoc.documentType} — ${attachedDoc.extractedInfo} (${attachedDoc.confidence}% Confidence)]`;
       messageText = messageText.trim() ? `${messageText}\n\n${docHeader}` : docHeader;
     }
 
@@ -274,316 +243,207 @@ export function CitizenAssistant() {
     };
 
     setAttachedDoc(null);
-
-    // 1. Display user message in chat
     const updatedHistory = [...messages, userMsg];
     setMessages(updatedHistory);
     setInputText('');
     setIsTyping(true);
 
     try {
-      // 2. Call backend Gemini API (uses VITE_API_BASE_URL from .env)
       const apiBase = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api').replace(/\/$/, '');
       const endpoint = `${apiBase}/chat/message`;
 
-      console.log('📤 [FRONTEND SENDING REQUEST TO BACKEND]:', {
-        endpoint,
-        message: messageText,
-        mode,
-        serviceType
-      });
+      console.log('📤 [FRONTEND → BACKEND]:', { endpoint, message: messageText });
 
       const res = await axios.post(endpoint, {
         message: messageText,
         history: updatedHistory,
         contextData: {
-          mode,
-          serviceType,
+          mode: 'service',
+          serviceType: 'migration_certificate',
           language: user?.language || 'English',
           citizenName: user?.name || user?.email || 'Citizen User'
         }
       });
 
-      const replyText = res.data?.reply || `Thank you for providing that information. How else can I assist you?`;
+      const replyText = res.data?.reply || `Thank you for providing that information. Please continue with the next detail.`;
       setIsTyping(false);
 
-      console.log('📥 [FRONTEND RECEIVED RESPONSE FROM BACKEND]:', {
-        endpoint,
-        reply: replyText
-      });
+      console.log('📥 [BACKEND → FRONTEND]:', { reply: replyText });
 
-      // 3. Display Gemini AI response in chat
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: (Date.now() + 1).toString(),
-          sender: 'ai',
-          text: replyText,
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        }
-      ]);
+      setMessages(prev => [...prev, {
+        id: (Date.now() + 1).toString(),
+        sender: 'ai',
+        text: replyText,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }]);
 
-      // Speak AI response aloud & automatically start voice listening for hands-free loop!
+      // TTS loop for voice mode
       if (isVoiceActive) {
-        speakText(replyText, () => {
-          if (!isCompleted) {
-            startListening();
-          }
-        });
+        speakText(replyText, () => { if (!isCompleted) startListening(); });
       }
 
-      // Register complaint / application in database context ONLY after Gemini confirms submission
-      const lowerReply = replyText.toLowerCase();
-      const userMsgs = updatedHistory.filter((m) => m.sender === 'user');
-      const isRegistrationConfirmed =
-        lowerReply.includes('submitted successfully') ||
-        lowerReply.includes('thank you for applying') ||
-        lowerReply.includes('registered successfully') ||
-        lowerReply.includes('application has been submitted') ||
-        lowerReply.includes('grievance has been registered');
+      // Detect successful submission confirmation from Gemini
+      const lower = replyText.toLowerCase();
+      const isConfirmed =
+        lower.includes('submitted successfully') ||
+        lower.includes('application has been submitted') ||
+        lower.includes('migration certificate application submitted');
 
-      if (!isCompleted && isRegistrationConfirmed) {
-        const whatText = userMsgs[0]?.text || messageText;
-        const whereText = userMsgs.length >= 2 ? userMsgs[1]?.text : messageText;
-
-        setComplaintDetails({ what: whatText, where: whereText });
-
+      if (!isCompleted && isConfirmed) {
         const citizenName = user?.name || user?.email?.split('@')[0] || 'Citizen User';
-        const citizenEmail = user?.email || '';
-
-        if (mode === 'complaint') {
-          const createdComplaint = addComplaint({
-            citizenName,
-            citizenEmail,
-            whatHappened: whatText,
-            whereHappened: whereText,
-            howHappened: messageText,
-            documents: []
-          });
-          setReferenceId(createdComplaint.id);
-        } else {
-          const serviceName = serviceType === 'farmer_disaster'
-            ? 'Farmer Disaster Relief Scheme'
-            : serviceType === 'income_certificate'
-            ? 'Income Certificate Application'
-            : 'Government Welfare Application';
-
-          const createdApp = addApplication({
-            citizenName,
-            citizenEmail,
-            serviceName,
-            serviceType,
-            details: `${whatText}${whereText ? ' - ' + whereText : ''}`
-          });
-          setReferenceId(createdApp.id);
-        }
+        const createdApp = addApplication({
+          citizenName,
+          citizenEmail: user?.email || '',
+          serviceName: 'Migration Certificate Withdrawal',
+          serviceType: 'migration_certificate',
+          details: messageText
+        });
+        setReferenceId(createdApp.id);
+        setApplicationSummary(replyText);
         setIsCompleted(true);
       }
-    } catch (err) {
-      console.warn("Backend API call warning, providing fallback reply:", err?.message);
-      setIsTyping(false);
 
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: (Date.now() + 1).toString(),
-          sender: 'ai',
-          text: `Thank you for sharing: "${messageText}". Your complaint details have been noted.`,
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        }
-      ]);
+    } catch (err) {
+      console.warn('Backend API warning:', err?.message);
+      setIsTyping(false);
+      setMessages(prev => [...prev, {
+        id: (Date.now() + 1).toString(),
+        sender: 'ai',
+        text: `Thank you for sharing that. Please continue providing your details so I can process your Migration Certificate application.`,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }]);
     }
   };
 
   const resetChat = () => {
     setMessages([]);
     setIsCompleted(false);
-    setShowModeModal(true);
     setReferenceId('');
+    setApplicationSummary('');
+    setDegreeDuration(null);
+    const greeting =
+      `Namaste! 🙏 Let's start a new application for the **Student Migration Certificate**.
+
+First — **How long is your degree programme?**
+  • Reply **3** for a 3-year degree
+  • Reply **4** for a 4-year degree`;
+    setMessages([{
+      id: Date.now().toString(),
+      sender: 'ai',
+      text: greeting,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    }]);
   };
 
+  // ─────────────────────────────────────────────────────────────
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-4">
-      {/* 2-Step Initial Choice Modal */}
-      {showModeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="relative bg-surface-container-lowest border border-outline-variant/80 rounded-2xl p-6 sm:p-8 max-w-lg w-full shadow-2xl space-y-6 animate-in zoom-in-95">
-            <button
-              type="button"
-              onClick={() => {
-                if (messages.length > 0) {
-                  setShowModeModal(false);
-                } else {
-                  navigate(-1);
-                }
-              }}
-              className="absolute top-4 right-4 p-2 rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors cursor-pointer"
-              title="Close / Go Back"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            {modalStep === 1 ? (
-              <>
-                <div className="text-center space-y-2">
-                  <div className="inline-flex items-center justify-center p-3 bg-primary-fixed/40 rounded-2xl text-primary mb-1">
-                    <Sparkles className="w-8 h-8" />
-                  </div>
-                  <h2 className="text-2xl font-heading font-extrabold text-on-surface">
-                    {t('Bharat Sewa AI Assistant')}
-                  </h2>
-                  <p className="text-sm font-medium text-on-surface-variant">
-                    {t('Step 1: Select what service you need assistance with:')}
-                  </p>
-                </div>
+    <div className="w-full max-w-5xl mx-auto flex flex-col gap-4">
 
-                <div className="grid grid-cols-1 gap-3 pt-2">
-                  {/* Option 1: Farmer Disaster Relief */}
-                  <button
-                    onClick={() => handleServiceClick('service', 'farmer_disaster')}
-                    className="p-4 rounded-2xl border-2 border-emerald-500/30 hover:border-emerald-500 bg-emerald-500/5 hover:bg-emerald-500/10 text-left transition-all group cursor-pointer space-y-2 shadow-sm hover:shadow-md flex items-center gap-4"
-                  >
-                    <div className="p-3 rounded-xl bg-emerald-600 text-white shrink-0 shadow-md group-hover:scale-105 transition-transform">
-                      <Sparkles className="w-6 h-6" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-base text-on-surface group-hover:text-emerald-600 transition-colors flex items-center justify-between">
-                        <span>🌾 {t('Farmer Disaster Relief Scheme')}</span>
-                        <span className="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-extrabold">किसान आपदा राहत</span>
-                      </h3>
-                      <p className="text-xs text-on-surface-variant mt-0.5">
-                        {t('Apply for crop damage compensation withdrawal & financial assistance.')}
-                      </p>
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-emerald-600 group-hover:translate-x-1 transition-transform shrink-0" />
-                  </button>
+      {/* ── Page Title Banner ─────────────────────────────── */}
+      <div className="flex items-center gap-3 p-4 bg-primary/10 border border-primary/30 rounded-2xl">
+        <div className="p-2 rounded-xl bg-primary text-on-primary shadow-md shrink-0">
+          <ShieldCheck className="w-6 h-6" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <h2 className="font-heading font-extrabold text-base text-on-surface">
+            🎓 Student Migration Certificate
+          </h2>
+          <p className="text-xs text-on-surface-variant font-medium">
+            विद्यार्थी स्थानांतरण प्रमाण पत्र — Powered by Bharat Sewa AI
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-outline-variant/60 hover:bg-surface-container text-xs font-bold text-on-surface-variant transition-colors cursor-pointer shrink-0"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          <span>Back</span>
+        </button>
+      </div>
 
-                  {/* Option 2: Income Certificate Application */}
-                  <button
-                    onClick={() => handleServiceClick('service', 'income_certificate')}
-                    className="p-4 rounded-2xl border-2 border-blue-500/30 hover:border-blue-500 bg-blue-500/5 hover:bg-blue-500/10 text-left transition-all group cursor-pointer space-y-2 shadow-sm hover:shadow-md flex items-center gap-4"
-                  >
-                    <div className="p-3 rounded-xl bg-blue-600 text-white shrink-0 shadow-md group-hover:scale-105 transition-transform">
-                      <FileText className="w-6 h-6" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-base text-on-surface group-hover:text-blue-600 transition-colors flex items-center justify-between">
-                        <span>📜 {t('Income Certificate Application')}</span>
-                        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-extrabold">आय प्रमाण पत्र</span>
-                      </h3>
-                      <p className="text-xs text-on-surface-variant mt-0.5">
-                        {t('Apply for official family income certificate issuance online.')}
-                      </p>
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-blue-600 group-hover:translate-x-1 transition-transform shrink-0" />
-                  </button>
-
-                  {/* Option 3: Register Complaint */}
-                  <button
-                    onClick={() => handleServiceClick('complaint', 'general')}
-                    className="p-4 rounded-2xl border-2 border-amber-500/30 hover:border-amber-500 bg-amber-500/5 hover:bg-amber-500/10 text-left transition-all group cursor-pointer space-y-2 shadow-sm hover:shadow-md flex items-center gap-4"
-                  >
-                    <div className="p-3 rounded-xl bg-amber-500 text-white shrink-0 shadow-md group-hover:scale-105 transition-transform">
-                      <AlertCircle className="w-6 h-6" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-base text-on-surface group-hover:text-amber-600 transition-colors flex items-center justify-between">
-                        <span>⚠️ {t('Register Grievance / Complaint')}</span>
-                        <span className="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-extrabold">शिकायत दर्ज करें</span>
-                      </h3>
-                      <p className="text-xs text-on-surface-variant mt-0.5">
-                        {t('Report what happened & where it happened directly to officials.')}
-                      </p>
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-amber-600 group-hover:translate-x-1 transition-transform shrink-0" />
-                  </button>
-                </div>
-
-                <div className="pt-3 text-center border-t border-outline-variant/40">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (messages.length > 0) {
-                        setShowModeModal(false);
-                      } else {
-                        navigate(-1);
-                      }
-                    }}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-outline-variant/60 hover:bg-surface-container text-xs font-bold text-on-surface-variant transition-colors cursor-pointer"
-                  >
-                    <ArrowLeft className="w-4 h-4" />
-                    <span>{t('Go Back')}</span>
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
-                {/* Step 2: Choose Communication Mode (Text Chat vs Voice Audio) */}
-                <div className="text-center space-y-2">
-                  <div className="inline-flex items-center justify-center p-3 bg-primary-fixed/40 rounded-2xl text-primary mb-1">
-                    <Mic className="w-8 h-8" />
-                  </div>
-                  <h2 className="text-2xl font-heading font-extrabold text-on-surface">
-                    {t('Choose Interaction Mode')}
-                  </h2>
-                  <p className="text-sm font-medium text-on-surface-variant">
-                    {t('Step 2: How would you like to communicate with AI Assistant?')}
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                  {/* Option A: Text Chat Mode */}
-                  <button
-                    onClick={() => handleCommunicationChoice(false)}
-                    className="p-5 rounded-2xl border-2 border-primary/30 hover:border-primary bg-primary/5 hover:bg-primary/10 text-left transition-all group cursor-pointer space-y-3 shadow-sm hover:shadow-md"
-                  >
-                    <div className="p-3 rounded-xl bg-primary text-on-primary w-fit shadow-md group-hover:scale-105 transition-transform">
-                      <FileText className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-base text-on-surface group-hover:text-primary transition-colors">
-                        💬 {t('Text Chat Mode')}
-                      </h3>
-                      <p className="text-xs text-on-surface-variant mt-1 leading-relaxed">
-                        {t('Type messages, describe issues, and attach documents/PDFs manually.')}
-                      </p>
-                    </div>
-                  </button>
-
-                  {/* Option B: Voice / Audio Mode */}
-                  <button
-                    onClick={() => handleCommunicationChoice(true)}
-                    className="p-5 rounded-2xl border-2 border-emerald-500/40 hover:border-emerald-500 bg-emerald-500/10 hover:bg-emerald-500/20 text-left transition-all group cursor-pointer space-y-3 shadow-md hover:shadow-lg"
-                  >
-                    <div className="p-3 rounded-xl bg-emerald-600 text-white w-fit shadow-md group-hover:scale-105 transition-transform animate-pulse">
-                      <Mic className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-base text-on-surface group-hover:text-emerald-600 transition-colors">
-                        🎙️ {t('Voice / Audio Mode')}
-                      </h3>
-                      <p className="text-xs text-on-surface-variant mt-1 leading-relaxed">
-                        {t('Automated hands-free speech & audio responses in your native language!')}
-                      </p>
-                    </div>
-                  </button>
-                </div>
-
-                <div className="pt-2 text-center">
-                  <button
-                    onClick={() => setModalStep(1)}
-                    className="text-xs font-bold text-on-surface-variant underline hover:text-on-surface cursor-pointer"
-                  >
-                    ← Back to Service Selection
-                  </button>
-                </div>
-              </>
+      {/* ── Required Documents Panel ──────────────────────── */}
+      <div className="bg-surface-container-lowest border border-outline-variant/60 rounded-2xl overflow-hidden shadow-sm">
+        <button
+          type="button"
+          onClick={() => setShowDocsPanel(v => !v)}
+          className="w-full flex items-center justify-between p-4 hover:bg-surface-container/50 transition-colors cursor-pointer"
+        >
+          <div className="flex items-center gap-2 text-sm font-bold text-on-surface">
+            <Info className="w-4 h-4 text-primary" />
+            📑 Required Documents & Information Checklist
+            {degreeDuration && (
+              <span className="text-[10px] bg-primary/15 text-primary px-2 py-0.5 rounded-full font-extrabold">
+                {degreeDuration}-Year Degree
+              </span>
             )}
           </div>
-        </div>
-      )}
+          {showDocsPanel ? <ChevronUp className="w-4 h-4 text-on-surface-variant" /> : <ChevronDown className="w-4 h-4 text-on-surface-variant" />}
+        </button>
 
-      {/* Main Chatbot Interface */}
-      <div className="bg-surface-container-lowest border border-outline-variant/60 rounded-2xl shadow-xl flex flex-col h-[650px] overflow-hidden">
+        {showDocsPanel && (
+          <div className="px-4 pb-4 grid grid-cols-1 sm:grid-cols-2 gap-3 border-t border-outline-variant/40 pt-3">
+            {/* Documents column */}
+            <div>
+              <p className="text-[11px] font-extrabold text-on-surface-variant uppercase tracking-wider mb-2">
+                📄 Documents to Upload
+              </p>
+              <div className="space-y-2">
+                {/* Degree-based marksheets */}
+                {!degreeDuration && (
+                  <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-700 font-medium">
+                    ⏳ Degree duration not yet confirmed — reply <strong>3</strong> or <strong>4</strong> in chat to see required marksheets
+                  </div>
+                )}
+                {(degreeDuration === 3 ? DOCUMENTS_3_YEAR : degreeDuration === 4 ? DOCUMENTS_4_YEAR : []).map(doc => (
+                  <div key={doc.id} className="flex items-start gap-2 p-2.5 rounded-xl bg-primary/5 border border-primary/30">
+                    <span className="text-base shrink-0">{doc.icon}</span>
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-on-surface flex items-center gap-1">
+                        {doc.label}
+                        <span className="text-[9px] bg-error/15 text-error px-1.5 py-0.5 rounded-full font-extrabold">Required</span>
+                      </p>
+                      <p className="text-[10px] text-on-surface-variant">{doc.desc}</p>
+                    </div>
+                  </div>
+                ))}
+                {/* Common documents always required */}
+                {DOCUMENTS_COMMON.map(doc => (
+                  <div key={doc.id} className="flex items-start gap-2 p-2.5 rounded-xl bg-surface-container border border-outline-variant/40">
+                    <span className="text-base shrink-0">{doc.icon}</span>
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-on-surface flex items-center gap-1">
+                        {doc.label}
+                        <span className="text-[9px] bg-error/15 text-error px-1.5 py-0.5 rounded-full font-extrabold">Required</span>
+                      </p>
+                      <p className="text-[10px] text-on-surface-variant">{doc.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Information column */}
+            <div>
+              <p className="text-[11px] font-extrabold text-on-surface-variant uppercase tracking-wider mb-2">
+                ✏️ Information AI Will Collect
+              </p>
+              <div className="space-y-1.5">
+                {INFO_TO_COLLECT.map((info, i) => (
+                  <div key={i} className="flex items-center gap-2 p-2 rounded-xl bg-surface-container border border-outline-variant/40">
+                    <span className="text-[10px] font-extrabold text-primary bg-primary/10 rounded-full w-5 h-5 flex items-center justify-center shrink-0">{i + 1}</span>
+                    <p className="text-xs text-on-surface">{info}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ── Main Chat Interface ───────────────────────────── */}
+      <div className="bg-surface-container-lowest border border-outline-variant/60 rounded-2xl shadow-xl flex flex-col h-[600px] overflow-hidden">
+
         {/* Chat Header */}
         <header className="p-4 bg-surface-container-low border-b border-outline-variant/40 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
@@ -598,56 +458,30 @@ export function CitizenAssistant() {
                   {t('Online')}
                 </span>
               </div>
-              <p className="text-xs text-on-surface-variant font-medium truncate">
-                {mode === 'service' ? 'Service & Scheme Application Workflow' : mode === 'complaint' ? 'Grievance Submission' : 'AI Assistant'}
-              </p>
+              <p className="text-xs text-on-surface-variant font-medium truncate">Student Migration Certificate — Application Workflow</p>
             </div>
           </div>
 
-          {/* Mode Switcher & Controls */}
           <div className="flex items-center gap-2 shrink-0">
-            <button
-              type="button"
-              onClick={() => navigate(-1)}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-outline-variant/60 hover:bg-surface-container text-xs font-bold text-on-surface-variant transition-colors cursor-pointer shrink-0"
-              title="Go Back"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Back</span>
-            </button>
-
+            {/* Voice Toggle */}
             <button
               type="button"
               onClick={() => {
-                const nextState = !isVoiceActive;
-                setIsVoiceActive(nextState);
-                if (nextState) {
-                  startListening();
-                  showToast('Hands-Free Voice Mode Active 🎙️', 'success');
-                } else {
-                  stopListening();
-                  showToast('Switched to Text Chat Mode 💬', 'info');
-                }
+                const next = !isVoiceActive;
+                setIsVoiceActive(next);
+                if (next) { startListening(); showToast('Voice Mode Active 🎙️', 'success'); }
+                else { stopListening(); showToast('Switched to Text Mode 💬', 'info'); }
               }}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-extrabold transition-all shadow-md cursor-pointer border ${
                 isVoiceActive
-                  ? 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-500 animate-pulse'
+                  ? 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-500'
                   : 'bg-primary text-on-primary hover:bg-primary-container border-primary/40'
               }`}
             >
-              {isVoiceActive ? (
-                <>
-                  <Mic className="w-4 h-4 text-white animate-bounce" />
-                  <span>🎙️ Voice Mode (ON)</span>
-                </>
-              ) : (
-                <>
-                  <Volume2 className="w-4 h-4" />
-                  <span>🔊 Enable Voice Assistant</span>
-                </>
-              )}
+              {isVoiceActive ? <><Mic className="w-4 h-4 animate-bounce" /><span>🎙️ Voice ON</span></> : <><Volume2 className="w-4 h-4" /><span>🔊 Voice</span></>}
             </button>
 
+            {/* Reset */}
             <button
               onClick={resetChat}
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-outline-variant/60 hover:bg-surface-container text-xs font-bold text-on-surface-variant transition-colors cursor-pointer"
@@ -662,39 +496,26 @@ export function CitizenAssistant() {
         {/* Messages Stream */}
         <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-surface-container-lowest">
           {messages.map((msg) => (
-            <div
-              key={msg.id}
-              className={`flex gap-3 max-w-[85%] ${msg.sender === 'user' ? 'ml-auto flex-row-reverse' : ''}`}
-            >
-              {/* Avatar */}
-              <div
-                className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-xs font-bold ${
-                  msg.sender === 'user' ? 'bg-secondary text-on-secondary' : 'bg-primary text-on-primary shadow-xs'
-                }`}
-              >
+            <div key={msg.id} className={`flex gap-3 max-w-[85%] ${msg.sender === 'user' ? 'ml-auto flex-row-reverse' : ''}`}>
+              <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-xs font-bold ${
+                msg.sender === 'user' ? 'bg-secondary text-on-secondary' : 'bg-primary text-on-primary shadow-xs'
+              }`}>
                 {msg.sender === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
               </div>
-
-              {/* Message Content */}
               <div className="space-y-2">
-                <div
-                  className={`p-4 rounded-2xl text-sm leading-relaxed ${
-                    msg.sender === 'user'
-                      ? 'bg-primary text-on-primary rounded-tr-none shadow-md'
-                      : 'bg-surface-container-low border border-outline-variant/60 text-on-surface rounded-tl-none shadow-2xs'
-                  }`}
-                >
+                <div className={`p-4 rounded-2xl text-sm leading-relaxed ${
+                  msg.sender === 'user'
+                    ? 'bg-primary text-on-primary rounded-tr-none shadow-md'
+                    : 'bg-surface-container-low border border-outline-variant/60 text-on-surface rounded-tl-none shadow-2xs'
+                }`}>
                   <p className="whitespace-pre-line">{msg.text}</p>
                 </div>
-
-                <span className="text-[10px] text-on-surface-variant/70 block px-1">
-                  {msg.time}
-                </span>
+                <span className="text-[10px] text-on-surface-variant/70 block px-1">{msg.time}</span>
               </div>
             </div>
           ))}
 
-          {/* Typing Indicator */}
+          {/* Typing indicator */}
           {isTyping && (
             <div className="flex gap-3 max-w-[80%]">
               <div className="w-8 h-8 rounded-xl bg-primary text-on-primary flex items-center justify-center shrink-0">
@@ -708,58 +529,34 @@ export function CitizenAssistant() {
             </div>
           )}
 
-          {/* Final Completed Summary Card */}
+          {/* Completion Card */}
           {isCompleted && (
             <div className="p-5 rounded-2xl bg-emerald-500/10 border-2 border-emerald-500/30 text-on-surface space-y-4 animate-in fade-in slide-in-from-bottom-2">
               <div className="flex items-center gap-3 text-emerald-600">
                 <CheckCircle2 className="w-6 h-6 shrink-0" />
                 <div>
-                  <h4 className="font-bold text-base">
-                    {mode === 'complaint' ? 'Grievance Submitted & Registered!' : 'Application Submitted & Registered!'}
-                  </h4>
+                  <h4 className="font-bold text-base">Migration Certificate Application Submitted!</h4>
                   <p className="text-xs text-on-surface-variant font-medium">
-                    {mode === 'complaint' ? 'Ticket Reference: ' : 'Application Reference: '}
-                    <span className="font-mono font-bold text-primary">{referenceId}</span>
+                    Application Reference: <span className="font-mono font-bold text-primary">{referenceId}</span>
                   </p>
                 </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/40">
-                <div>
-                  <span className="text-on-surface-variant block font-semibold">
-                    {mode === 'complaint' ? 'What Happened:' : 'Application Details:'}
-                  </span>
-                  <span className="font-bold text-on-surface">{complaintDetails.what}</span>
-                </div>
-                <div>
-                  <span className="text-on-surface-variant block font-semibold">
-                    {mode === 'complaint' ? 'Where Happened:' : 'Document / Location Info:'}
-                  </span>
-                  <span className="font-bold text-on-surface">{complaintDetails.where}</span>
-                </div>
-              </div>
+              <p className="text-xs text-on-surface-variant bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/40 leading-relaxed">
+                Your application for Migration Certificate Withdrawal has been registered successfully. You will be notified via SMS/email for further processing.
+              </p>
               <div className="flex justify-end gap-2 pt-1">
-                {mode === 'complaint' ? (
-                  <button
-                    onClick={() => navigate('/complaints')}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-md transition-colors cursor-pointer"
-                  >
-                    <span>View in Complaints Tab</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => navigate('/applications')}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-colors cursor-pointer"
-                  >
-                    <span>View in Applications Tab</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </button>
-                )}
+                <button
+                  onClick={() => navigate('/applications')}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-colors cursor-pointer"
+                >
+                  <span>View in Applications</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </button>
                 <button
                   onClick={resetChat}
                   className="px-4 py-2 rounded-xl bg-primary text-on-primary font-bold text-xs shadow-md hover:bg-primary-container cursor-pointer"
                 >
-                  {mode === 'complaint' ? 'Start Another Complaint' : 'Start Another Application'}
+                  New Application
                 </button>
               </div>
             </div>
@@ -768,9 +565,9 @@ export function CitizenAssistant() {
           <div ref={chatEndRef} />
         </div>
 
-        {/* Input Bar with AI OCR Document Scanner & Automated Voice AI Engine */}
+        {/* Input Bar */}
         <footer className="p-3 bg-surface-container-low border-t border-outline-variant/60 space-y-2">
-          {/* Hidden File Input */}
+          {/* Hidden file input */}
           <input
             type="file"
             ref={fileInputRef}
@@ -779,39 +576,34 @@ export function CitizenAssistant() {
             accept=".pdf,.png,.jpg,.jpeg,.doc,.docx"
           />
 
-          {/* Live Voice Indicator Bars */}
+          {/* Voice listening indicator */}
           {isListening && (
             <div className="flex items-center justify-between gap-2 text-xs font-bold text-red-600 bg-red-500/10 border border-red-500/30 p-2.5 rounded-xl animate-pulse">
               <div className="flex items-center gap-2">
-                <Mic className="w-4 h-4 text-red-600 animate-bounce" />
-                <span>🎙️ Listening to your voice in {user?.language || 'English'}... Speak now! (Auto-submits when done)</span>
+                <Mic className="w-4 h-4 animate-bounce" />
+                <span>🎙️ Listening in {user?.language || 'English'}... Speak now!</span>
               </div>
-              <button
-                type="button"
-                onClick={stopListening}
-                className="text-[10px] bg-red-600 text-white px-2 py-0.5 rounded font-bold"
-              >
-                Stop
-              </button>
+              <button type="button" onClick={stopListening} className="text-[10px] bg-red-600 text-white px-2 py-0.5 rounded font-bold">Stop</button>
             </div>
           )}
 
+          {/* AI speaking indicator */}
           {isSpeaking && (
             <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 bg-emerald-500/10 border border-emerald-500/30 p-2.5 rounded-xl animate-pulse">
-              <Volume2 className="w-4 h-4 text-emerald-600 animate-spin" />
-              <span>🔊 Bharat Sewa AI Assistant is speaking in {user?.language || 'English'}...</span>
+              <Volume2 className="w-4 h-4 animate-spin" />
+              <span>🔊 AI is speaking in {user?.language || 'English'}...</span>
             </div>
           )}
 
-          {/* AI OCR Scanning Indicator */}
+          {/* OCR scanning indicator */}
           {isOcrScanning && (
-            <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 bg-emerald-500/10 border border-emerald-500/30 p-2.5 rounded-xl animate-pulse">
-              <ScanLine className="w-4 h-4 animate-spin text-emerald-600" />
+            <div className="flex items-center gap-2 text-xs font-bold text-primary bg-primary/10 border border-primary/30 p-2.5 rounded-xl animate-pulse">
+              <ScanLine className="w-4 h-4 animate-spin" />
               <span>⚡ AI OCR Engine: Scanning document & extracting details...</span>
             </div>
           )}
 
-          {/* AI OCR Scanned Document Preview Badge */}
+          {/* Attached doc preview */}
           {attachedDoc && !isOcrScanning && (
             <div className="flex items-center justify-between gap-2 text-xs bg-emerald-500/10 border border-emerald-500/30 p-2.5 rounded-xl animate-in fade-in">
               <div className="flex items-center gap-2 overflow-hidden">
@@ -827,21 +619,18 @@ export function CitizenAssistant() {
                 type="button"
                 onClick={() => setAttachedDoc(null)}
                 className="p-1 rounded-lg text-on-surface-variant hover:text-error hover:bg-error/10 transition-colors"
-                title="Remove attached document"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
           )}
 
+          {/* Input form */}
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSend();
-            }}
+            onSubmit={(e) => { e.preventDefault(); handleSend(); }}
             className="flex items-center gap-2"
           >
-            {/* Hands-Free Voice Microphone Button (STT) */}
+            {/* Mic button */}
             <button
               type="button"
               onClick={isListening ? stopListening : startListening}
@@ -852,45 +641,40 @@ export function CitizenAssistant() {
                   ? 'bg-emerald-600 text-white animate-pulse'
                   : 'bg-primary/10 text-primary border border-primary/40 hover:bg-primary/20'
               }`}
-              title={isListening ? "Listening to your voice... Speak now" : isSpeaking ? "AI is speaking..." : "Click to speak voice message"}
+              title={isListening ? 'Listening... Speak now' : 'Click to speak'}
             >
-              {isListening ? (
-                <Mic className="w-5 h-5 animate-bounce" />
-              ) : isSpeaking ? (
-                <Volume2 className="w-5 h-5 animate-pulse text-white" />
-              ) : (
-                <Mic className="w-5 h-5" />
-              )}
+              {isListening
+                ? <Mic className="w-5 h-5 animate-bounce" />
+                : isSpeaking
+                ? <Volume2 className="w-5 h-5 animate-pulse text-white" />
+                : <Mic className="w-5 h-5" />
+              }
             </button>
 
-            {/* Document Upload Button */}
+            {/* Attach doc button */}
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
               className="p-3 bg-surface-container-lowest border border-outline-variant/80 hover:border-primary text-on-surface-variant hover:text-primary rounded-xl transition-all cursor-pointer shadow-xs active:scale-95"
-              title="Attach document for AI OCR scan"
+              title="Attach document for AI OCR scan (Aadhaar, Domicile, Migration Proof, Bank Passbook...)"
             >
               <Paperclip className="w-5 h-5" />
             </button>
 
-            {/* Text Field */}
+            {/* Text input */}
             <input
               type="text"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               placeholder={
                 isListening
-                  ? `Listening to your voice in ${user?.language || 'English'}...`
-                  : serviceType === 'farmer_disaster'
-                  ? "Speak/type crop loss or attach land 7/12 record..."
-                  : serviceType === 'income_certificate'
-                  ? "Speak/type income details or attach income proof..."
-                  : "Speak/type issue, location or attach document..."
+                  ? `Listening in ${user?.language || 'English'}...`
+                  : 'Type your details or attach Aadhaar / Domicile / Migration Proof...'
               }
               className="flex-1 px-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-xl text-sm text-on-surface placeholder:text-on-surface-variant/60 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
             />
 
-            {/* Submit Button */}
+            {/* Send button */}
             <button
               type="submit"
               disabled={!inputText.trim() && !attachedDoc}

@@ -2,83 +2,92 @@ import ai from '../config/gemini.js';
 
 export const aiService = {
   /**
-   * Generates a conversational reply to a user prompt using Gemini
-   * @param {string} prompt - The user's query
-   * @param {Array} history - Previous conversation history
-   * @param {Object} contextData - Context object (mode, citizen details, etc.)
-   * @returns {Promise<string>} Gemini response text
+   * Generates a conversational reply for the Migration Certificate Withdrawal Scheme.
+   * Collects all required citizen information step-by-step via Gemini AI.
+   *
+   * @param {string} prompt       - The user's current message
+   * @param {Array}  history      - Previous conversation history
+   * @param {Object} contextData  - Context (language, citizenName, etc.)
+   * @returns {Promise<string>}   - Gemini response text
    */
   generateChatReply: async (prompt, history = [], contextData = {}) => {
     try {
-      const mode = contextData.mode || 'general';
-      const serviceType = contextData.serviceType || 'general';
-      const userLang = contextData.language || 'English';
+      const userLang   = contextData.language   || 'English';
+      const citizenName = contextData.citizenName || 'Citizen';
 
-      const ocrDirective = `
-AI OCR & Automatic Form Filling Directive:
-- You are equipped with an advanced AI OCR Engine.
-- Whenever a citizen attaches a document or sends OCR scanned details (e.g., Land 7/12 Khatatauni, Income Certificate Proof, Ration Card, Aadhaar ID), automatically extract the data and PRE-FILL the application form fields.
-- Enthusiastically confirm the auto-filled details to the citizen (e.g., "I have scanned your uploaded document via AI OCR and automatically pre-filled your details!").
-- Only prompt the citizen for any remaining missing details required to complete the application.`;
+      // ──────────────────────────────────────────────────────────────────────────
+      // SYSTEM PROMPT — Migration Certificate Withdrawal Scheme
+      // ──────────────────────────────────────────────────────────────────────────
+      const systemInstruction = `
+You are 'Bharat Sewa AI Assistant', a specialized government AI assistant helping citizens apply for the
+**Migration Certificate Withdrawal Scheme (प्रवासन प्रमाण पत्र निकासी योजना)**.
 
-      let systemInstruction = "";
+LANGUAGE DIRECTIVE: ALWAYS respond in the citizen's preferred language: ${userLang}.
+If the citizen writes in Hindi, respond in Hindi. If in English, respond in English.
 
-      if (mode === 'complaint') {
-        systemInstruction = `You are 'Bharat Sewa AI Assistant', an empathetic public grievance AI assistant for citizens in India.
-Language Directive: ALWAYS respond to the citizen in their preferred language: ${userLang}.
-${ocrDirective}
+CITIZEN NAME: ${citizenName}
 
-Your workflow:
-1. Collect two key details: WHAT HAPPENED (issue description) and WHERE DID IT HAPPEN (location, ward, or street).
-2. If the citizen attaches a document or photo, use OCR to pre-fill location or grievance details.
-3. Once you have both the issue AND location:
-   Summarize the report and end your message with: "Thank you for registering your complaint! Your grievance has been registered successfully."`;
-      } else if (serviceType === 'farmer_disaster') {
-        systemInstruction = `You are 'Bharat Sewa AI Assistant', specialized in helping farmers apply for the **Farmer Disaster Relief Scheme (किसान आपदा राहत योजना)** for crop damage compensation.
-Language Directive: ALWAYS respond to the citizen in their preferred language: ${userLang}.
-${ocrDirective}
+─────────────────────────────────────────────────────────────────────────
+REQUIRED DOCUMENTS (inform citizen if they haven't attached yet):
+─────────────────────────────────────────────────────────────────────────
+1. ✅ Aadhaar Card                      [REQUIRED]
+2. ✅ Domicile / Residence Certificate  [REQUIRED]
+3. ✅ Migration Proof / Origin State Certificate (e.g., old voter ID, old domicile) [REQUIRED]
+4. ✅ Passport Size Photograph          [REQUIRED]
+5. 🔵 Bank Passbook / Account Details   [Optional but recommended]
+6. 🔵 Employment / Work Proof           [Optional]
 
-Your workflow:
-1. When a 7/12 Land Record or document is uploaded, automatically pre-fill: Survey/Gat Number, Damaged Land Area, and Village Location.
-2. Ask step-by-step for any missing details required to process compensation withdrawal:
-   a) Cause of crop damage (heavy rains, flood, drought, hail storm)
-   b) Damaged land size & Survey/Gat Number (auto-filled if document uploaded)
-   c) Village, Taluka, and District location
-   d) Aadhaar or Bank Account details for direct compensation transfer.
-3. CRITICAL FINAL RULE: Only when ALL details have been collected or auto-filled, summarize the application details and ALWAYS END YOUR FINAL MESSAGE WITH THIS EXACT SENTENCE:
-   "Thank you for applying! Your application for Farmer Disaster Relief Compensation has been submitted successfully."`;
-      } else if (serviceType === 'income_certificate') {
-        systemInstruction = `You are 'Bharat Sewa AI Assistant', specialized in helping citizens apply for an official **Income Certificate (आय प्रमाण पत्र)**.
-Language Directive: ALWAYS respond to the citizen in their preferred language: ${userLang}.
-${ocrDirective}
+─────────────────────────────────────────────────────────────────────────
+INFORMATION TO COLLECT (step by step — one question at a time):
+─────────────────────────────────────────────────────────────────────────
+Step 1:  Full Name of Applicant
+Step 2:  Date of Birth (DD/MM/YYYY)
+Step 3:  Aadhaar Number (12 digits)
+Step 4:  Origin State & District (where they migrated FROM)
+Step 5:  Current State, District & Full Address (where they are NOW residing)
+Step 6:  Reason for Migration (work, education, family, marriage, etc.)
+Step 7:  Year of Migration
+Step 8:  Mobile Number (10 digits)
+Step 9:  Bank Account Number & IFSC Code (for benefit/fee transfer)
+Step 10: Confirm all details collected and finalize submission
 
-Your workflow:
-1. When an Income Proof or Ration Card document is uploaded, automatically pre-fill: Annual Family Income, Applicant Name, and Category.
-2. Ask step-by-step for any missing details:
-   a) Total annual family income (in ₹)
-   b) Primary occupation/source of income (Agriculture, Small Business, Daily Wage, Private Salary)
-   c) Applicant's Full Name and Father's/Husband's Name
-   d) Residential address, Tehsil, and District.
-3. CRITICAL FINAL RULE: Only when ALL details have been collected or auto-filled, summarize the application details and ALWAYS END YOUR FINAL MESSAGE WITH THIS EXACT SENTENCE:
-   "Thank you for applying! Your application for Income Certificate has been submitted successfully."`;
-      } else {
-        systemInstruction = `You are 'Bharat Sewa AI Assistant', an intelligent government welfare scheme guide for citizens in India. ALWAYS respond to the citizen in their preferred language: ${userLang}. ${ocrDirective} Answer questions regarding government schemes, eligibility criteria, benefits, and application procedures clearly.`;
-      }
+─────────────────────────────────────────────────────────────────────────
+AI OCR DIRECTIVE:
+─────────────────────────────────────────────────────────────────────────
+- When a citizen uploads a document with OCR-extracted data (e.g., Aadhaar, Domicile, Bank Passbook),
+  automatically extract and confirm those fields.
+- Say something like: "✅ I have auto-filled your [field] from the scanned document."
+- Only ask for remaining missing fields after OCR auto-fill.
 
-      // Format conversation history for Gemini
+─────────────────────────────────────────────────────────────────────────
+WORKFLOW RULES:
+─────────────────────────────────────────────────────────────────────────
+- Ask ONE question at a time. Do not overwhelm the citizen.
+- Be warm, empathetic, and simple. Use clear language — many users may be from rural areas.
+- Validate Aadhaar (must be 12 digits), mobile (10 digits), year (must be a valid 4-digit year).
+- After ALL 10 steps are complete:
+  1. Show a full summary of all collected information in a clean numbered list.
+  2. Ask the citizen to confirm: "Please confirm — should I submit this application? (Yes/No)"
+  3. ONLY after the citizen says YES or confirms, end your message with this EXACT sentence:
+     "Your Migration Certificate Withdrawal application has been submitted successfully."
+
+IMPORTANT: Do NOT add the submission confirmation sentence until the citizen explicitly confirms.
+`.trim();
+
+      // ── Build Gemini contents array ────────────────────────────────────────────
       const contents = [];
 
-      // Add system instruction context
+      // Inject system instruction as first turn
       contents.push({
         role: 'user',
-        parts: [{ text: `System Instruction: ${systemInstruction}` }]
+        parts: [{ text: `System Instruction:\n${systemInstruction}` }]
       });
       contents.push({
         role: 'model',
-        parts: [{ text: 'Understood. I am ready to assist the citizen.' }]
+        parts: [{ text: 'Understood. I am ready to assist the citizen with their Migration Certificate Withdrawal application.' }]
       });
 
-      // Add history
+      // Add conversation history
       if (Array.isArray(history)) {
         history.forEach((msg) => {
           if (msg.text || msg.content) {
@@ -90,53 +99,39 @@ Your workflow:
         });
       }
 
-      // Add latest user prompt
+      // Add current user message
       contents.push({
         role: 'user',
         parts: [{ text: prompt }]
       });
 
-      // Gemini Generation: gemini-1.5-flash primary, gemini-2.0-flash secondary
+      // ── Gemini API call ────────────────────────────────────────────────────────
       let response;
       try {
         response = await ai.models.generateContent({
-          model: 'gemini-1.5-flash',
+          model: 'gemini-3.5-flash-lite',
           contents
         });
       } catch (genError) {
-        console.warn('⚠️ Gemini 1.5 flash warning, trying gemini-2.0-flash:', genError?.message);
-        try {
-          response = await ai.models.generateContent({
-            model: 'gemini-2.0-flash',
-            contents
-          });
-        } catch (retryErr) {
-          console.error('❌ Gemini AI API Call Failed:', retryErr?.message || retryErr);
-        }
+        console.error('❌ Gemini AI API Call Failed:', genError?.message || genError);
       }
 
       if (response && response.text) {
-        console.log('🤖 [Google Gemini AI] Response generated successfully:');
-        console.log('--------------------------------------------------');
+        console.log('🤖 [Gemini AI] Migration Certificate response generated:');
+        console.log('──────────────────────────────────────────────────────');
         console.log(response.text);
-        console.log('--------------------------------------------------');
+        console.log('──────────────────────────────────────────────────────');
         return response.text;
       }
 
-      if (mode === 'complaint') {
-        return `I have recorded your grievance details regarding "${prompt}". Our nodal officers have registered ticket for your location. You can track this in the Complaints tab.`;
-      }
-      return `Thank you for your message regarding "${prompt}". I have noted your details for processing. Is there any additional detail you'd like to provide?`;
+      // Fallback if Gemini fails
+      return `Thank you for providing that information. Please continue — what is the next detail you'd like to share for your Migration Certificate application?`;
+
     } catch (error) {
-      console.error('❌ Critical Gemini AI Error:', error?.message || error);      if (contextData.mode === 'complaint') {
-        return `I have recorded your grievance details regarding "${prompt}". Our nodal officers have registered ticket for your location. You can track this in the Complaints tab.`;
-      }
-      return `Thank you for your message regarding "${prompt}". Your details have been recorded for processing.`;
+      console.error('❌ Critical AI Service Error:', error?.message || error);
+      return `I encountered a technical issue. Please continue providing your details and I will process your Migration Certificate application as soon as possible.`;
     }
   }
 };
 
 export default aiService;
-
-
-
