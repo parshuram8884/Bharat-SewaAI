@@ -4,7 +4,6 @@ import {
   Bot,
   User,
   Send,
-  FileText,
   CheckCircle2,
   RefreshCw,
   ExternalLink,
@@ -13,12 +12,7 @@ import {
   FileCheck,
   ScanLine,
   Mic,
-  Volume2,
-  ArrowLeft,
-  Info,
-  ChevronDown,
-  ChevronUp,
-  ShieldCheck
+  Volume2
 } from 'lucide-react';
 import axios from 'axios';
 import { useAdminData } from '../../context/AdminDataContext';
@@ -26,23 +20,7 @@ import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useToast } from '../../context/ToastContext';
 import { useTranslation } from '../../hooks/useTranslation';
 
-// ─────────────────────────────────────────────────────────────
-// Required documents for Student Migration Certificate
-// ─────────────────────────────────────────────────────────────
-const DOCUMENTS_3_YEAR = [
-  { id: 'sem5', label: 'Semester V Marksheet', icon: '📄', required: true, desc: 'Official marksheet for Semester V' },
-  { id: 'sem6', label: 'Semester VI Marksheet', icon: '📄', required: true, desc: 'Official marksheet for Semester VI' },
-];
 
-const DOCUMENTS_4_YEAR = [
-  { id: 'sem7', label: 'Semester VII Marksheet', icon: '📄', required: true, desc: 'Official marksheet for Semester VII' },
-  { id: 'sem8', label: 'Semester VIII Marksheet', icon: '📄', required: true, desc: 'Official marksheet for Semester VIII' },
-];
-
-const DOCUMENTS_COMMON = [
-  { id: 'college_leaving', label: 'College Leaving Certificate', icon: '🏫', required: true, desc: 'Issued by last attended college/institution' },
-  { id: 'board_cert', label: 'Provisional / Final Board Certificate', icon: '🎓', required: true, desc: 'Provisional or final degree/board certificate' },
-];
 
 // Information Gemini will collect step by step (text format)
 const INFO_TO_COLLECT = [
@@ -82,9 +60,6 @@ export function CitizenAssistant() {
   const [referenceId, setReferenceId] = useState('');
   const [applicationSummary, setApplicationSummary] = useState('');
   const [degreeDuration, setDegreeDuration] = useState(null); // null | 3 | 4
-
-  // Documents panel toggle
-  const [showDocsPanel, setShowDocsPanel] = useState(true);
 
   const chatEndRef = useRef(null);
 
@@ -152,7 +127,7 @@ export function CitizenAssistant() {
   // ── Initial greeting on mount ─────────────────────────────
   useEffect(() => {
     const greeting =
-      `Namaste! 🙏 I am your Bharat Sewa AI Assistant for the **Student Migration Certificate** scheme.\n\nBefore we begin, I need to know: **How long is your degree programme?**\n\n🎓 Please reply:\n  • **3** — for a 3-year degree (B.A. / B.Com. / B.Sc. etc.)\n  • **4** — for a 4-year degree (B.E. / B.Tech. / B.Arch. etc.)\n\nThis will determine which marksheets you need to submit.`;
+      `Namaste! 🙏 I am your Bharat Sewa AI Assistant for the **Student Migration Certificate** scheme. How i help you with this Application`;
 
     setMessages([{
       id: Date.now().toString(),
@@ -216,6 +191,14 @@ export function CitizenAssistant() {
         docType = 'Provisional / Final Board Certificate';
         extractedInfo = 'Degree: B.Tech. (CSE) | University: SPPU | Year: 2024 | Grade: First Class';
         confidence = 96;
+      } else if (fn.includes('photo') || fn.includes('passport') || fn.includes('pic') || fn.includes('avatar')) {
+        docType = 'Passport Size Photo';
+        extractedInfo = 'Face Detected | Resolution: 300 DPI | Format: Image (JPG/PNG)';
+        confidence = 99;
+      } else if (fn.includes('sign') || fn.includes('signature')) {
+        docType = 'Signature Photo';
+        extractedInfo = 'Digital Signature Verified | Format: Image (JPG/PNG)';
+        confidence = 98;
       }
 
       setAttachedDoc({ file, fileName: file.name, documentType: docType, extractedInfo, confidence });
@@ -256,7 +239,7 @@ export function CitizenAssistant() {
 
       const res = await axios.post(endpoint, {
         message: messageText,
-        history: updatedHistory,
+        history: messages,
         contextData: {
           mode: 'service',
           serviceType: 'migration_certificate',
@@ -339,110 +322,8 @@ First — **How long is your degree programme?**
   return (
     <div className="w-full max-w-5xl mx-auto flex flex-col gap-4">
 
-      {/* ── Page Title Banner ─────────────────────────────── */}
-      <div className="flex items-center gap-3 p-4 bg-primary/10 border border-primary/30 rounded-2xl">
-        <div className="p-2 rounded-xl bg-primary text-on-primary shadow-md shrink-0">
-          <ShieldCheck className="w-6 h-6" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <h2 className="font-heading font-extrabold text-base text-on-surface">
-            🎓 Student Migration Certificate
-          </h2>
-          <p className="text-xs text-on-surface-variant font-medium">
-            विद्यार्थी स्थानांतरण प्रमाण पत्र — Powered by Bharat Sewa AI
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-outline-variant/60 hover:bg-surface-container text-xs font-bold text-on-surface-variant transition-colors cursor-pointer shrink-0"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" />
-          <span>Back</span>
-        </button>
-      </div>
-
-      {/* ── Required Documents Panel ──────────────────────── */}
-      <div className="bg-surface-container-lowest border border-outline-variant/60 rounded-2xl overflow-hidden shadow-sm">
-        <button
-          type="button"
-          onClick={() => setShowDocsPanel(v => !v)}
-          className="w-full flex items-center justify-between p-4 hover:bg-surface-container/50 transition-colors cursor-pointer"
-        >
-          <div className="flex items-center gap-2 text-sm font-bold text-on-surface">
-            <Info className="w-4 h-4 text-primary" />
-            📑 Required Documents & Information Checklist
-            {degreeDuration && (
-              <span className="text-[10px] bg-primary/15 text-primary px-2 py-0.5 rounded-full font-extrabold">
-                {degreeDuration}-Year Degree
-              </span>
-            )}
-          </div>
-          {showDocsPanel ? <ChevronUp className="w-4 h-4 text-on-surface-variant" /> : <ChevronDown className="w-4 h-4 text-on-surface-variant" />}
-        </button>
-
-        {showDocsPanel && (
-          <div className="px-4 pb-4 grid grid-cols-1 sm:grid-cols-2 gap-3 border-t border-outline-variant/40 pt-3">
-            {/* Documents column */}
-            <div>
-              <p className="text-[11px] font-extrabold text-on-surface-variant uppercase tracking-wider mb-2">
-                📄 Documents to Upload
-              </p>
-              <div className="space-y-2">
-                {/* Degree-based marksheets */}
-                {!degreeDuration && (
-                  <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-700 font-medium">
-                    ⏳ Degree duration not yet confirmed — reply <strong>3</strong> or <strong>4</strong> in chat to see required marksheets
-                  </div>
-                )}
-                {(degreeDuration === 3 ? DOCUMENTS_3_YEAR : degreeDuration === 4 ? DOCUMENTS_4_YEAR : []).map(doc => (
-                  <div key={doc.id} className="flex items-start gap-2 p-2.5 rounded-xl bg-primary/5 border border-primary/30">
-                    <span className="text-base shrink-0">{doc.icon}</span>
-                    <div className="min-w-0">
-                      <p className="text-xs font-bold text-on-surface flex items-center gap-1">
-                        {doc.label}
-                        <span className="text-[9px] bg-error/15 text-error px-1.5 py-0.5 rounded-full font-extrabold">Required</span>
-                      </p>
-                      <p className="text-[10px] text-on-surface-variant">{doc.desc}</p>
-                    </div>
-                  </div>
-                ))}
-                {/* Common documents always required */}
-                {DOCUMENTS_COMMON.map(doc => (
-                  <div key={doc.id} className="flex items-start gap-2 p-2.5 rounded-xl bg-surface-container border border-outline-variant/40">
-                    <span className="text-base shrink-0">{doc.icon}</span>
-                    <div className="min-w-0">
-                      <p className="text-xs font-bold text-on-surface flex items-center gap-1">
-                        {doc.label}
-                        <span className="text-[9px] bg-error/15 text-error px-1.5 py-0.5 rounded-full font-extrabold">Required</span>
-                      </p>
-                      <p className="text-[10px] text-on-surface-variant">{doc.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Information column */}
-            <div>
-              <p className="text-[11px] font-extrabold text-on-surface-variant uppercase tracking-wider mb-2">
-                ✏️ Information AI Will Collect
-              </p>
-              <div className="space-y-1.5">
-                {INFO_TO_COLLECT.map((info, i) => (
-                  <div key={i} className="flex items-center gap-2 p-2 rounded-xl bg-surface-container border border-outline-variant/40">
-                    <span className="text-[10px] font-extrabold text-primary bg-primary/10 rounded-full w-5 h-5 flex items-center justify-center shrink-0">{i + 1}</span>
-                    <p className="text-xs text-on-surface">{info}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* ── Main Chat Interface ───────────────────────────── */}
-      <div className="bg-surface-container-lowest border border-outline-variant/60 rounded-2xl shadow-xl flex flex-col h-[600px] overflow-hidden">
+      {/* ── Main Chat Interface (Only Chat Tab Visible) ───────────────────────────── */}
+      <div className="bg-surface-container-lowest border border-outline-variant/60 rounded-2xl shadow-xl flex flex-col h-[680px] overflow-hidden">
 
         {/* Chat Header */}
         <header className="p-4 bg-surface-container-low border-b border-outline-variant/40 flex items-center justify-between gap-3">
@@ -509,6 +390,17 @@ First — **How long is your degree programme?**
                     : 'bg-surface-container-low border border-outline-variant/60 text-on-surface rounded-tl-none shadow-2xs'
                 }`}>
                   <p className="whitespace-pre-line">{msg.text}</p>
+                  {msg.sender === 'ai' && (
+                    <button
+                      type="button"
+                      onClick={() => speakText(msg.text)}
+                      className="mt-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-primary/10 hover:bg-primary/20 text-primary text-[11px] font-bold transition-colors cursor-pointer"
+                      title="Listen to message (Text-to-Speech)"
+                    >
+                      <Volume2 className="w-3.5 h-3.5" />
+                      <span>🔊 Listen</span>
+                    </button>
+                  )}
                 </div>
                 <span className="text-[10px] text-on-surface-variant/70 block px-1">{msg.time}</span>
               </div>
