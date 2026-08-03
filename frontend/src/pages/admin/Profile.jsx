@@ -152,16 +152,16 @@ export function Profile() {
 
               {/* Working Language Selection */}
               <div className="space-y-1.5">
-                <label htmlFor="language" className="block text-xs font-bold text-on-surface-variant uppercase">
+                <label htmlFor="language" className="block text-xs font-extrabold text-on-surface-variant uppercase">
                   {t('Working Language (Voice & AI Assistant)')}
                 </label>
                 <div className="relative">
-                  <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant/70" />
+                  <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" />
                   <select
                     id="language"
                     value={language}
                     onChange={(e) => setLanguage(e.target.value)}
-                    className="w-full pl-11 pr-4 py-3 rounded-xl border border-outline-variant bg-surface-container-lowest text-sm font-bold text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer appearance-none"
+                    className="w-full pl-11 pr-4 py-3 rounded-2xl border-2 border-outline-variant bg-surface-container-lowest text-sm font-extrabold text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer appearance-none"
                   >
                     {languagesList.map((lang) => (
                       <option key={lang.code} value={lang.code}>
@@ -170,9 +170,24 @@ export function Profile() {
                     ))}
                   </select>
                 </div>
-                <p className="text-xs text-on-surface-variant mt-1">
-                  {t('The Sewa AI voice assistant will speak and process requests in your selected working language.')}
-                </p>
+                <div className="flex items-center justify-between pt-1">
+                  <p className="text-xs text-on-surface-variant font-medium">
+                    {t('The Sewa AI voice assistant will speak and process requests in your selected working language.')}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!('speechSynthesis' in window)) return;
+                      window.speechSynthesis.cancel();
+                      const msg = new SpeechSynthesisUtterance(`Namaste! This is your Bharat Sewa AI Assistant speaking in ${language}.`);
+                      window.speechSynthesis.speak(msg);
+                      showToast(`Testing voice playback in ${language}... 🔊`, 'info');
+                    }}
+                    className="px-3 py-1 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-900 font-extrabold text-xs shrink-0 cursor-pointer"
+                  >
+                    🔊 Test Voice
+                  </button>
+                </div>
               </div>
 
               {/* Submit Button */}
@@ -181,7 +196,7 @@ export function Profile() {
                   variant="primary"
                   type="submit"
                   disabled={isSaving}
-                  className="font-bold flex items-center gap-2"
+                  className="font-extrabold flex items-center gap-2 rural-touch-target"
                 >
                   <Save className="w-4 h-4" />
                   <span>{isSaving ? t('Saving Updates...') : t('Save Profile Changes')}</span>

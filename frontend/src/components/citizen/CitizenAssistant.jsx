@@ -322,24 +322,70 @@ First — **How long is your degree programme?**
   return (
     <div className="w-full max-w-5xl mx-auto flex flex-col gap-4">
 
-      {/* ── Main Chat Interface (Only Chat Tab Visible) ───────────────────────────── */}
-      <div className="bg-surface-container-lowest border border-outline-variant/60 rounded-2xl shadow-xl flex flex-col h-[680px] overflow-hidden">
+      {/* ── 3-Step Visual Progress Bar for Rural Citizens ────────────────────────── */}
+      <div className="bg-surface-container-lowest border-2 border-outline-variant/60 p-3.5 rounded-2xl shadow-sm">
+        <div className="grid grid-cols-3 gap-2 text-center text-xs font-extrabold">
+          <div className={`p-2.5 rounded-xl flex items-center justify-center gap-1.5 border ${!isCompleted && !attachedDoc ? 'bg-primary text-white border-primary' : 'bg-emerald-100 text-emerald-900 border-emerald-300'}`}>
+            <span>1. 📋 {t('Fill Info')}</span>
+          </div>
+          <div className={`p-2.5 rounded-xl flex items-center justify-center gap-1.5 border ${attachedDoc ? 'bg-primary text-white border-primary animate-pulse' : 'bg-surface-container-low text-on-surface-variant border-outline-variant/60'}`}>
+            <span>2. 📄 {t('OCR Scan Doc')}</span>
+          </div>
+          <div className={`p-2.5 rounded-xl flex items-center justify-center gap-1.5 border ${isCompleted ? 'bg-emerald-700 text-white border-emerald-600' : 'bg-surface-container-low text-on-surface-variant border-outline-variant/60'}`}>
+            <span>3. 🏆 {t('Approved')}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Quick Scheme Preset Chips ────────────────────────────────────────────── */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+        <span className="text-xs font-extrabold text-on-surface-variant uppercase shrink-0">Quick Schemes:</span>
+        <button
+          onClick={() => handleSend("I want to apply for Student Migration Certificate")}
+          className="px-3 py-1.5 rounded-full bg-primary/10 hover:bg-primary/20 text-primary border border-primary/30 text-xs font-bold shrink-0 transition-all cursor-pointer"
+        >
+          📜 Student Migration
+        </button>
+        <button
+          onClick={() => handleSend("I want to check PM Kisan Samman Nidhi crop damage relief")}
+          className="px-3 py-1.5 rounded-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-900 border border-amber-500/30 text-xs font-bold shrink-0 transition-all cursor-pointer"
+        >
+          🌾 PM Kisan Relief
+        </button>
+        <button
+          onClick={() => handleSend("I want to apply for Post Matric Higher Education Scholarship")}
+          className="px-3 py-1.5 rounded-full bg-blue-500/10 hover:bg-blue-500/20 text-blue-900 border border-blue-500/30 text-xs font-bold shrink-0 transition-all cursor-pointer"
+        >
+          🎓 Education Scholarship
+        </button>
+        <button
+          onClick={() => handleSend("I want to apply for Ayushman Health Card")}
+          className="px-3 py-1.5 rounded-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-900 border border-emerald-500/30 text-xs font-bold shrink-0 transition-all cursor-pointer"
+        >
+          💊 Ayushman Health
+        </button>
+      </div>
+
+      {/* ── Main Chat Interface ─────────────────────────────────────────────────── */}
+      <div className="bg-surface-container-lowest border-2 border-outline-variant/60 rounded-3xl shadow-2xl flex flex-col h-[650px] overflow-hidden">
 
         {/* Chat Header */}
         <header className="p-4 bg-surface-container-low border-b border-outline-variant/40 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-on-primary shadow-md shrink-0">
-              <Bot className="w-6 h-6" />
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-orange-500 via-white to-green-700 p-0.5 shadow-md shrink-0 border border-white/30 flex items-center justify-center">
+              <div className="w-full h-full rounded-xl bg-slate-900 flex items-center justify-center font-black text-amber-400 text-xs">
+                BS
+              </div>
             </div>
             <div className="truncate">
               <div className="flex items-center gap-2">
-                <h3 className="font-heading font-bold text-base text-on-surface truncate">Bharat Sewa AI</h3>
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 text-[10px] font-extrabold uppercase shrink-0">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <h3 className="font-heading font-extrabold text-base text-on-surface truncate">Bharat Sewa AI Voice Assistant</h3>
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 text-[11px] font-extrabold uppercase shrink-0 border border-emerald-500/20">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                   {t('Online')}
                 </span>
               </div>
-              <p className="text-xs text-on-surface-variant font-medium truncate">Student Migration Certificate — Application Workflow</p>
+              <p className="text-xs text-on-surface-variant font-bold truncate">Aadhaar e-KYC • Voice Dictation • Auto Translation</p>
             </div>
           </div>
 
@@ -350,25 +396,25 @@ First — **How long is your degree programme?**
               onClick={() => {
                 const next = !isVoiceActive;
                 setIsVoiceActive(next);
-                if (next) { startListening(); showToast('Voice Mode Active 🎙️', 'success'); }
+                if (next) { startListening(); showToast('Voice Mode Active 🎙️ Speak now!', 'success'); }
                 else { stopListening(); showToast('Switched to Text Mode 💬', 'info'); }
               }}
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-extrabold transition-all shadow-md cursor-pointer border ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-extrabold transition-all shadow-md cursor-pointer border rural-touch-target ${
                 isVoiceActive
-                  ? 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-500'
-                  : 'bg-primary text-on-primary hover:bg-primary-container border-primary/40'
+                  ? 'bg-emerald-700 hover:bg-emerald-800 text-white border-emerald-500 rural-voice-active'
+                  : 'bg-primary text-white hover:bg-primary-container border-primary/40'
               }`}
             >
-              {isVoiceActive ? <><Mic className="w-4 h-4 animate-bounce" /><span>🎙️ Voice ON</span></> : <><Volume2 className="w-4 h-4" /><span>🔊 Voice</span></>}
+              {isVoiceActive ? <><Mic className="w-4 h-4 animate-bounce" /><span>🎙️ Voice Active</span></> : <><Volume2 className="w-4 h-4" /><span>🔊 Voice Mode</span></>}
             </button>
 
             {/* Reset */}
             <button
               onClick={resetChat}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-outline-variant/60 hover:bg-surface-container text-xs font-bold text-on-surface-variant transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl border border-outline-variant/60 hover:bg-surface-container text-xs font-extrabold text-on-surface-variant transition-colors cursor-pointer"
               title="Start New Conversation"
             >
-              <RefreshCw className="w-3.5 h-3.5" />
+              <RefreshCw className="w-4 h-4" />
               <span>Reset</span>
             </button>
           </div>

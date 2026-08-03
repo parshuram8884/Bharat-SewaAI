@@ -216,21 +216,90 @@ export function ApplicationsList() {
 
   return (
     <div className="space-y-6 pb-12 animate-in fade-in duration-200 relative">
-      {/* Clean Page Header */}
-      <div className="border-b border-outline-variant/30 pb-5">
-        <h2 className="font-heading text-3xl font-extrabold text-primary tracking-tight">{t('Applications')}</h2>
-        <p className="text-on-surface-variant font-medium mt-1 text-sm">
-          {t('Track and review your submitted scheme applications and government welfare services.')}
-        </p>
+      {/* Page Header with Audio Assistance */}
+      <div className="border-b border-outline-variant/40 pb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <h2 className="font-heading text-3xl font-extrabold text-primary tracking-tight">{t('Applications')} / मेरे आवेदन 📝</h2>
+            <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-900 border border-emerald-300">
+              {filteredApps.length} Total
+            </span>
+          </div>
+          <p className="text-on-surface-variant font-bold mt-1 text-sm">
+            {t('Track and review your submitted scheme applications and government welfare services.')}
+          </p>
+        </div>
+
+        <button
+          onClick={() => navigate('/citizens')}
+          className="px-4 py-2.5 rounded-2xl bg-primary text-white font-extrabold text-xs shadow-md hover:bg-primary-container flex items-center gap-2 self-start sm:self-auto cursor-pointer rural-touch-target"
+        >
+          <span>➕ Apply New Scheme</span>
+        </button>
       </div>
 
-      {/* Applications Table */}
-      <Table
-        data={filteredApps}
-        columns={columns}
-        searchPlaceholder={t('Search Application ID, citizen name, service title...')}
-        pageSize={10}
-      />
+      {/* Visual Rural Cards View */}
+      <div className="space-y-4">
+        {filteredApps.length === 0 ? (
+          <div className="p-8 text-center bg-surface-container-lowest border-2 border-dashed border-outline-variant/60 rounded-3xl space-y-3">
+            <FileText className="w-12 h-12 text-on-surface-variant/40 mx-auto" />
+            <h3 className="font-heading font-extrabold text-lg text-on-surface">No Applications Found</h3>
+            <p className="text-xs font-semibold text-on-surface-variant max-w-sm mx-auto">
+              You haven't submitted any scheme applications yet. Click below to apply via AI Voice Assistant.
+            </p>
+            <button
+              onClick={() => navigate('/citizens')}
+              className="px-5 py-3 rounded-2xl bg-emerald-700 text-white font-extrabold text-xs shadow-lg hover:bg-emerald-800 cursor-pointer"
+            >
+              🎙️ Apply Now via Voice Assistant
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {filteredApps.map((app) => {
+              const statusColor = (app.status || '').toLowerCase().includes('approved')
+                ? 'bg-emerald-50 border-emerald-500 text-emerald-950'
+                : (app.status || '').toLowerCase().includes('reject')
+                ? 'bg-red-50 border-red-500 text-red-950'
+                : 'bg-amber-50 border-amber-500 text-amber-950';
+
+              return (
+                <div
+                  key={app.id}
+                  className={`p-5 rounded-3xl border-2 transition-all shadow-sm hover:shadow-md space-y-3 ${statusColor}`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-xs font-extrabold px-3 py-1 rounded-xl bg-white border border-black/10 shadow-xs">
+                      {app.id}
+                    </span>
+                    <Badge>{t(app.status || 'In Progress')}</Badge>
+                  </div>
+
+                  <div>
+                    <h3 className="font-heading font-extrabold text-base text-on-surface">
+                      {app.schemeName || app.serviceName || 'Welfare Scheme'}
+                    </h3>
+                    <p className="text-xs font-semibold text-on-surface-variant mt-1 line-clamp-2">
+                      {app.details || app.what_happend || 'Application under government office review.'}
+                    </p>
+                  </div>
+
+                  <div className="pt-3 border-t border-black/10 flex items-center justify-between text-xs font-extrabold">
+                    <span className="text-on-surface-variant">Applicant: {app.citizenName || 'Citizen User'}</span>
+                    <button
+                      onClick={() => navigate(`/applications/${app.id}`)}
+                      className="px-3 py-1.5 rounded-xl bg-primary text-white hover:bg-primary-container font-extrabold flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>{t('View Details')}</span>
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

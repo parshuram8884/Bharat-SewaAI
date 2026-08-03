@@ -121,21 +121,80 @@ export function ComplaintsManagement() {
 
   return (
     <div className="space-y-6 pb-12 animate-in fade-in duration-200">
-      {/* Page Header */}
-      <div className="border-b border-outline-variant/30 pb-4">
-        <h2 className="font-heading text-3xl font-extrabold text-primary tracking-tight">{t('Citizen Complaints')}</h2>
-        <p className="text-on-surface-variant text-sm font-medium mt-1">
-          {t('Registered grievance complaints submitted by citizens.')}
-        </p>
+      {/* Page Header with Action Button */}
+      <div className="border-b border-outline-variant/40 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <h2 className="font-heading text-3xl font-extrabold text-primary tracking-tight">{t('Citizen Complaints')} / जन शिकायत 📢</h2>
+            <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-amber-100 text-amber-900 border border-amber-300">
+              {filteredComplaints.length} Total
+            </span>
+          </div>
+          <p className="text-on-surface-variant font-bold text-sm mt-1">
+            {t('Registered grievance complaints submitted by citizens.')}
+          </p>
+        </div>
+
+        <button
+          onClick={() => {
+            showToast("Opening Voice Complaint Assistant...", "info");
+            window.location.href = "/citizens";
+          }}
+          className="px-4 py-2.5 rounded-2xl bg-amber-700 hover:bg-amber-800 text-white font-extrabold text-xs shadow-md flex items-center gap-2 self-start sm:self-auto cursor-pointer rural-touch-target"
+        >
+          <span>🎙️ Lodge Complaint via Voice</span>
+        </button>
       </div>
 
-      {/* Grievances Table */}
-      <Table
-        data={filteredComplaints}
-        columns={columns}
-        searchPlaceholder={t('Search complaint name, citizen, or what happened...')}
-        pageSize={10}
-      />
+      {/* Visual Rural Cards View */}
+      <div className="space-y-4">
+        {filteredComplaints.length === 0 ? (
+          <div className="p-8 text-center bg-surface-container-lowest border-2 border-dashed border-outline-variant/60 rounded-3xl space-y-3">
+            <AlertCircle className="w-12 h-12 text-on-surface-variant/40 mx-auto" />
+            <h3 className="font-heading font-extrabold text-lg text-on-surface">No Grievances Found</h3>
+            <p className="text-xs font-semibold text-on-surface-variant max-w-sm mx-auto">
+              You haven't registered any complaints. Click below to lodge a complaint using voice dictation.
+            </p>
+            <button
+              onClick={() => window.location.href = "/citizens"}
+              className="px-5 py-3 rounded-2xl bg-amber-700 text-white font-extrabold text-xs shadow-lg hover:bg-amber-800 cursor-pointer"
+            >
+              🎙️ Register Grievance via Voice
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {filteredComplaints.map((comp) => (
+              <div
+                key={comp.id}
+                onClick={() => setActiveTicket(comp)}
+                className="p-5 rounded-3xl bg-surface-container-lowest border-2 border-outline-variant/60 hover:border-amber-500 transition-all cursor-pointer shadow-sm hover:shadow-md space-y-3"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-xs font-extrabold px-3 py-1 rounded-xl bg-amber-100 text-amber-900 border border-amber-300">
+                    CMP-{comp.id}
+                  </span>
+                  <Badge>{t(comp.status || 'In Progress')}</Badge>
+                </div>
+
+                <div>
+                  <h3 className="font-heading font-extrabold text-base text-on-surface">
+                    {comp.citizen_name || comp.citizenName || 'Citizen Grievance'}
+                  </h3>
+                  <p className="text-xs font-semibold text-on-surface-variant mt-1 line-clamp-2">
+                    {comp.what_happend || comp.description || 'Public complaint registered for officer review.'}
+                  </p>
+                </div>
+
+                <div className="pt-3 border-t border-outline-variant/30 flex items-center justify-between text-xs font-extrabold text-amber-900">
+                  <span>Click to view resolution progress</span>
+                  <Eye className="w-4 h-4" />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Ticket Detail & Adjudication Modal */}
       <Modal
