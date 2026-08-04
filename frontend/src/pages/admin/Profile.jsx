@@ -181,11 +181,12 @@ export function Profile() {
                       window.speechSynthesis.cancel();
                       const msg = new SpeechSynthesisUtterance(`Namaste! This is your Bharat Sewa AI Assistant speaking in ${language}.`);
                       window.speechSynthesis.speak(msg);
-                      showToast(`Testing voice playback in ${language}... 🔊`, 'info');
+                      showToast(`Testing voice playback in ${language}...`, 'info');
                     }}
-                    className="px-3 py-1 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-900 font-extrabold text-xs shrink-0 cursor-pointer"
+                    className="px-3 py-1 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-900 font-extrabold text-xs shrink-0 cursor-pointer flex items-center gap-1.5"
                   >
-                    🔊 Test Voice
+                    <Volume2 className="w-3.5 h-3.5" />
+                    <span>Test Voice</span>
                   </button>
                 </div>
               </div>

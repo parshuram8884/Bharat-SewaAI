@@ -9,7 +9,8 @@ import {
   Send,
   User,
   AlertTriangle,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Mic
 } from 'lucide-react';
 import { useAdminData } from '../../context/AdminDataContext';
 import { useAdminAuth } from '../../context/AdminAuthContext';
@@ -125,7 +126,7 @@ export function ComplaintsManagement() {
       <div className="border-b border-outline-variant/40 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="font-heading text-3xl font-extrabold text-primary tracking-tight">{t('Citizen Complaints')} / जन शिकायत 📢</h2>
+            <h2 className="font-heading text-3xl font-extrabold text-primary tracking-tight">{t('Citizen Complaints')} / जन शिकायत</h2>
             <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-amber-100 text-amber-900 border border-amber-300">
               {filteredComplaints.length} Total
             </span>
@@ -142,7 +143,8 @@ export function ComplaintsManagement() {
           }}
           className="px-4 py-2.5 rounded-2xl bg-amber-700 hover:bg-amber-800 text-white font-extrabold text-xs shadow-md flex items-center gap-2 self-start sm:self-auto cursor-pointer rural-touch-target"
         >
-          <span>🎙️ Lodge Complaint via Voice</span>
+          <Mic className="w-4 h-4" />
+          <span>Lodge Complaint via Voice</span>
         </button>
       </div>
 
@@ -157,9 +159,10 @@ export function ComplaintsManagement() {
             </p>
             <button
               onClick={() => window.location.href = "/citizens"}
-              className="px-5 py-3 rounded-2xl bg-amber-700 text-white font-extrabold text-xs shadow-lg hover:bg-amber-800 cursor-pointer"
+              className="px-5 py-3 rounded-2xl bg-amber-700 text-white font-extrabold text-xs shadow-lg hover:bg-amber-800 cursor-pointer flex items-center justify-center gap-2 mx-auto"
             >
-              🎙️ Register Grievance via Voice
+              <Mic className="w-4 h-4" />
+              <span>Register Grievance via Voice</span>
             </button>
           </div>
         ) : (

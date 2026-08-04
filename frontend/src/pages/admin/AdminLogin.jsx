@@ -113,7 +113,7 @@ export function AdminLogin() {
             Bharat Sewa AI
           </h1>
           <p className="text-sm text-on-surface-variant font-bold">
-            आपकी सरकारी सेवा, अब आपकी भाषा में 🙏
+            आपकी सरकारी सेवा, अब आपकी भाषा में
           </p>
 
           {/* Audio Instructions Button for Rural Citizens */}
@@ -127,7 +127,7 @@ export function AdminLogin() {
             }`}
           >
             <Volume2 className={`w-4 h-4 ${isSpeaking ? 'animate-bounce' : ''}`} />
-            <span>{isSpeaking ? 'AI is speaking instructions...' : '🔊 Click to Listen Instructions'}</span>
+            <span>{isSpeaking ? 'AI is speaking instructions...' : 'Click to Listen Instructions'}</span>
           </button>
         </div>
 

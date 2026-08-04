@@ -11,7 +11,9 @@ import {
   CheckSquare,
   AlertCircle,
   FileSpreadsheet,
-  Layers
+  Layers,
+  Plus,
+  Mic
 } from 'lucide-react';
 import { useAdminData } from '../../context/AdminDataContext';
 import { useAdminAuth } from '../../context/AdminAuthContext';
@@ -220,7 +222,7 @@ export function ApplicationsList() {
       <div className="border-b border-outline-variant/40 pb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="font-heading text-3xl font-extrabold text-primary tracking-tight">{t('Applications')} / मेरे आवेदन 📝</h2>
+            <h2 className="font-heading text-3xl font-extrabold text-primary tracking-tight">{t('Applications')} / मेरे आवेदन</h2>
             <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-900 border border-emerald-300">
               {filteredApps.length} Total
             </span>
@@ -234,7 +236,8 @@ export function ApplicationsList() {
           onClick={() => navigate('/citizens')}
           className="px-4 py-2.5 rounded-2xl bg-primary text-white font-extrabold text-xs shadow-md hover:bg-primary-container flex items-center gap-2 self-start sm:self-auto cursor-pointer rural-touch-target"
         >
-          <span>➕ Apply New Scheme</span>
+          <Plus className="w-4 h-4" />
+          <span>Apply New Scheme</span>
         </button>
       </div>
 
@@ -249,9 +252,10 @@ export function ApplicationsList() {
             </p>
             <button
               onClick={() => navigate('/citizens')}
-              className="px-5 py-3 rounded-2xl bg-emerald-700 text-white font-extrabold text-xs shadow-lg hover:bg-emerald-800 cursor-pointer"
+              className="px-5 py-3 rounded-2xl bg-emerald-700 text-white font-extrabold text-xs shadow-lg hover:bg-emerald-800 cursor-pointer flex items-center justify-center gap-2 mx-auto"
             >
-              🎙️ Apply Now via Voice Assistant
+              <Mic className="w-4 h-4" />
+              <span>Apply Now via Voice Assistant</span>
             </button>
           </div>
         ) : (

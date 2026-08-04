@@ -21,7 +21,7 @@ export function RuralVoiceFab() {
     utterance.onend = () => setIsSpeaking(false);
     utterance.onerror = () => setIsSpeaking(false);
     window.speechSynthesis.speak(utterance);
-    showToast("🔊 Playing Voice Instructions in Hindi / Spoken Language", "info");
+    showToast("Playing Voice Instructions in Hindi / Spoken Language", "info");
   };
 
   return (
@@ -57,7 +57,7 @@ export function RuralVoiceFab() {
         >
           <Mic className="w-7 h-7 animate-bounce" />
           <div className="text-left leading-tight">
-            <span className="block text-sm font-extrabold">🎤 बोल कर सेवा पाएं</span>
+            <span className="block text-sm font-extrabold">बोल कर सेवा पाएं</span>
             <span className="block text-[11px] font-bold text-emerald-200">Tap & Speak your query</span>
           </div>
         </button>

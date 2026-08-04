@@ -7,7 +7,13 @@ import {
   ExternalLink,
   Mic,
   Volume2,
-  Sparkles
+  Sparkles,
+  Sprout,
+  GraduationCap,
+  Home,
+  HeartPulse,
+  FileCheck,
+  Megaphone
 } from 'lucide-react';
 import { useAdminData } from '../context/AdminDataContext';
 import { useAdminAuth } from '../context/AdminAuthContext';
@@ -64,12 +70,12 @@ export function Dashboard() {
 
   // Visual Category Cards for Rural Citizens
   const categoryCards = [
-    { title: 'Agriculture & Farmers', icon: '🌾', color: 'from-amber-600 to-amber-800', desc: 'Crop relief, PM-Kisan, Irrigation grants', link: '/citizens' },
-    { title: 'Student & Education', icon: '🎓', color: 'from-blue-600 to-blue-800', desc: 'Scholarships, Migration certificates', link: '/citizens' },
-    { title: 'Housing & Sanitation', icon: '🏠', color: 'from-orange-600 to-orange-800', desc: 'PMAY Awas, Toilet construction relief', link: '/citizens' },
-    { title: 'Health & Ayushman', icon: '💊', color: 'from-emerald-600 to-emerald-800', desc: 'Ayushman Gold card, Medical aid', link: '/citizens' },
-    { title: 'Certificates & Income', icon: '📜', color: 'from-purple-600 to-purple-800', desc: 'Income, Caste, Domicile certificates', link: '/citizens' },
-    { title: 'Public Grievances', icon: '📢', color: 'from-red-600 to-red-800', desc: 'Report village issues, Water/Road help', link: '/complaints' },
+    { title: 'Agriculture & Farmers', icon: Sprout, color: 'from-amber-600 to-amber-800', desc: 'Crop relief, PM-Kisan, Irrigation grants', link: '/citizens' },
+    { title: 'Student & Education', icon: GraduationCap, color: 'from-blue-600 to-blue-800', desc: 'Scholarships, Migration certificates', link: '/citizens' },
+    { title: 'Housing & Sanitation', icon: Home, color: 'from-orange-600 to-orange-800', desc: 'PMAY Awas, Toilet construction relief', link: '/citizens' },
+    { title: 'Health & Ayushman', icon: HeartPulse, color: 'from-emerald-600 to-emerald-800', desc: 'Ayushman Gold card, Medical aid', link: '/citizens' },
+    { title: 'Certificates & Income', icon: FileCheck, color: 'from-purple-600 to-purple-800', desc: 'Income, Caste, Domicile certificates', link: '/citizens' },
+    { title: 'Public Grievances', icon: Megaphone, color: 'from-red-600 to-red-800', desc: 'Report village issues, Water/Road help', link: '/complaints' },
   ];
 
   const filteredApplications = userApplications.filter(a =>
@@ -106,7 +112,7 @@ export function Dashboard() {
                 </button>
               </div>
               <h1 className="font-heading text-2xl md:text-4xl font-extrabold tracking-tight mt-2 text-white">
-                Namaste, {user?.name || 'Citizen'}! 🙏
+                Namaste, {user?.name || 'Citizen'}!
               </h1>
               <p className="text-on-primary/90 text-sm md:text-base font-semibold mt-1 max-w-2xl">
                 {t('Manage scheme applications and public grievance complaints in one unified portal.')}
@@ -128,36 +134,39 @@ export function Dashboard() {
       {/* 6 Big Visual Category Cards for Rural Citizens */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="font-heading text-xl font-extrabold text-on-surface">
-            {t('Schemes & Services')} / मुख्य सेवाएं 🌾
+          <h2 className="font-heading text-xl font-extrabold text-on-surface flex items-center gap-2">
+            <span>{t('Schemes & Services')} / मुख्य सेवाएं</span>
           </h2>
           <span className="text-xs font-bold text-primary">Click any card to apply</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {categoryCards.map((cat, idx) => (
-            <div
-              key={idx}
-              onClick={() => navigate(cat.link)}
-              className="p-5 rounded-2xl bg-surface-container-lowest border-2 border-outline-variant/60 hover:border-primary transition-all cursor-pointer shadow-sm hover:shadow-lg group flex flex-col justify-between space-y-3"
-            >
-              <div className="flex items-center gap-3">
-                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${cat.color} text-white flex items-center justify-center text-2xl shadow-md shrink-0 group-hover:scale-110 transition-transform`}>
-                  {cat.icon}
+          {categoryCards.map((cat, idx) => {
+            const Icon = cat.icon;
+            return (
+              <div
+                key={idx}
+                onClick={() => navigate(cat.link)}
+                className="p-5 rounded-2xl bg-surface-container-lowest border-2 border-outline-variant/60 hover:border-primary transition-all cursor-pointer shadow-sm hover:shadow-lg group flex flex-col justify-between space-y-3"
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${cat.color} text-white flex items-center justify-center shadow-md shrink-0 group-hover:scale-110 transition-transform`}>
+                    <Icon className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-base text-on-surface group-hover:text-primary transition-colors">
+                      {t(cat.title)}
+                    </h3>
+                    <p className="text-xs text-on-surface-variant font-medium line-clamp-1">{cat.desc}</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-bold text-base text-on-surface group-hover:text-primary transition-colors">
-                    {t(cat.title)}
-                  </h3>
-                  <p className="text-xs text-on-surface-variant font-medium line-clamp-1">{cat.desc}</p>
+                <div className="flex items-center justify-between pt-2 border-t border-outline-variant/30 text-xs font-extrabold text-primary">
+                  <span>Apply / आवेदन करें</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
-              <div className="flex items-center justify-between pt-2 border-t border-outline-variant/30 text-xs font-extrabold text-primary">
-                <span>Apply / आवेदन करें</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -174,8 +183,8 @@ export function Dashboard() {
           }`}
         >
           <div className="flex justify-between items-start">
-            <div className="p-3 rounded-2xl bg-emerald-100 text-emerald-800 text-xl font-bold">
-              📝
+            <div className="p-3 rounded-2xl bg-emerald-100 text-emerald-800 font-bold">
+              <FileText className="w-6 h-6 text-emerald-800" />
             </div>
             <button 
               onClick={(e) => { e.stopPropagation(); navigate('/applications'); }}
@@ -206,8 +215,8 @@ export function Dashboard() {
           }`}
         >
           <div className="flex justify-between items-start">
-            <div className="p-3 rounded-2xl bg-amber-100 text-amber-800 text-xl font-bold">
-              📢
+            <div className="p-3 rounded-2xl bg-amber-100 text-amber-800 font-bold">
+              <Megaphone className="w-6 h-6 text-amber-800" />
             </div>
             <button 
               onClick={(e) => { e.stopPropagation(); navigate('/complaints'); }}

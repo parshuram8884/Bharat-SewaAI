@@ -12,7 +12,13 @@ import {
   FileCheck,
   ScanLine,
   Mic,
-  Volume2
+  Volume2,
+  ClipboardList,
+  Award,
+  Sprout,
+  GraduationCap,
+  HeartPulse,
+  FileText
 } from 'lucide-react';
 import axios from 'axios';
 import { useAdminData } from '../../context/AdminDataContext';
@@ -127,7 +133,7 @@ export function CitizenAssistant() {
   // ── Initial greeting on mount ─────────────────────────────
   useEffect(() => {
     const greeting =
-      `Namaste! 🙏 I am your Bharat Sewa AI Assistant for the **Student Migration Certificate** scheme. How i help you with this Application`;
+      `Namaste! I am your Bharat Sewa AI Assistant for the **Student Migration Certificate** scheme. How can I help you with this Application?`;
 
     setMessages([{
       id: Date.now().toString(),
@@ -305,7 +311,7 @@ export function CitizenAssistant() {
     setApplicationSummary('');
     setDegreeDuration(null);
     const greeting =
-      `Namaste! 🙏 Let's start a new application for the **Student Migration Certificate**.
+      `Namaste! Let's start a new application for the **Student Migration Certificate**.
 
 First — **How long is your degree programme?**
   • Reply **3** for a 3-year degree
@@ -326,13 +332,16 @@ First — **How long is your degree programme?**
       <div className="bg-surface-container-lowest border-2 border-outline-variant/60 p-3.5 rounded-2xl shadow-sm">
         <div className="grid grid-cols-3 gap-2 text-center text-xs font-extrabold">
           <div className={`p-2.5 rounded-xl flex items-center justify-center gap-1.5 border ${!isCompleted && !attachedDoc ? 'bg-primary text-white border-primary' : 'bg-emerald-100 text-emerald-900 border-emerald-300'}`}>
-            <span>1. 📋 {t('Fill Info')}</span>
+            <ClipboardList className="w-4 h-4 shrink-0" />
+            <span>1. {t('Fill Info')}</span>
           </div>
           <div className={`p-2.5 rounded-xl flex items-center justify-center gap-1.5 border ${attachedDoc ? 'bg-primary text-white border-primary animate-pulse' : 'bg-surface-container-low text-on-surface-variant border-outline-variant/60'}`}>
-            <span>2. 📄 {t('OCR Scan Doc')}</span>
+            <ScanLine className="w-4 h-4 shrink-0" />
+            <span>2. {t('OCR Scan Doc')}</span>
           </div>
           <div className={`p-2.5 rounded-xl flex items-center justify-center gap-1.5 border ${isCompleted ? 'bg-emerald-700 text-white border-emerald-600' : 'bg-surface-container-low text-on-surface-variant border-outline-variant/60'}`}>
-            <span>3. 🏆 {t('Approved')}</span>
+            <Award className="w-4 h-4 shrink-0" />
+            <span>3. {t('Approved')}</span>
           </div>
         </div>
       </div>
@@ -342,27 +351,31 @@ First — **How long is your degree programme?**
         <span className="text-xs font-extrabold text-on-surface-variant uppercase shrink-0">Quick Schemes:</span>
         <button
           onClick={() => handleSend("I want to apply for Student Migration Certificate")}
-          className="px-3 py-1.5 rounded-full bg-primary/10 hover:bg-primary/20 text-primary border border-primary/30 text-xs font-bold shrink-0 transition-all cursor-pointer"
+          className="px-3 py-1.5 rounded-full bg-primary/10 hover:bg-primary/20 text-primary border border-primary/30 text-xs font-bold shrink-0 transition-all cursor-pointer flex items-center gap-1.5"
         >
-          📜 Student Migration
+          <FileText className="w-3.5 h-3.5" />
+          <span>Student Migration</span>
         </button>
         <button
           onClick={() => handleSend("I want to check PM Kisan Samman Nidhi crop damage relief")}
-          className="px-3 py-1.5 rounded-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-900 border border-amber-500/30 text-xs font-bold shrink-0 transition-all cursor-pointer"
+          className="px-3 py-1.5 rounded-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-900 border border-amber-500/30 text-xs font-bold shrink-0 transition-all cursor-pointer flex items-center gap-1.5"
         >
-          🌾 PM Kisan Relief
+          <Sprout className="w-3.5 h-3.5 text-amber-600" />
+          <span>PM Kisan Relief</span>
         </button>
         <button
           onClick={() => handleSend("I want to apply for Post Matric Higher Education Scholarship")}
-          className="px-3 py-1.5 rounded-full bg-blue-500/10 hover:bg-blue-500/20 text-blue-900 border border-blue-500/30 text-xs font-bold shrink-0 transition-all cursor-pointer"
+          className="px-3 py-1.5 rounded-full bg-blue-500/10 hover:bg-blue-500/20 text-blue-900 border border-blue-500/30 text-xs font-bold shrink-0 transition-all cursor-pointer flex items-center gap-1.5"
         >
-          🎓 Education Scholarship
+          <GraduationCap className="w-3.5 h-3.5 text-blue-600" />
+          <span>Education Scholarship</span>
         </button>
         <button
           onClick={() => handleSend("I want to apply for Ayushman Health Card")}
-          className="px-3 py-1.5 rounded-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-900 border border-emerald-500/30 text-xs font-bold shrink-0 transition-all cursor-pointer"
+          className="px-3 py-1.5 rounded-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-900 border border-emerald-500/30 text-xs font-bold shrink-0 transition-all cursor-pointer flex items-center gap-1.5"
         >
-          💊 Ayushman Health
+          <HeartPulse className="w-3.5 h-3.5 text-emerald-600" />
+          <span>Ayushman Health</span>
         </button>
       </div>
 
@@ -396,8 +409,8 @@ First — **How long is your degree programme?**
               onClick={() => {
                 const next = !isVoiceActive;
                 setIsVoiceActive(next);
-                if (next) { startListening(); showToast('Voice Mode Active 🎙️ Speak now!', 'success'); }
-                else { stopListening(); showToast('Switched to Text Mode 💬', 'info'); }
+                if (next) { startListening(); showToast('Voice Mode Active — Speak now!', 'success'); }
+                else { stopListening(); showToast('Switched to Text Mode', 'info'); }
               }}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-extrabold transition-all shadow-md cursor-pointer border rural-touch-target ${
                 isVoiceActive
@@ -405,7 +418,7 @@ First — **How long is your degree programme?**
                   : 'bg-primary text-white hover:bg-primary-container border-primary/40'
               }`}
             >
-              {isVoiceActive ? <><Mic className="w-4 h-4 animate-bounce" /><span>🎙️ Voice Active</span></> : <><Volume2 className="w-4 h-4" /><span>🔊 Voice Mode</span></>}
+              {isVoiceActive ? <><Mic className="w-4 h-4 animate-bounce" /><span>Voice Active</span></> : <><Volume2 className="w-4 h-4" /><span>Voice Mode</span></>}
             </button>
 
             {/* Reset */}
@@ -444,7 +457,7 @@ First — **How long is your degree programme?**
                       title="Listen to message (Text-to-Speech)"
                     >
                       <Volume2 className="w-3.5 h-3.5" />
-                      <span>🔊 Listen</span>
+                      <span>Listen</span>
                     </button>
                   )}
                 </div>
@@ -519,7 +532,7 @@ First — **How long is your degree programme?**
             <div className="flex items-center justify-between gap-2 text-xs font-bold text-red-600 bg-red-500/10 border border-red-500/30 p-2.5 rounded-xl animate-pulse">
               <div className="flex items-center gap-2">
                 <Mic className="w-4 h-4 animate-bounce" />
-                <span>🎙️ Listening in {user?.language || 'English'}... Speak now!</span>
+                <span>Listening in {user?.language || 'English'}... Speak now!</span>
               </div>
               <button type="button" onClick={stopListening} className="text-[10px] bg-red-600 text-white px-2 py-0.5 rounded font-bold">Stop</button>
             </div>
@@ -529,7 +542,7 @@ First — **How long is your degree programme?**
           {isSpeaking && (
             <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 bg-emerald-500/10 border border-emerald-500/30 p-2.5 rounded-xl animate-pulse">
               <Volume2 className="w-4 h-4 animate-spin" />
-              <span>🔊 AI is speaking in {user?.language || 'English'}...</span>
+              <span>AI is speaking in {user?.language || 'English'}...</span>
             </div>
           )}
 

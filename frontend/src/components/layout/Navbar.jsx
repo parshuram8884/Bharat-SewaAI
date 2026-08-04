@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, LogOut, Languages, ChevronDown } from 'lucide-react';
+import { Menu, LogOut, Languages, ChevronDown, Mic, Globe, User } from 'lucide-react';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useAdminData } from '../../context/AdminDataContext';
 import { useTranslation } from '../../hooks/useTranslation';
@@ -30,13 +30,13 @@ export function Navbar({ isSidebarOpen, onToggleSidebar }) {
   }, []);
 
   const languagesList = [
-    { code: 'English', label: 'English', flag: '🇬🇧' },
-    { code: 'Hindi', label: 'हिन्दी (Hindi)', flag: '🇮🇳' },
-    { code: 'Marathi', label: 'मराठी (Marathi)', flag: '🇮🇳' },
-    { code: 'Bengali', label: 'বাংলা (Bengali)', flag: '🇮🇳' },
-    { code: 'Gujarati', label: 'ગુજરાતી (Gujarati)', flag: '🇮🇳' },
-    { code: 'Tamil', label: 'தமிழ் (Tamil)', flag: '🇮🇳' },
-    { code: 'Telugu', label: 'తెలుగు (Telugu)', flag: '🇮🇳' }
+    { code: 'English', label: 'English', flag: 'EN' },
+    { code: 'Hindi', label: 'हिन्दी (Hindi)', flag: 'HI' },
+    { code: 'Marathi', label: 'मराठी (Marathi)', flag: 'MR' },
+    { code: 'Bengali', label: 'বাংলা (Bengali)', flag: 'BN' },
+    { code: 'Gujarati', label: 'ગુજરાતી (Gujarati)', flag: 'GU' },
+    { code: 'Tamil', label: 'தமிழ் (Tamil)', flag: 'TA' },
+    { code: 'Telugu', label: 'తెలుగు (Telugu)', flag: 'TE' }
   ];
 
   const handleLogout = () => {
@@ -64,8 +64,8 @@ export function Navbar({ isSidebarOpen, onToggleSidebar }) {
           className="flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs md:text-sm shadow-md transition-all active:scale-95 border border-emerald-500 rural-voice-active truncate"
           title="Click to speak your query in your language"
         >
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-300 animate-ping shrink-0" />
-          <span className="truncate">🎙️ {t('Bol Kar Sewa Paayein')}</span>
+          <Mic className="w-4 h-4 shrink-0 animate-pulse" />
+          <span className="truncate">{t('Bol Kar Sewa Paayein')}</span>
         </Link>
       </div>
 
@@ -87,8 +87,9 @@ export function Navbar({ isSidebarOpen, onToggleSidebar }) {
           </button>
           {isLangOpen && (
             <div className="absolute right-0 top-full mt-1.5 w-52 bg-surface-container-lowest border border-outline-variant rounded-xl shadow-xl py-1.5 z-50 max-h-64 overflow-y-auto animate-in fade-in zoom-in-95 duration-150">
-              <div className="px-3 py-1 text-[10px] font-extrabold text-on-surface-variant uppercase tracking-wider border-b border-outline-variant/40 mb-1">
-                🌐 Select Regional Language
+              <div className="px-3 py-1 text-[10px] font-extrabold text-on-surface-variant uppercase tracking-wider border-b border-outline-variant/40 mb-1 flex items-center gap-1.5">
+                <Globe className="w-3.5 h-3.5 text-primary" />
+                <span>Select Regional Language</span>
               </div>
               {languagesList.map((l) => (
                 <button
@@ -103,7 +104,7 @@ export function Navbar({ isSidebarOpen, onToggleSidebar }) {
                   }`}
                 >
                   <span>{l.label}</span>
-                  <span>{l.flag}</span>
+                  <span className="text-[10px] font-mono font-extrabold px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant">{l.flag}</span>
                 </button>
               ))}
             </div>
@@ -141,9 +142,10 @@ export function Navbar({ isSidebarOpen, onToggleSidebar }) {
               <Link
                 to="/profile"
                 onClick={() => setIsProfileOpen(false)}
-                className="block px-4 py-2 text-sm text-on-surface font-semibold hover:bg-surface-container transition-colors"
+                className="px-4 py-2 text-sm text-on-surface font-semibold hover:bg-surface-container transition-colors flex items-center gap-2"
               >
-                👤 {t('Profile')}
+                <User className="w-4 h-4" />
+                <span>{t('Profile')}</span>
               </Link>
               <button
                 onClick={() => {

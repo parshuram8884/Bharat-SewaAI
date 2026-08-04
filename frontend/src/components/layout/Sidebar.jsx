@@ -2,11 +2,12 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
-  Users,
+  Sprout,
   FileText,
   AlertCircle,
   User,
   HelpCircle,
+  MessageCircle,
   X
 } from 'lucide-react';
 import { useAdminAuth } from '../../context/AdminAuthContext';
@@ -20,11 +21,11 @@ export function Sidebar({ isOpen, onClose }) {
   const { t } = useTranslation();
 
   const links = [
-    { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, iconTag: '🏠' },
-    { to: '/citizens', label: 'Schemes & Services', icon: Users, iconTag: '🌾' },
-    { to: '/applications', label: 'Applications', icon: FileText, iconTag: '📝' },
-    { to: '/complaints', label: 'Complaints', icon: AlertCircle, iconTag: '📢' },
-    { to: '/profile', label: 'Profile', icon: User, iconTag: '👤' },
+    { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { to: '/citizens', label: 'Schemes & Services', icon: Sprout },
+    { to: '/applications', label: 'Applications', icon: FileText },
+    { to: '/complaints', label: 'Complaints', icon: AlertCircle },
+    { to: '/profile', label: 'Profile', icon: User },
   ];
 
   const sidebarContent = (
@@ -77,7 +78,7 @@ export function Sidebar({ isOpen, onClose }) {
                 }`
               }
             >
-              <span className="text-lg">{link.iconTag}</span>
+              <Icon className="w-5 h-5 shrink-0" />
               <span className="truncate">{t(link.label)}</span>
             </NavLink>
           );
@@ -99,7 +100,8 @@ export function Sidebar({ isOpen, onClose }) {
           rel="noopener noreferrer"
           className="w-full mt-1.5 py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
         >
-          <span>💬 {t('WhatsApp Help')}</span>
+          <MessageCircle className="w-4 h-4" />
+          <span>{t('WhatsApp Help')}</span>
         </a>
       </div>
     </div>
